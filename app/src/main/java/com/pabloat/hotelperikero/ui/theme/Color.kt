@@ -1,4 +1,4 @@
-package com.pabloat.hotelperikero.ui.theme
+package com.pabloat.GameHubConnect.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
