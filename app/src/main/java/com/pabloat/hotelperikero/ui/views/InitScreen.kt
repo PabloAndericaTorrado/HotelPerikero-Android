@@ -1,4 +1,4 @@
-package com.pabloat.GameHubConnect.ui.views
+package com.pabloat.hotelperikero.ui.views
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -23,10 +23,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.pabloat.GameHubConnect.R
-import com.pabloat.GameHubConnect.navigation.Destinations
-import com.pabloat.GameHubConnect.ui.util.CategoryCard
-import com.pabloat.GameHubConnect.ui.util.WelcomeSection
-import com.pabloat.GameHubConnect.viewmodel.FireBaseViewModel
+import com.pabloat.hotelperikero.navigation.Destinations
+import com.pabloat.hotelperikero.ui.util.CategoryCard
+import com.pabloat.hotelperikero.ui.util.WelcomeSection
+import com.pabloat.hotelperikero.viewmodel.FireBaseViewModel
 
 /**
  * InitScreen
@@ -55,11 +55,13 @@ fun InitScreen(onNavController: NavHostController, firebaseViewModel: FireBaseVi
         ) {
             WelcomeSection(visible)
             Spacer(modifier = Modifier.weight(1f))
-            CategoryCard(title = "¡Explorar!", icon = Icons.Default.Gamepad, onNavigate = { onNavController.navigate(Destinations.GenreScreen.route) })
+            CategoryCard(title = "¡Explorar!", icon = Icons.Default.Gamepad, onNavigate = { onNavController.navigate(
+                Destinations.GenreScreen.route) })
             Spacer(modifier = Modifier.height(12.dp))
             // Aqui, si el usuario es el administrador, se muestra la opción de administrar videojuegos.
             if (firebaseViewModel.getStoredEmail() == "admin@admin.com") {
-                CategoryCard(title = "Administrar videojuegos", icon = Icons.Default.Settings, onNavigate = { onNavController.navigate(Destinations.ManageScreen.route) })
+                CategoryCard(title = "Administrar videojuegos", icon = Icons.Default.Settings, onNavigate = { onNavController.navigate(
+                    Destinations.ManageScreen.route) })
             }
         }
     }

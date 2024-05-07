@@ -1,4 +1,4 @@
-package com.pabloat.GameHubConnect.ui.theme
+package com.pabloat.hotelperikero.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

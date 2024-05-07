@@ -1,4 +1,4 @@
-package com.pabloat.GameHubConnect.ui.views
+package com.pabloat.hotelperikero.ui.views
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -17,8 +17,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.pabloat.GameHubConnect.ui.util.VideojuegoCard
-import com.pabloat.GameHubConnect.viewmodel.MainViewModel
+import com.pabloat.hotelperikero.ui.util.VideojuegoCard
+import com.pabloat.hotelperikero.viewmodel.MainViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "SuspiciousIndentation")
 @ExperimentalFoundationApi

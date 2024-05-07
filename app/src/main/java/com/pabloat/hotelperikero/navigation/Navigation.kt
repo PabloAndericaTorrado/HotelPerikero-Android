@@ -1,4 +1,4 @@
-package com.pabloat.GameHubConnect.navigation
+package com.pabloat.hotelperikero.navigation
 
 import android.content.Context
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -7,9 +7,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.pabloat.GameHubConnect.ui.util.isConnectedToInternet
-import com.pabloat.GameHubConnect.ui.views.AddRatingScreen
-import com.pabloat.GameHubConnect.ui.views.AddScreen
+import com.pabloat.hotelperikero.ui.util.isConnectedToInternet
+import com.pabloat.hotelperikero.ui.views.AddRatingScreen
+import com.pabloat.hotelperikero.ui.views.AddScreen
 import com.pabloat.GameHubConnect.ui.views.DeleteGameScreen
 import com.pabloat.GameHubConnect.ui.views.DetailGameScreen
 import com.pabloat.GameHubConnect.ui.views.EditScreen
@@ -22,9 +22,9 @@ import com.pabloat.GameHubConnect.ui.views.ManageScreen
 import com.pabloat.GameHubConnect.ui.views.ProfileScreen
 import com.pabloat.GameHubConnect.ui.views.UserFavScreen
 import com.pabloat.GameHubConnect.ui.views.VideogameGenreScreen
-import com.pabloat.GameHubConnect.viewmodel.FireBaseViewModel
-import com.pabloat.GameHubConnect.viewmodel.MainViewModel
-import com.pabloat.GameHubConnect.viewmodel.PreferenceUtils
+import com.pabloat.hotelperikero.viewmodel.FireBaseViewModel
+import com.pabloat.hotelperikero.viewmodel.MainViewModel
+import com.pabloat.hotelperikero.viewmodel.PreferenceUtils
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

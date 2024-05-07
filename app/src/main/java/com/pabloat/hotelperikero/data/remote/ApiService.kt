@@ -1,4 +1,4 @@
-package com.pabloat.GameHubConnect.data.remote
+package com.pabloat.hotelperikero.data.remote
 
 import retrofit2.http.GET
 

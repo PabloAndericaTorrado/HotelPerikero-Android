@@ -1,4 +1,4 @@
-package com.pabloat.GameHubConnect.data.remote
+package com.pabloat.hotelperikero.data.remote
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

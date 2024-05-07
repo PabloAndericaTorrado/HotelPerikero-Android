@@ -1,4 +1,4 @@
-package com.pabloat.GameHubConnect.ui.views
+package com.pabloat.hotelperikero.ui.views
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,8 +12,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.pabloat.GameHubConnect.navigation.Destinations
-import com.pabloat.GameHubConnect.ui.util.ActionButton
+import com.pabloat.hotelperikero.navigation.Destinations
+import com.pabloat.hotelperikero.ui.util.ActionButton
 
 @Composable
 fun ManageScreen(navHostController: NavHostController) {

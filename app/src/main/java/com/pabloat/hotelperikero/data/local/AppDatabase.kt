@@ -1,4 +1,4 @@
-package com.pabloat.GameHubConnect.data.local
+package com.pabloat.hotelperikero.data.local
 
 import android.content.Context
 import androidx.room.Database

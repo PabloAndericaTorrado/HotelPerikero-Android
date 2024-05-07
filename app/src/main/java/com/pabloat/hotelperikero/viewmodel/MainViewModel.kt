@@ -1,11 +1,11 @@
-package com.pabloat.GameHubConnect.viewmodel
+package com.pabloat.hotelperikero.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pabloat.GameHubConnect.data.VideojuegoRepository
-import com.pabloat.GameHubConnect.data.local.Videojuego
-import com.pabloat.GameHubConnect.ui.util.ScreenState
+import com.pabloat.hotelperikero.data.VideojuegoRepository
+import com.pabloat.hotelperikero.data.local.Videojuego
+import com.pabloat.hotelperikero.ui.util.ScreenState
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

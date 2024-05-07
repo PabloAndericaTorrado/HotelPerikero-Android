@@ -1,9 +1,9 @@
-package com.pabloat.GameHubConnect.data
+package com.pabloat.hotelperikero.data
 
 import android.util.Log
-import com.pabloat.GameHubConnect.data.local.Videojuego
-import com.pabloat.GameHubConnect.data.local.VideojuegoDatasource
-import com.pabloat.GameHubConnect.data.remote.RemoteVideojuegoDataSource
+import com.pabloat.hotelperikero.data.local.Videojuego
+import com.pabloat.hotelperikero.data.local.VideojuegoDatasource
+import com.pabloat.hotelperikero.data.remote.RemoteVideojuegoDataSource
 import kotlinx.coroutines.flow.Flow
 
 /**

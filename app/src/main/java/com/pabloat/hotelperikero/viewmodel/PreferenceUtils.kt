@@ -1,4 +1,4 @@
-package com.pabloat.GameHubConnect.viewmodel
+package com.pabloat.hotelperikero.viewmodel
 
 
 import android.content.Context

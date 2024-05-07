@@ -1,4 +1,4 @@
-package com.pabloat.GameHubConnect.ui.util
+package com.pabloat.hotelperikero.ui.util
 
 import android.content.Context
 import android.net.ConnectivityManager
@@ -30,7 +30,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ListAlt
@@ -79,9 +78,9 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.transform.RoundedCornersTransformation
-import com.pabloat.GameHubConnect.data.local.Videojuego
-import com.pabloat.GameHubConnect.navigation.Destinations
-import com.pabloat.GameHubConnect.viewmodel.MainViewModel
+import com.pabloat.hotelperikero.data.local.Videojuego
+import com.pabloat.hotelperikero.navigation.Destinations
+import com.pabloat.hotelperikero.viewmodel.MainViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

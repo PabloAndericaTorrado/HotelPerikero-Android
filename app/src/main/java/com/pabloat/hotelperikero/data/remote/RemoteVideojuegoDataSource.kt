@@ -1,4 +1,6 @@
-package com.pabloat.GameHubConnect.data.remote
+package com.pabloat.hotelperikero.data.remote
+
+import com.pabloat.hotelperikero.data.remote.ApiService
 
 /**
  * RemoteVideojuegoDataSource es una clase que se encarga de gestionar la obtención de datos de la API.

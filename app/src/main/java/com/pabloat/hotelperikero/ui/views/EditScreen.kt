@@ -1,4 +1,4 @@
-package com.pabloat.GameHubConnect.ui.views
+package com.pabloat.hotelperikero.ui.views
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,10 +16,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.pabloat.GameHubConnect.navigation.Destinations
-import com.pabloat.GameHubConnect.ui.util.CustomTextField
-import com.pabloat.GameHubConnect.ui.util.VolverAtrasButton
-import com.pabloat.GameHubConnect.viewmodel.MainViewModel
+import com.pabloat.hotelperikero.navigation.Destinations
+import com.pabloat.hotelperikero.ui.util.CustomTextField
+import com.pabloat.hotelperikero.ui.util.VolverAtrasButton
+import com.pabloat.hotelperikero.viewmodel.MainViewModel
 
 /**
  * EditScreen

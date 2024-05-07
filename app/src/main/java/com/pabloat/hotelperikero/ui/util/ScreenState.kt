@@ -1,6 +1,6 @@
-package com.pabloat.GameHubConnect.ui.util
+package com.pabloat.hotelperikero.ui.util
 
-import com.pabloat.GameHubConnect.data.local.Videojuego
+import com.pabloat.hotelperikero.data.local.Videojuego
 import kotlinx.coroutines.flow.Flow
 
 sealed class ScreenState {

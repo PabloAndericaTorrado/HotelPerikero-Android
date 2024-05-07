@@ -1,4 +1,4 @@
-package com.pabloat.GameHubConnect.ui.views
+package com.pabloat.hotelperikero.ui.views
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,9 +18,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import com.pabloat.GameHubConnect.data.local.Videojuego
-import com.pabloat.GameHubConnect.ui.util.VideojuegoDetailCard
-import com.pabloat.GameHubConnect.viewmodel.MainViewModel
+import com.pabloat.hotelperikero.data.local.Videojuego
+import com.pabloat.hotelperikero.ui.util.VideojuegoDetailCard
+import com.pabloat.hotelperikero.viewmodel.MainViewModel
 
 /**
  * DetailGameScreen es la screen que muestra los detalles de un videojuego. Le llega el id del videojuego

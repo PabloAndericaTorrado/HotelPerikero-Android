@@ -1,4 +1,4 @@
-package com.pabloat.GameHubConnect.navigation
+package com.pabloat.hotelperikero.navigation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row

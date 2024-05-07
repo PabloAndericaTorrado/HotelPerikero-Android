@@ -1,4 +1,4 @@
-package com.pabloat.GameHubConnect.data.local
+package com.pabloat.hotelperikero.data.local
 
 /**
  * User es una clase que representa el objeto Usuario que se almacena en la base de datos de arriba.

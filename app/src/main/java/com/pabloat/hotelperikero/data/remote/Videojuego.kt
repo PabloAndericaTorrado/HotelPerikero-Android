@@ -1,7 +1,7 @@
-package com.pabloat.GameHubConnect.data.remote
+package com.pabloat.hotelperikero.data.remote
 
 import com.google.gson.annotations.SerializedName
-import com.pabloat.GameHubConnect.data.local.Videojuego
+import com.pabloat.hotelperikero.data.local.Videojuego
 
 /**
  * VideoJuegosDTO es una clase que representa el objeto JSON que se recibe de la API.

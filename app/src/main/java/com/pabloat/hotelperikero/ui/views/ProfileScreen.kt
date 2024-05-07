@@ -1,4 +1,4 @@
-package com.pabloat.GameHubConnect.ui.views
+package com.pabloat.hotelperikero.ui.views
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -30,11 +30,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.pabloat.GameHubConnect.R
-import com.pabloat.GameHubConnect.navigation.Destinations
-import com.pabloat.GameHubConnect.ui.util.isConnectedToInternet
-import com.pabloat.GameHubConnect.viewmodel.FireBaseViewModel
-import com.pabloat.GameHubConnect.viewmodel.MainViewModel
-import com.pabloat.GameHubConnect.viewmodel.PreferenceUtils
+import com.pabloat.hotelperikero.navigation.Destinations
+import com.pabloat.hotelperikero.ui.util.isConnectedToInternet
+import com.pabloat.hotelperikero.viewmodel.FireBaseViewModel
+import com.pabloat.hotelperikero.viewmodel.MainViewModel
+import com.pabloat.hotelperikero.viewmodel.PreferenceUtils
 /**
  * Pantalla de perfil de usuario.
  * @param onNavController Controlador de navegación para la navegación entre pantallas.

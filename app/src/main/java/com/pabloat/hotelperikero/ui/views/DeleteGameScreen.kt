@@ -1,4 +1,4 @@
-package com.pabloat.GameHubConnect.ui.views
+package com.pabloat.hotelperikero.ui.views
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,11 +9,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.pabloat.GameHubConnect.data.local.Videojuego
-import com.pabloat.GameHubConnect.viewmodel.MainViewModel
-import com.pabloat.GameHubConnect.ui.util.BuscarJuegoTextField
-import com.pabloat.GameHubConnect.ui.util.MostrarBotonEliminar
-import com.pabloat.GameHubConnect.ui.util.MostrarSnackbar
+import com.pabloat.hotelperikero.data.local.Videojuego
+import com.pabloat.hotelperikero.viewmodel.MainViewModel
+import com.pabloat.hotelperikero.ui.util.BuscarJuegoTextField
+import com.pabloat.hotelperikero.ui.util.MostrarBotonEliminar
+import com.pabloat.hotelperikero.ui.util.MostrarSnackbar
 
 /**
  * Esta screen muestra un buscador de videojuegos y un botón para eliminar para el videojuego que

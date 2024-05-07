@@ -1,4 +1,4 @@
-package com.pabloat.GameHubConnect.ui.theme
+package com.pabloat.hotelperikero.ui.theme
 
 import android.app.Activity
 import android.os.Build

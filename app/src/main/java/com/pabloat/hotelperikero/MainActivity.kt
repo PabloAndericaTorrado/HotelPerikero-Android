@@ -1,4 +1,4 @@
-package com.pabloat.GameHubConnect
+package com.pabloat.hotelperikero
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -19,16 +19,16 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.compose.rememberNavController
-import com.pabloat.GameHubConnect.data.VideojuegoRepository
-import com.pabloat.GameHubConnect.data.local.AppDataBase
-import com.pabloat.GameHubConnect.data.local.VideojuegoDatasource
-import com.pabloat.GameHubConnect.data.remote.RemoteVideojuegoDataSource
-import com.pabloat.GameHubConnect.data.remote.RetrofitBuilder
-import com.pabloat.GameHubConnect.navigation.MainNavigation
-import com.pabloat.GameHubConnect.navigation.MainTopBar
-import com.pabloat.GameHubConnect.ui.util.NavigationBottomBar
-import com.pabloat.GameHubConnect.viewmodel.FireBaseViewModel
-import com.pabloat.GameHubConnect.viewmodel.MainViewModel
+import com.pabloat.hotelperikero.data.VideojuegoRepository
+import com.pabloat.hotelperikero.data.local.AppDataBase
+import com.pabloat.hotelperikero.data.local.VideojuegoDatasource
+import com.pabloat.hotelperikero.data.remote.RemoteVideojuegoDataSource
+import com.pabloat.hotelperikero.data.remote.RetrofitBuilder
+import com.pabloat.hotelperikero.navigation.MainNavigation
+import com.pabloat.hotelperikero.navigation.MainTopBar
+import com.pabloat.hotelperikero.ui.util.NavigationBottomBar
+import com.pabloat.hotelperikero.viewmodel.FireBaseViewModel
+import com.pabloat.hotelperikero.viewmodel.MainViewModel
 
 class MainActivity : ComponentActivity() {
 

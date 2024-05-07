@@ -1,4 +1,4 @@
-package com.pabloat.GameHubConnect.data.local
+package com.pabloat.hotelperikero.data.local
 
 import androidx.room.Dao
 import androidx.room.Delete

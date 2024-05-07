@@ -1,4 +1,4 @@
-package com.pabloat.GameHubConnect.data.local
+package com.pabloat.hotelperikero.data.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

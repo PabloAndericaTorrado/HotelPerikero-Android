@@ -1,4 +1,4 @@
-package com.pabloat.GameHubConnect.ui.views
+package com.pabloat.hotelperikero.ui.views
 
 import android.util.Log
 import androidx.compose.foundation.clickable
@@ -40,9 +40,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.pabloat.GameHubConnect.navigation.Destinations
-import com.pabloat.GameHubConnect.viewmodel.FireBaseViewModel
-import com.pabloat.GameHubConnect.viewmodel.PreferenceUtils
+import com.pabloat.hotelperikero.navigation.Destinations
+import com.pabloat.hotelperikero.viewmodel.FireBaseViewModel
+import com.pabloat.hotelperikero.viewmodel.PreferenceUtils
 
 
 /**

@@ -1,4 +1,4 @@
-package com.pabloat.GameHubConnect.navigation
+package com.pabloat.hotelperikero.navigation
 
 sealed class Destinations(val route: String) {
     object MainScreen : Destinations(route = "MainScreen")

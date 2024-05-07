@@ -1,4 +1,4 @@
-package com.pabloat.GameHubConnect.ui.views
+package com.pabloat.hotelperikero.ui.views
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,8 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.pabloat.GameHubConnect.ui.util.VideojuegoCard
-import com.pabloat.GameHubConnect.viewmodel.MainViewModel
+import com.pabloat.hotelperikero.ui.util.VideojuegoCard
+import com.pabloat.hotelperikero.viewmodel.MainViewModel
 
 @Composable
 fun UserFavScreen(onNavController: NavHostController, mainViewmodel: MainViewModel) {
