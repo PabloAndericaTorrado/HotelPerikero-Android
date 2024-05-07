@@ -22,7 +22,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.pabloat.GameHubConnect.R
+import com.pabloat.hotelperikero.R
 import com.pabloat.hotelperikero.navigation.Destinations
 import com.pabloat.hotelperikero.ui.util.CategoryCard
 import com.pabloat.hotelperikero.ui.util.WelcomeSection

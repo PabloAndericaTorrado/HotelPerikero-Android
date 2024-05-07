@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.pabloat.GameHubConnect.R
+import com.pabloat.hotelperikero.R
 
 /**
  * NavTools
