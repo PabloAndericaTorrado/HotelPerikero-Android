@@ -8,9 +8,10 @@ import androidx.room.RoomDatabase
 /**
  * AppDataBase es una clase que se encarga de gestionar la base de datos local.
  */
-@Database(entities = [Videojuego::class], version = 2)
+
+@Database(entities = [Habitacion::class], version = 1)
 abstract class AppDataBase : RoomDatabase() {
-    abstract fun videojuegoDao(): LocalVideojuegoDao
+    abstract fun habitacionDao(): LocalHabitacionDao
 
     companion object {
         @Volatile
@@ -19,10 +20,11 @@ abstract class AppDataBase : RoomDatabase() {
         fun getDatabase(context: Context): AppDataBase {
             return Instance ?: synchronized(this) {
                 Room
-                    .databaseBuilder(context, AppDataBase::class.java, "videojuego.sql")
+                    .databaseBuilder(context, AppDataBase::class.java, "hotel.sql")
                     .build()
                     .also { Instance = it }
             }
         }
     }
 }
+

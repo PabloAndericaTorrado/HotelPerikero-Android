@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.stateIn
  * @param applicationContext es el contexto de la aplicación.
  */
 class VideojuegoDatasource(applicationContext: Context) {
+    /*
     private val db: AppDataBase = AppDataBase.getDatabase(applicationContext)
     private val videojuegoDao: LocalVideojuegoDao = db.videojuegoDao()
 
@@ -61,5 +62,5 @@ class VideojuegoDatasource(applicationContext: Context) {
     suspend fun getVideojuegoById(videojuegoId: Int?): Videojuego? {
         return videojuegoDao.getVideojuegoById(videojuegoId)
     }
-
+*/
 }

@@ -9,6 +9,9 @@ interface ApiService {
 
     @GET("games")
     suspend fun getVideoJuegos(): List<VideoJuegoDTO>
+
+    @GET("habitaciones")
+    suspend fun getHabitaciones(): List<HabitacionDTO>
 }
 
 
