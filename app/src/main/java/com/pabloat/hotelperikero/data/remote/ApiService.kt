@@ -8,7 +8,7 @@ import retrofit2.http.GET
 interface ApiService {
 
     @GET("habitaciones")
-    suspend fun getHabitaciones(): List<HabitacionDTO>
+    suspend fun getHabitaciones(): HabitacionesDTO
 }
 
 

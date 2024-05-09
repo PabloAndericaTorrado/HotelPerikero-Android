@@ -4,11 +4,11 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class Habitacion (
+data class Habitacion(
     @PrimaryKey(autoGenerate = true) val id:Int?,
     val numero_habitacion:String,
     val tipo:String,
-    val precio:Int,
+    val precio: String,
     val descripcion: String,
     val capacidad: Int,
     val caracteristicas: String,
@@ -18,6 +18,6 @@ data class Habitacion (
 
     ){
     override fun toString(): String {
-        return super.toString()
+        return "Habitación $numero_habitacion: $tipo - $precio por noche"
     }
 }

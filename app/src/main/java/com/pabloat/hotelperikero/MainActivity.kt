@@ -47,6 +47,8 @@ fun MainApp() {
     val mainViewModel = HotelViewModel(repository)
     AppDataBase.getDatabase(LocalContext.current)
     mainViewModel.getRemoteHabitacion()
+    val habitaciones by mainViewModel.habitaciones.collectAsState()
+    HabitacionesList(habitaciones =  habitaciones)
 }
 
 
