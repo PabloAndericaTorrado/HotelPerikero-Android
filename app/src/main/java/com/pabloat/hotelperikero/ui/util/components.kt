@@ -80,12 +80,11 @@ import coil.request.ImageRequest
 import coil.transform.RoundedCornersTransformation
 import com.pabloat.hotelperikero.data.local.Videojuego
 import com.pabloat.hotelperikero.navigation.Destinations
-import com.pabloat.hotelperikero.viewmodel.MainViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /****************************************************************************************************/
-
+/*
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -640,3 +639,5 @@ fun isConnectedToInternet(context: Context): Boolean {
 
     return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
 }
+
+ */

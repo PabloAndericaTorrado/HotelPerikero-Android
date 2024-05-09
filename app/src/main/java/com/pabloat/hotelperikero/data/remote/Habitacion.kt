@@ -2,6 +2,7 @@ package com.pabloat.hotelperikero.data.remote
 
 import com.google.gson.annotations.SerializedName
 import com.pabloat.hotelperikero.data.local.Habitacion
+import com.pabloat.hotelperikero.data.local.Videojuego
 
 data class HabitacionesDTO(
     @SerializedName("habitaciones")
@@ -45,4 +46,24 @@ data class HabitacionDTO(
 
         )
     }
+}
+fun HabitacionesDTO.toLocalList(): List<Habitacion> {
+    val tempList = mutableListOf<Habitacion>()
+    for (i in 0 .. 5 - 1){
+        val nuevo = Habitacion(
+            id = data.get(i).id,
+            numero_habitacion = data.get(i).numero_habitacion,
+            tipo = data.get(i).tipo,
+            precio = data.get(i).precio,
+            descripcion = data.get(i).descripcion,
+            capacidad = data.get(i).capacidad,
+            caracteristicas = data.get(i).caracteristicas,
+            disponibilidad = data.get(i).disponibilidad,
+            created_at = data.get(i).created_at,
+            updated_at=data.get(i).updated_at,
+
+        )
+        tempList.add(nuevo)
+    }
+    return tempList
 }

@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+/*
 import com.pabloat.hotelperikero.ui.util.GenreItem
 import com.pabloat.hotelperikero.viewmodel.MainViewModel
 
@@ -89,3 +90,6 @@ fun GenreScreen(
         }
     }
 }
+
+
+ */

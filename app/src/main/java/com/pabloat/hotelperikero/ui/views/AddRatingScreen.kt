@@ -35,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.pabloat.hotelperikero.data.local.Videojuego
+/*
 import com.pabloat.hotelperikero.viewmodel.MainViewModel
 import kotlin.math.roundToInt
 
@@ -157,3 +158,6 @@ private fun GuardadoButton(onClick: () -> Unit, isEnabled: Boolean) {
         Text(text = "Guardar Valoración", color = MaterialTheme.colorScheme.onSecondary)
     }
 }
+
+
+ */

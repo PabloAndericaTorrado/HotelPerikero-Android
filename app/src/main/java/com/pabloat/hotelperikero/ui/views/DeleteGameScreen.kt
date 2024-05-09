@@ -10,11 +10,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.pabloat.hotelperikero.data.local.Videojuego
-import com.pabloat.hotelperikero.viewmodel.MainViewModel
-import com.pabloat.hotelperikero.ui.util.BuscarJuegoTextField
-import com.pabloat.hotelperikero.ui.util.MostrarBotonEliminar
-import com.pabloat.hotelperikero.ui.util.MostrarSnackbar
-
+/*
 /**
  * Esta screen muestra un buscador de videojuegos y un botón para eliminar para el videojuego que
  * busquemos en caso de que se encuentr.
@@ -37,3 +33,6 @@ fun DeleteGameScreen(mainViewModel: MainViewModel) {
         MostrarSnackbar(showSnackbar = showSnackbar)
     }
 }
+
+
+ */

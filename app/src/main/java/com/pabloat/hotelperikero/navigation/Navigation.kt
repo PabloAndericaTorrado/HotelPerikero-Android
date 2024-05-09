@@ -7,6 +7,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+/*
 import com.pabloat.hotelperikero.ui.util.isConnectedToInternet
 import com.pabloat.hotelperikero.ui.views.AddRatingScreen
 import com.pabloat.hotelperikero.ui.views.AddScreen
@@ -133,3 +134,5 @@ fun MainNavigation(
         }
     }
 }
+
+ */

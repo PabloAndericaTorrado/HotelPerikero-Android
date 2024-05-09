@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+/*
 import com.pabloat.hotelperikero.ui.util.VideojuegoCard
 import com.pabloat.hotelperikero.viewmodel.MainViewModel
 
@@ -71,3 +72,6 @@ fun VideogameGenreScreen(onNavController: NavHostController, mainViewModel: Main
 }
 
 
+
+
+ */

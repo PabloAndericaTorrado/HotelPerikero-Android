@@ -25,6 +25,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.pabloat.hotelperikero.data.local.Videojuego
+/*
 import com.pabloat.hotelperikero.viewmodel.MainViewModel
 
 
@@ -111,3 +112,5 @@ private fun MostrarSnackbar(showSnackbar: MutableState<Boolean>) {
         }
     }
 }
+
+ */

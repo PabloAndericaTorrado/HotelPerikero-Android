@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.pabloat.hotelperikero.navigation.Destinations
+/*
 import com.pabloat.hotelperikero.ui.util.CustomTextField
 import com.pabloat.hotelperikero.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
@@ -49,3 +50,6 @@ fun EditSearch(onNavController: NavHostController, mainViewModel: MainViewModel)
     }
 }
 
+
+
+ */

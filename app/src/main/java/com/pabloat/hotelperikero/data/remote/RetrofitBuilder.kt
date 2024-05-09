@@ -10,7 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory
  * @property API_BASE_URL es la url base de la API.
  */
 // Esta es la única línea que necesitamos cambiar generalmente, con la url de la API
-private const val API_BASE_URL = "https://www.freetogame.com/api/"
+private const val API_BASE_URL = "http://telamarinera.duckdns.org:16020/api/"
 
 object RetrofitBuilder {
     private fun getRetrofit(): Retrofit {

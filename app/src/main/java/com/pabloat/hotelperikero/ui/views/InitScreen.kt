@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.pabloat.hotelperikero.R
 import com.pabloat.hotelperikero.navigation.Destinations
+/*
 import com.pabloat.hotelperikero.ui.util.CategoryCard
 import com.pabloat.hotelperikero.ui.util.WelcomeSection
 import com.pabloat.hotelperikero.viewmodel.FireBaseViewModel
@@ -67,3 +68,6 @@ fun InitScreen(onNavController: NavHostController, firebaseViewModel: FireBaseVi
     }
 }
 
+
+
+ */

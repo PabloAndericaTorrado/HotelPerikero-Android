@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+/*
 import com.pabloat.hotelperikero.ui.util.VideojuegoCard
 import com.pabloat.hotelperikero.viewmodel.MainViewModel
 
@@ -47,3 +48,6 @@ fun MainScreen(mainViewModel: MainViewModel, navHostController: NavHostControlle
     }
 }
 
+
+
+ */

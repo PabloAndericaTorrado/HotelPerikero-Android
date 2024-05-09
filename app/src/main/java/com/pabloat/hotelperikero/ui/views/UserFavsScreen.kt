@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+/*
 import com.pabloat.hotelperikero.ui.util.VideojuegoCard
 import com.pabloat.hotelperikero.viewmodel.MainViewModel
 
@@ -61,3 +62,5 @@ fun UserFavScreen(onNavController: NavHostController, mainViewmodel: MainViewMod
         }
     }
 }
+
+ */

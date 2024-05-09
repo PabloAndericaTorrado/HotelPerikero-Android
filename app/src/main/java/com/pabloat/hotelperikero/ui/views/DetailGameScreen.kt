@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import com.pabloat.hotelperikero.data.local.Videojuego
+/*
 import com.pabloat.hotelperikero.ui.util.VideojuegoDetailCard
 import com.pabloat.hotelperikero.viewmodel.MainViewModel
 
@@ -72,3 +73,5 @@ fun CustomSnackbarHost(snackbarHostState: SnackbarHostState, modifier: Modifier 
         )
     }
 }
+
+ */

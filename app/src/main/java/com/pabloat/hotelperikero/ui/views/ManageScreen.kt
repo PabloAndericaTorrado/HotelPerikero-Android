@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.pabloat.hotelperikero.navigation.Destinations
+/*
 import com.pabloat.hotelperikero.ui.util.ActionButton
 
 @Composable
@@ -46,3 +47,5 @@ fun ManageScreen(navHostController: NavHostController) {
         }
     }
 }
+
+*/

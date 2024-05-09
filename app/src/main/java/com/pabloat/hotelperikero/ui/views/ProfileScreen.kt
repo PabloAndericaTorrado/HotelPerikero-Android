@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.pabloat.hotelperikero.R
 import com.pabloat.hotelperikero.navigation.Destinations
+/*
 import com.pabloat.hotelperikero.ui.util.isConnectedToInternet
 import com.pabloat.hotelperikero.viewmodel.FireBaseViewModel
 import com.pabloat.hotelperikero.viewmodel.MainViewModel
@@ -139,3 +140,6 @@ fun ProfileScreen(
         }
     }
 }
+
+
+ */

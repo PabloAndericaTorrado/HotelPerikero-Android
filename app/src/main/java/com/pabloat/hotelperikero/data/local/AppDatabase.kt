@@ -19,7 +19,7 @@ abstract class AppDataBase : RoomDatabase() {
 
         fun getDatabase(context: Context): AppDataBase {
             return Instance ?: synchronized(this) {
-                Room
+                Instance ?: Room
                     .databaseBuilder(context, AppDataBase::class.java, "hotel.sql")
                     .build()
                     .also { Instance = it }

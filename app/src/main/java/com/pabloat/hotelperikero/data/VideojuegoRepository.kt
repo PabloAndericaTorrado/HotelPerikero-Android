@@ -3,7 +3,6 @@ package com.pabloat.hotelperikero.data
 import android.util.Log
 import com.pabloat.hotelperikero.data.local.Videojuego
 import com.pabloat.hotelperikero.data.local.VideojuegoDatasource
-import com.pabloat.hotelperikero.data.remote.RemoteVideojuegoDataSource
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -11,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
  * @param localds es el origen de datos local.
  * @param remoteds es el origen de datos remoto.
  */
+/*
 class VideojuegoRepository(
     private val localds: VideojuegoDatasource,
     private val remoteds: RemoteVideojuegoDataSource
@@ -64,3 +64,5 @@ class VideojuegoRepository(
     }
 
 }
+
+ */
