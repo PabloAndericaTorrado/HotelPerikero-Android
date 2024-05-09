@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import com.pabloat.hotelperikero.ui.util.isConnectedToInternet
 import com.pabloat.hotelperikero.ui.views.AddRatingScreen
 import com.pabloat.hotelperikero.ui.views.AddScreen
+import com.pabloat.hotelperikero.ui.views.ContactScreen
 import com.pabloat.hotelperikero.ui.views.DeleteGameScreen
 import com.pabloat.hotelperikero.ui.views.DetailGameScreen
 import com.pabloat.hotelperikero.ui.views.EditScreen
@@ -131,6 +132,10 @@ fun MainNavigation(
 
         composable(Destinations.UserFavScreen.route){
             UserFavScreen(onNavController,mainViewmodel)
+        }
+
+        composable(Destinations.Contacto.route){
+            ContactScreen(onNavController)
         }
     }
 }

@@ -32,4 +32,7 @@ sealed class Destinations(val route: String) {
     object ProfileScreen : Destinations(route = "com.pabloat.GameHubConnect.ui.views.ProfileScreen")
 
     object UserFavScreen : Destinations(route = "UserFavScreen")
+
+    object Contacto : Destinations(route = "ContactScreen")
+
 }
