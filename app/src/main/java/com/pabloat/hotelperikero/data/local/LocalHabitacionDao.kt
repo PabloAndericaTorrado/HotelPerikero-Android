@@ -13,4 +13,7 @@ interface LocalHabitacionDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(habitaciones: List<Habitacion>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(habitaciones: List<Habitacion>)
+
 }

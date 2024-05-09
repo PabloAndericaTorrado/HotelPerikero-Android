@@ -26,6 +26,9 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 class MainActivity : ComponentActivity() {
 
@@ -45,23 +48,24 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainApp() {
-    val remoteDatasource = RemoteHotelDataSource(RetrofitBuilder.apiService)
-    val localDatasource = HotelDatasource(LocalContext.current)
     val context = LocalContext.current
-    val repository = HotelRepository(localDatasource, remoteDatasource)
+    val appDatabase = remember { AppDataBase.getDatabase(context) }
+    val remoteDataSource = remember { RemoteHotelDataSource(RetrofitBuilder.apiService) }
+    val localDataSource = remember { HotelDatasource(context) }
+    val repository = remember { HotelRepository(localDataSource, remoteDataSource) }
     val mainViewModel = HotelViewModel(repository)
-    AppDataBase.getDatabase(LocalContext.current)
-    mainViewModel.getRemoteHabitacion()
-    val habitaciones by mainViewModel.habitaciones.collectAsState()
-    HabitacionesList(habitaciones =  habitaciones)
-}
+
+    // LaunchedEffect para cargar los datos solo una vez
+    LaunchedEffect(true) {
+        mainViewModel.fetchRooms()
+    }
 
 
-@Composable
-fun HabitacionesList(habitaciones: List<Habitacion>) {
-    LazyColumn(modifier = Modifier.padding(vertical = 4.dp)) {
-        items(habitaciones) { habitacion ->
-            HabitacionItem(habitacion = habitacion)
+
+    val habitacionesList by mainViewModel.habitaciones.collectAsState()
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
+        items(habitacionesList) { habitacion ->
+            HabitacionItem(habitacion)
         }
     }
 }

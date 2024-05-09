@@ -36,12 +36,21 @@ class HotelViewModel(private val repository: HotelRepository) : ViewModel() {
         Log.d("VM", "Petición lanzada. Los datos irán llegando...")
     }
 
-    init {
-        fetchRooms()
+    fun fetchRooms() = viewModelScope.launch {
+        _uiState.value = ScreenState.Loading
+        try {
+            val rooms = repository.getRemoteHabitaciones() // Esto debería también guardar en la base de datos
+            _habitaciones.value = rooms
+            _uiState.value = ScreenState.Success(rooms)
+        } catch (e: Exception) {
+            _uiState.value = ScreenState.Error(e.message ?: "Unknown error")
+        }
     }
 
-    private fun fetchRooms() = viewModelScope.launch {
-        _habitaciones.value = repository.getRemoteHabitaciones()
+    fun loadLocalRooms() = viewModelScope.launch {
+        val localRooms = repository.getLocalHabitacion().collect { rooms ->
+            _habitaciones.value = rooms
+            _uiState.value = ScreenState.Success(rooms)
+        }
     }
-
 }
