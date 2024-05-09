@@ -21,6 +21,11 @@ import com.pabloat.hotelperikero.data.local.HotelDatasource
 import com.pabloat.hotelperikero.data.remote.RemoteHotelDataSource
 import com.pabloat.hotelperikero.data.remote.RetrofitBuilder
 import com.pabloat.hotelperikero.viewmodel.HotelViewModel
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.Text
+import androidx.compose.ui.unit.dp
+import androidx.compose.material3.Surface
 
 class MainActivity : ComponentActivity() {
 
@@ -54,25 +59,36 @@ fun MainApp() {
 
 @Composable
 fun HabitacionesList(habitaciones: List<Habitacion>) {
-    LazyColumn {
+    LazyColumn(modifier = Modifier.padding(vertical = 4.dp)) {
         items(habitaciones) { habitacion ->
             HabitacionItem(habitacion = habitacion)
-
         }
     }
 }
 
 @Composable
 fun HabitacionItem(habitacion: Habitacion) {
-    Text(text = "Número de habitación: ${habitacion.numero_habitacion}")
-    Text(text = "Tipo: ${habitacion.tipo}")
-    Text(text = "Precio: ${habitacion.precio}")
-    Text(text = "Descripción: ${habitacion.descripcion}")
-    Text(text = "Capacidad: ${habitacion.capacidad}")
-    Text(text = "Características: ${habitacion.caracteristicas}")
-    Text(text = "Disponibilidad: ${habitacion.disponibilidad}")
-    Text(text = "Creado en: ${habitacion.created_at}")
-    Text(text = "Actualizado en: ${habitacion.updated_at}")
+    Card(
+        modifier = Modifier
+            .padding(8.dp)
+            .fillMaxWidth()
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+        ) {
+            Text(text = "Número de habitación: ${habitacion.numero_habitacion}", style = MaterialTheme.typography.titleMedium)
+            Text(text = "Tipo: ${habitacion.tipo}", style = MaterialTheme.typography.bodyMedium)
+            Text(text = "Precio: ${habitacion.precio}", style = MaterialTheme.typography.bodyMedium)
+            Text(text = "Descripción: ${habitacion.descripcion}", style = MaterialTheme.typography.bodySmall)
+            Text(text = "Capacidad: ${habitacion.capacidad}", style = MaterialTheme.typography.bodySmall)
+            Text(text = "Características: ${habitacion.caracteristicas}", style = MaterialTheme.typography.bodySmall)
+            Text(text = "Disponibilidad: ${habitacion.disponibilidad}", style = MaterialTheme.typography.bodySmall)
+            Text(text = "Creado en: ${habitacion.created_at}", style = MaterialTheme.typography.bodySmall)
+            Text(text = "Actualizado en: ${habitacion.updated_at}", style = MaterialTheme.typography.bodySmall)
+        }
+    }
 }
 
 /*
