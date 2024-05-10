@@ -51,6 +51,10 @@ class HotelRepository(private val localds: HotelDatasource, private val remoteds
     suspend fun getLocalHabitacion(): Flow<List<Habitacion>> {
         return localds.getAllHabitaciones()
     }
+
+    suspend fun getRandomLocalHabitaciones(): List<Habitacion> {
+        return localds.getRandomHabitaciones()
+    }
 }
 
 

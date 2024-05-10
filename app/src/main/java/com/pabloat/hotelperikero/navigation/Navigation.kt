@@ -9,8 +9,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 
 import com.pabloat.hotelperikero.ui.views.ContactScreen
+import com.pabloat.hotelperikero.ui.views.HabitacionesScreen
 import com.pabloat.hotelperikero.ui.views.MainScreen
-import com.pabloat.hotelperikero.viewmodel.FireBaseViewModel
 import com.pabloat.hotelperikero.viewmodel.HotelViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -24,14 +24,18 @@ fun MainNavigation(
 
     val destinoInicial = Destinations.MainScreen.route
     val habitaciones = mainViewmodel.habitaciones.collectAsState().value
+    val randomHabitaciones = mainViewmodel.fetchRandomRooms()
     NavHost(navController = onNavController, startDestination = destinoInicial) {
         composable(Destinations.MainScreen.route) {
-            MainScreen(habitaciones, navHostController = onNavController,mainViewmodel)
+            MainScreen(navHostController = onNavController,mainViewmodel)
         }
-
 
         composable(Destinations.Contacto.route){
             ContactScreen(onNavController)
+        }
+
+        composable(Destinations.HabitacionesScreen.route){
+            HabitacionesScreen(habitaciones, navHostController = onNavController,mainViewmodel)
         }
     }
 }

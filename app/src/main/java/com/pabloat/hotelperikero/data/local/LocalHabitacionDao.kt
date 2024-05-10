@@ -15,5 +15,7 @@ interface LocalHabitacionDao {
     suspend fun insert(habitaciones: List<Habitacion>)
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(habitaciones: List<Habitacion>)
+    @Query("SELECT * FROM Habitacion ORDER BY RANDOM() LIMIT 5")
+    suspend fun getRandomHabitaciones(): List<Habitacion>
 
 }

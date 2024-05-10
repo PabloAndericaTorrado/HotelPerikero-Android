@@ -6,7 +6,7 @@ sealed class Destinations(val route: String) {
 
     object InitScreen : Destinations(route = "com.pabloat.GameHubConnect.ui.views.InitScreen")
 
-
+    object HabitacionesScreen : Destinations(route = "HabitacionesScreen")
     object Contacto : Destinations(route = "ContactScreen")
 
 }

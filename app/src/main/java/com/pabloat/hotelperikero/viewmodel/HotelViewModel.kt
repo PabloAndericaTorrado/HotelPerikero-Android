@@ -67,4 +67,27 @@ class HotelViewModel(private val repository: HotelRepository) : ViewModel() {
             _uiState.value = ScreenState.Success(rooms)
         }
     }
+
+    private val _randomHabitaciones = MutableStateFlow<List<Habitacion>>(emptyList())
+    val randomHabitaciones: StateFlow<List<Habitacion>> = _randomHabitaciones.asStateFlow()
+
+    // Cargar habitaciones aleatorias y actualizar el StateFlow
+    fun fetchRandomRooms() = viewModelScope.launch {
+        _uiState.value = ScreenState.Loading
+        try {
+            val rooms = repository.getRandomLocalHabitaciones()
+            if (rooms.isNotEmpty()) {
+                _randomHabitaciones.value = rooms
+                _uiState.value = ScreenState.Success(rooms)
+            } else {
+                _uiState.value = ScreenState.Error("No se encontraron habitaciones")
+            }
+        } catch (e: Exception) {
+            _uiState.value = ScreenState.Error(e.message ?: "Unknown error")
+        }
+    }
+
+
+
+
 }

@@ -41,4 +41,8 @@ class HotelDatasource (applicationContext: Context){
 
     }
 
+    suspend fun getRandomHabitaciones(): List<Habitacion> {
+        return habitacionDao.getRandomHabitaciones()
+    }
+
 }
