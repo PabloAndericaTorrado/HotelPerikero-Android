@@ -15,6 +15,9 @@ interface ApiService {
 
     @GET("servicios")
     suspend fun getServicios():ServiciosDTO
+
+    @GET("resenias")
+    suspend fun getResenias(): ReseniasDTO
 }
 
 

@@ -15,4 +15,9 @@ class RemoteHotelDataSource(private val apiService: ApiService) {
         val response = apiService.getServicios()
         return response.data
     }
+
+    suspend fun getResenias(): List<ReseniaDTO> {
+        val response = apiService.getResenias()
+        return response.data
+    }
 }

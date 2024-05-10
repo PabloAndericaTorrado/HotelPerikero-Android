@@ -13,6 +13,17 @@ class HotelDatasource (applicationContext: Context){
     private val habitacionDao:LocalHabitacionDao = db.habitacionDao()
     private val reservaDao: LocalReservaDao = db.reservaDao()
     private val servicioDao:LocalServicioDao = db.servicioDao()
+    private val reseniaDao: LocalReseniaDao = db.reseniaDao()
+
+    @OptIn(DelicateCoroutinesApi::class)
+    suspend fun getAllResenias(): Flow<List<Resenia>> {
+        return reseniaDao.getAll().stateIn(GlobalScope)
+    }
+
+    suspend fun saveResenia(resenias: List<Resenia>) {
+        reseniaDao.insertAll(resenias)
+        checkDatabase()
+    }
 
     @OptIn(DelicateCoroutinesApi::class)
     suspend fun getAllServicios(): Flow<List<Servicio>> {
@@ -47,9 +58,11 @@ class HotelDatasource (applicationContext: Context){
         val habitaciones = habitacionDao.getAll().first()
         val reservas = reservaDao.getAll().first()
         val servicios = servicioDao.getAll().first()
+        val resenias = reseniaDao.getAll().first()
         Log.d("DatabaseCheck", "Habitaciones en la base de datos: ${habitaciones.size}")
         Log.d("DatabaseCheck", "Reservas en la base de datos: ${reservas.size}")
         Log.d("DatabaseCheck", "Reservas en la base de datos: ${servicios.size}")
+        Log.d("DatabaseCheck", "Resenias en la base de datos: ${resenias.size}")
     }
 
     suspend fun getRandomHabitaciones(): List<Habitacion> {
