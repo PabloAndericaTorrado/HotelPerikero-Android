@@ -119,6 +119,26 @@ class HotelViewModel(private val repository: HotelRepository) : ViewModel() {
         }
     }
 
+    // Método para cargar servicios de la base de datos local
+    fun loadLocalServices() = viewModelScope.launch {
+        _uiState.value = ScreenState.Loading
+        try {
+            // Collecting from the flow and updating the state
+            repository.getLocalServicio().collect { localServices ->
+                _servicios.value = localServices
+                if (localServices.isNotEmpty()) {
+                    _uiState.value = ScreenState.SuccessServicios(localServices)
+                } else {
+                    _uiState.value = ScreenState.Error("No se encontraron servicios")
+                }
+            }
+        } catch (e: Exception) {
+            _uiState.value = ScreenState.Error("Error al cargar servicios locales: ${e.message}")
+        }
+    }
+
+
+
 
 
 
