@@ -1,20 +1,20 @@
 package com.pabloat.hotelperikero.ui.views
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.pabloat.hotelperikero.R
 import com.pabloat.hotelperikero.data.local.Habitacion
+import com.pabloat.hotelperikero.navigation.Destinations
 import com.pabloat.hotelperikero.viewmodel.HotelViewModel
 
 @Composable
@@ -23,13 +23,13 @@ fun MainScreen(
     mainViewModel: HotelViewModel
 ) {
     val rooms by mainViewModel.randomHabitaciones.collectAsState()
-    Scaffold(
-        topBar = { TopBarMain() }
-    ) { padding ->
+    Scaffold() { padding ->
         Column(
             modifier = Modifier.padding(padding)
         ) {
             RoomSectionMain(rooms = rooms)
+            Spacer(modifier = Modifier.height(16.dp))
+            ReserveButton(navHostController)
         }
     }
 }
@@ -48,7 +48,8 @@ fun TopBarMain() {
 
 @Composable
 fun RoomSectionMain(rooms: List<Habitacion>) {
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(modifier = Modifier.padding(16.dp).fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
         Text("Nuestras habitaciones mejor valoradas", style = MaterialTheme.typography.headlineSmall)
         Spacer(modifier = Modifier.height(10.dp))
         LazyRow {
@@ -78,7 +79,8 @@ fun RoomCardMain(room: Habitacion) {
                     .fillMaxWidth()
             )
             Text(room.tipo, style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 4.dp))
-            Text("Descripción: ${room.descripcion}", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(vertical = 4.dp))
+            Text(" ${room.descripcion}", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(vertical = 4.dp))
+            Text("Precio: ${room.precio}€/Noche", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(vertical = 4.dp))
             if (room.disponibilidad == 1) {
                 Button(onClick = { /* Acción */ }, modifier = Modifier.fillMaxWidth()) {
                     Text("Más información")
@@ -87,5 +89,19 @@ fun RoomCardMain(room: Habitacion) {
                 Text("No disponible", color = Color.Red, modifier = Modifier.padding(4.dp))
             }
         }
+    }
+}
+
+@Composable
+fun ReserveButton(navHostController: NavHostController) {
+    Button(
+        onClick = { navHostController.navigate(Destinations.HabitacionesScreen.route) },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 32.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+        shape = MaterialTheme.shapes.medium
+    ) {
+        Text("Reservar Habitaciones", style = MaterialTheme.typography.labelLarge.copy(color = Color.White))
     }
 }

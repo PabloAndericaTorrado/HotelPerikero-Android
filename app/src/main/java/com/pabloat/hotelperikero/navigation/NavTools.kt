@@ -27,7 +27,7 @@ import com.pabloat.hotelperikero.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainTopBar() {
-    val logo: Painter = painterResource(id = R.drawable.icono)
+    val logo: Painter = painterResource(id = R.drawable.logo)
 
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
@@ -44,7 +44,7 @@ fun MainTopBar() {
                         .size(32.dp)
                 )
                 Text(
-                    text = "GameHubConnect",
+                    text = "Hotel Perikero",
                     style = MaterialTheme.typography.titleLarge,
                     textAlign = TextAlign.Start,
                 )
