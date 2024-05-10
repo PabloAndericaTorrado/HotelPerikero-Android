@@ -66,6 +66,7 @@ fun MainApp() {
     // LaunchedEffect para cargar los datos solo una vez
     LaunchedEffect(true) {
         mainViewModel.fetchRooms()
+        mainViewModel.fetchReservas()
     }
 
     Scaffold(topBar = { MainTopBar() }) {

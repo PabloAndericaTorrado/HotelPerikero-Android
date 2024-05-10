@@ -9,6 +9,9 @@ interface ApiService {
 
     @GET("habitaciones")
     suspend fun getHabitaciones(): HabitacionesDTO
+
+    @GET("reservas")
+    suspend fun getReservas(): ReservasDTO
 }
 
 

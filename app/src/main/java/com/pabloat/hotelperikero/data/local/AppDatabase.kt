@@ -9,9 +9,10 @@ import androidx.room.RoomDatabase
  * AppDataBase es una clase que se encarga de gestionar la base de datos local.
  */
 
-@Database(entities = [Habitacion::class], version = 1)
+@Database(entities = [Habitacion::class,Reserva::class], version = 2)
 abstract class AppDataBase : RoomDatabase() {
     abstract fun habitacionDao(): LocalHabitacionDao
+    abstract fun reservaDao(): LocalReservaDao
 
     companion object {
         @Volatile

@@ -11,8 +11,17 @@ import kotlinx.coroutines.flow.stateIn
 class HotelDatasource (applicationContext: Context){
     private val db: AppDataBase = AppDataBase.getDatabase(applicationContext)
     private val habitacionDao:LocalHabitacionDao = db.habitacionDao()
+    private val reservaDao: LocalReservaDao = db.reservaDao()
 
+    @OptIn(DelicateCoroutinesApi::class)
+    suspend fun getAllReservas(): Flow<List<Reserva>> {
+        return reservaDao.getAll().stateIn(GlobalScope)
+    }
 
+    suspend fun saveReservas(reservas: List<Reserva>) {
+        reservaDao.insertAll(reservas)
+        checkDatabase()
+    }
     @OptIn(DelicateCoroutinesApi::class)
     suspend fun getAllHabitaciones(): Flow<List<Habitacion>> {
         return habitacionDao.getAll().stateIn(GlobalScope)
@@ -25,7 +34,11 @@ class HotelDatasource (applicationContext: Context){
 
     private suspend fun checkDatabase() {
         val habitaciones = habitacionDao.getAll().first()
+        val reservas = reservaDao.getAll().first()
         Log.d("DatabaseCheck", "Habitaciones en la base de datos: ${habitaciones.size}")
+        Log.d("DatabaseCheck", "Reservas en la base de datos: ${reservas.size}")
+
+
     }
 
 }
