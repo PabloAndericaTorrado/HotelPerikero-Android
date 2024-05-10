@@ -3,6 +3,7 @@ package com.pabloat.hotelperikero
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -23,12 +24,18 @@ import com.pabloat.hotelperikero.data.remote.RetrofitBuilder
 import com.pabloat.hotelperikero.viewmodel.HotelViewModel
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Card
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.rememberNavController
+import com.pabloat.hotelperikero.navigation.MainNavigation
+import com.pabloat.hotelperikero.navigation.MainTopBar
 
 class MainActivity : ComponentActivity() {
 
@@ -54,13 +61,39 @@ fun MainApp() {
     val localDataSource = remember { HotelDatasource(context) }
     val repository = remember { HotelRepository(localDataSource, remoteDataSource) }
     val mainViewModel = HotelViewModel(repository)
+    val navHostController = rememberNavController()
 
     // LaunchedEffect para cargar los datos solo una vez
     LaunchedEffect(true) {
         mainViewModel.fetchRooms()
     }
 
+    Scaffold(topBar = { MainTopBar() }) {
+        Column(
+            modifier = Modifier
+                .padding(it)
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Box(modifier = Modifier.weight(1f)) {
+                Image(
+                    painter = painterResource(id = R.drawable.inicio),
+                    contentDescription = "background",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+                MainNavigation(
+                    onNavController = navHostController,
+                    mainViewmodel = mainViewModel,
+                    context = context)
+            }
+        }
+    }
 
+
+}
+
+/*
 
     val habitacionesList by mainViewModel.habitaciones.collectAsState()
     LazyColumn(modifier = Modifier.fillMaxSize()) {
@@ -70,6 +103,9 @@ fun MainApp() {
     }
 }
 
+
+ */
+/*
 @Composable
 fun HabitacionItem(habitacion: Habitacion) {
     Card(
@@ -94,6 +130,8 @@ fun HabitacionItem(habitacion: Habitacion) {
         }
     }
 }
+
+ */
 
 /*
 @Composable
