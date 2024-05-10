@@ -12,6 +12,9 @@ interface ApiService {
 
     @GET("reservas")
     suspend fun getReservas(): ReservasDTO
+
+    @GET("servicios")
+    suspend fun getServicios():ServiciosDTO
 }
 
 

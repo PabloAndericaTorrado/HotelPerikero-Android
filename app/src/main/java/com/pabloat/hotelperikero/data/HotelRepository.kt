@@ -4,11 +4,34 @@ import android.util.Log
 import com.pabloat.hotelperikero.data.local.Habitacion;
 import com.pabloat.hotelperikero.data.local.HotelDatasource;
 import com.pabloat.hotelperikero.data.local.Reserva
+import com.pabloat.hotelperikero.data.local.Servicio
 import com.pabloat.hotelperikero.data.remote.RemoteHotelDataSource;
 
 import kotlinx.coroutines.flow.Flow;
 
 class HotelRepository(private val localds: HotelDatasource, private val remoteds: RemoteHotelDataSource) {
+
+
+    suspend fun getRemoteServicios():List<Servicio>{
+        val serviciosDTO = remoteds.getServicios()
+        if(serviciosDTO.isEmpty()){
+            Log.d("Repository", "No rooms fetched from API")
+            return emptyList()
+        }
+        val serviciosLocales = serviciosDTO.map { it.toServicio() }
+        Log.d("Repository", "Guardando Servicios locales")
+        localds.saveServicios(serviciosLocales)
+        Log.d("Repository", "Servicios")
+        return serviciosLocales
+    }
+
+    suspend fun saveServicios(servicios: List<Servicio>){
+        localds.saveServicios(servicios)
+    }
+
+    suspend fun getLocalServicio(): Flow<List<Servicio>> {
+        return localds.getAllServicios()
+    }
     suspend fun getRemoteReservas():List<Reserva>{
         val reservasDTO = remoteds.getReservas()
         if (reservasDTO.isEmpty()){

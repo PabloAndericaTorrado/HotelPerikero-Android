@@ -67,6 +67,7 @@ fun MainApp() {
     LaunchedEffect(true) {
         mainViewModel.fetchRooms()
         mainViewModel.fetchReservas()
+        mainViewModel.fetchServicios()
     }
 
     Scaffold(topBar = { MainTopBar() }) {
