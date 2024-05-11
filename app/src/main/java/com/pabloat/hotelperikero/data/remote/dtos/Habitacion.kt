@@ -1,7 +1,7 @@
-package com.pabloat.hotelperikero.data.remote
+package com.pabloat.hotelperikero.data.remote.dtos
 
 import com.google.gson.annotations.SerializedName
-import com.pabloat.hotelperikero.data.local.Habitacion
+import com.pabloat.hotelperikero.data.local.entities.Habitacion
 
 data class HabitacionesDTO(
     @SerializedName("data")

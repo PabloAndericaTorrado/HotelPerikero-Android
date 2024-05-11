@@ -1,5 +1,10 @@
 package com.pabloat.hotelperikero.data.remote
 
+import com.pabloat.hotelperikero.data.remote.dtos.HabitacionDTO
+import com.pabloat.hotelperikero.data.remote.dtos.ReseniaDTO
+import com.pabloat.hotelperikero.data.remote.dtos.ReservaDTO
+import com.pabloat.hotelperikero.data.remote.dtos.ServicioDTO
+
 class RemoteHotelDataSource(private val apiService: ApiService) {
     suspend fun getHabitaciones(): List<HabitacionDTO> {
         // Suponiendo que HabitacionesDTO envuelve la respuesta de la API que contiene la lista de habitaciones

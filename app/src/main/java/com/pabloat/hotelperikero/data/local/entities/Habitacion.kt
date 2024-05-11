@@ -1,4 +1,4 @@
-package com.pabloat.hotelperikero.data.local
+package com.pabloat.hotelperikero.data.local.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

@@ -1,5 +1,9 @@
 package com.pabloat.hotelperikero.data.remote
 
+import com.pabloat.hotelperikero.data.remote.dtos.HabitacionesDTO
+import com.pabloat.hotelperikero.data.remote.dtos.ReseniasDTO
+import com.pabloat.hotelperikero.data.remote.dtos.ReservasDTO
+import com.pabloat.hotelperikero.data.remote.dtos.ServiciosDTO
 import retrofit2.http.GET
 
 /**
@@ -14,7 +18,7 @@ interface ApiService {
     suspend fun getReservas(): ReservasDTO
 
     @GET("servicios")
-    suspend fun getServicios():ServiciosDTO
+    suspend fun getServicios(): ServiciosDTO
 
     @GET("resenias")
     suspend fun getResenias(): ReseniasDTO

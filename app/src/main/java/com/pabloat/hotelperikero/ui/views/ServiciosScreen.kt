@@ -4,8 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
-import com.pabloat.hotelperikero.data.local.Habitacion
-import com.pabloat.hotelperikero.data.local.Servicio
+import com.pabloat.hotelperikero.data.local.entities.Servicio
 import com.pabloat.hotelperikero.viewmodel.HotelViewModel
 
 

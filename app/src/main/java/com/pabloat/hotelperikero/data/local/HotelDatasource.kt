@@ -2,6 +2,14 @@ package com.pabloat.hotelperikero.data.local
 
 import android.content.Context
 import android.util.Log
+import com.pabloat.hotelperikero.data.local.dao.LocalHabitacionDao
+import com.pabloat.hotelperikero.data.local.dao.LocalReseniaDao
+import com.pabloat.hotelperikero.data.local.dao.LocalReservaDao
+import com.pabloat.hotelperikero.data.local.dao.LocalServicioDao
+import com.pabloat.hotelperikero.data.local.entities.Habitacion
+import com.pabloat.hotelperikero.data.local.entities.Resenia
+import com.pabloat.hotelperikero.data.local.entities.Reserva
+import com.pabloat.hotelperikero.data.local.entities.Servicio
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
@@ -10,9 +18,9 @@ import kotlinx.coroutines.flow.stateIn
 
 class HotelDatasource (applicationContext: Context){
     private val db: AppDataBase = AppDataBase.getDatabase(applicationContext)
-    private val habitacionDao:LocalHabitacionDao = db.habitacionDao()
+    private val habitacionDao: LocalHabitacionDao = db.habitacionDao()
     private val reservaDao: LocalReservaDao = db.reservaDao()
-    private val servicioDao:LocalServicioDao = db.servicioDao()
+    private val servicioDao: LocalServicioDao = db.servicioDao()
     private val reseniaDao: LocalReseniaDao = db.reseniaDao()
 
     @OptIn(DelicateCoroutinesApi::class)

@@ -4,10 +4,10 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pabloat.hotelperikero.data.HotelRepository
-import com.pabloat.hotelperikero.data.local.Habitacion
-import com.pabloat.hotelperikero.data.local.Resenia
-import com.pabloat.hotelperikero.data.local.Reserva
-import com.pabloat.hotelperikero.data.local.Servicio
+import com.pabloat.hotelperikero.data.local.entities.Habitacion
+import com.pabloat.hotelperikero.data.local.entities.Resenia
+import com.pabloat.hotelperikero.data.local.entities.Reserva
+import com.pabloat.hotelperikero.data.local.entities.Servicio
 import com.pabloat.hotelperikero.ui.util.ScreenState
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.delay

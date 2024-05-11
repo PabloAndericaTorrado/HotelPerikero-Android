@@ -9,7 +9,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
-import com.pabloat.hotelperikero.data.local.User
+import com.pabloat.hotelperikero.data.local.entities.User
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 

@@ -1,7 +1,7 @@
 package com.pabloat.hotelperikero.ui.util
 
-import com.pabloat.hotelperikero.data.local.Habitacion
-import com.pabloat.hotelperikero.data.local.Servicio
+import com.pabloat.hotelperikero.data.local.entities.Habitacion
+import com.pabloat.hotelperikero.data.local.entities.Servicio
 
 sealed class ScreenState {
     object Loading : ScreenState()

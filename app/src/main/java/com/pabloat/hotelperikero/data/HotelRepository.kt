@@ -1,14 +1,13 @@
 package com.pabloat.hotelperikero.data;
 
 import android.util.Log
-import com.pabloat.hotelperikero.data.local.Habitacion;
-import com.pabloat.hotelperikero.data.local.HotelDatasource;
-import com.pabloat.hotelperikero.data.local.Resenia
-import com.pabloat.hotelperikero.data.local.Reserva
-import com.pabloat.hotelperikero.data.local.Servicio
-import com.pabloat.hotelperikero.data.remote.RemoteHotelDataSource;
-
-import kotlinx.coroutines.flow.Flow;
+import com.pabloat.hotelperikero.data.local.HotelDatasource
+import com.pabloat.hotelperikero.data.local.entities.Habitacion
+import com.pabloat.hotelperikero.data.local.entities.Resenia
+import com.pabloat.hotelperikero.data.local.entities.Reserva
+import com.pabloat.hotelperikero.data.local.entities.Servicio
+import com.pabloat.hotelperikero.data.remote.RemoteHotelDataSource
+import kotlinx.coroutines.flow.Flow
 
 class HotelRepository(private val localds: HotelDatasource, private val remoteds: RemoteHotelDataSource) {
     suspend fun getRemoteResenias(): List<Resenia> {
