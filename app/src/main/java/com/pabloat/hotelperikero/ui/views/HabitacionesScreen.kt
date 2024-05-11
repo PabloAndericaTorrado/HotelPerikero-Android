@@ -77,9 +77,9 @@ fun RoomCard(habitacion: Habitacion) {
                     .height(180.dp)
                     .fillMaxWidth()
             )
-            Text("Habitación: ${habitacion.tipo}", style = MaterialTheme.typography.bodyLarge)
-            Text("Descripción: ${habitacion.descripcion}", style = MaterialTheme.typography.bodySmall)
-            Text("Precio: ${habitacion.precio}€", style = MaterialTheme.typography.bodySmall)
+            Text(habitacion.tipo, style = MaterialTheme.typography.bodyLarge)
+            Text(habitacion.descripcion, style = MaterialTheme.typography.bodySmall)
+            Text("${habitacion.precio}€/Noche", style = MaterialTheme.typography.bodySmall)
             if (habitacion.disponibilidad == 1) {
                 Button(onClick = { /* Acción, por ejemplo, navegar a detalles */ }) {
                     Text("Reservar")

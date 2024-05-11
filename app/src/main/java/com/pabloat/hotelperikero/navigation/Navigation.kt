@@ -25,7 +25,6 @@ fun MainNavigation(
 
     val destinoInicial = Destinations.MainScreen.route
     val habitaciones = mainViewmodel.habitaciones.collectAsState().value
-    val servicios = mainViewmodel.servicios.collectAsState().value
     val randomHabitaciones = mainViewmodel.fetchRandomRooms() // NO LA BORREIS SI SE USA
 
     NavHost(navController = onNavController, startDestination = destinoInicial) {
@@ -42,7 +41,7 @@ fun MainNavigation(
         }
 
         composable(Destinations.ServiciosScreen.route){
-            ServiciosScreen(servicios, navHostController = onNavController,mainViewmodel)
+            ServiciosScreen(navHostController = onNavController,mainViewmodel)
         }
     }
 }

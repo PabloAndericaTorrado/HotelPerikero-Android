@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -61,19 +62,21 @@ fun MainScreen(
             WelcomeSection(navHostController)
             RoomSectionMain(rooms = rooms)
             Spacer(modifier = Modifier.height(16.dp))
-            ServiceSectionMain(servicios = servicios)
+            ServiceSectionMain(servicios = servicios,navHostController = navHostController)
+            FooterSection(navHostController)  // Llamada al nuevo Composable para el pie de página
 
         }
     }
 }
 
 @Composable
-fun ServiceSectionMain(servicios: List<Servicio>) {
+fun ServiceSectionMain(servicios: List<Servicio>,navHostController: NavHostController) {
     Column(modifier = Modifier
         .padding(16.dp)
         .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
         Text("¡Todos Nuestros Servicios!", style = MaterialTheme.typography.headlineSmall)
+        Text("¡Toca Aquí Para Ver Más!", style = MaterialTheme.typography.bodySmall, modifier = Modifier.clickable { navHostController.navigate(Destinations.ServiciosScreen.route) },color = Color.Blue)
         Spacer(modifier = Modifier.height(10.dp))
         LazyRow {
             items(servicios) { servicio ->
@@ -92,7 +95,9 @@ fun ServiceCardMain(servicio: Servicio) {
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
-        Column {
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .fillMaxWidth(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
             Image(
                 painter = painterResource(id = getServiceImageResource(servicio.id)), // Necesitas implementar esta función
                 contentDescription = "Imagen del servicio ${servicio.descripcion}",
@@ -105,16 +110,6 @@ fun ServiceCardMain(servicio: Servicio) {
                 servicio.nombre,
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(top = 4.dp)
-            )
-            Text(
-                "Descripción: ${servicio.descripcion}",
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(vertical = 4.dp)
-            )
-            Text(
-                "Precio: ${servicio.precio}€",
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(vertical = 4.dp)
             )
         }
     }
@@ -214,6 +209,26 @@ fun RoomCardMain(room: Habitacion) {
             } else {
                 Text("No disponible", color = Color.Red, modifier = Modifier.padding(4.dp))
             }
+        }
+    }
+}
+
+@Composable
+fun FooterSection(navHostController: NavHostController) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("Contacto", style = MaterialTheme.typography.titleMedium, color = Color.Blue)
+        Text("Teléfono: +123 456 7890", style = MaterialTheme.typography.bodyMedium)
+        Text("Email: info@perikerohotel.com", style = MaterialTheme.typography.bodyMedium)
+        Text("Dirección: C. Estébanez Calderón, 10, Marbella", style = MaterialTheme.typography.bodyMedium)
+        Spacer(modifier = Modifier.height(10.dp))
+        Button(onClick = { navHostController.navigate(Destinations.Contacto.route) }, colors = ButtonDefaults.buttonColors()
+        ){
+            Text("Más Información", color = Color.White)
         }
     }
 }
