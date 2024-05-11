@@ -41,7 +41,7 @@ fun MainNavigation(
             HabitacionesScreen(habitaciones, navHostController = onNavController,mainViewmodel)
         }
 
-        composable(Destinations.HabitacionesScreen.route){
+        composable(Destinations.ServiciosScreen.route){
             ServiciosScreen(servicios, navHostController = onNavController,mainViewmodel)
         }
     }

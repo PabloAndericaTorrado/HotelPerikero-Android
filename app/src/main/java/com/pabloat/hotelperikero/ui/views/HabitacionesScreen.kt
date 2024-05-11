@@ -42,40 +42,16 @@ import com.pabloat.hotelperikero.viewmodel.HotelViewModel
 @Composable
 fun HabitacionesScreen(habitaciones: List<Habitacion>, navHostController: NavHostController, mainViewModel: HotelViewModel) {
     Scaffold(
-        topBar = { TopBar() },
         content = { padding ->
-            Column(modifier = Modifier.padding(padding)) {
-                Text("Nuestras habitaciones", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(16.dp))
+            Column(modifier = Modifier.padding(padding).fillMaxWidth().fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+                androidx.compose.material3.Text(
+                    "¡Nuestras Habitaciones!",
+                    style = MaterialTheme.typography.headlineSmall
+                )
                 RoomList(habitaciones = habitaciones)
             }
         }
     )
-}
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TopBar() {
-    TopAppBar(
-        title = { Text("Perikero Hotel", color = Color.Blue) },
-        Modifier.background(Color.Black),
-
-        )
-}
-
-@Composable
-fun RoomSection(rooms: List<State<List<Habitacion>>>) { // Asume que Room es una clase con los datos necesarios
-    Column(modifier = Modifier.padding(16.dp)) {
-        Text("Nuestras habitaciones mejor valoradas", style = MaterialTheme.typography.titleMedium)
-        Spacer(modifier = Modifier.height(10.dp))
-        Row(
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            rooms.forEach { room ->
-                //RoomCard(room)
-            }
-        }
-    }
 }
 
 @Composable
@@ -175,6 +151,3 @@ fun ServiceCard(service: Service) {
 }
 
  */
-
-
-
