@@ -7,6 +7,7 @@ import com.pabloat.hotelperikero.data.local.entities.Resenia
 import com.pabloat.hotelperikero.data.local.entities.Reserva
 import com.pabloat.hotelperikero.data.local.entities.ReservaEventos
 import com.pabloat.hotelperikero.data.local.entities.Servicio
+import com.pabloat.hotelperikero.data.local.entities.ServicioEvento
 import com.pabloat.hotelperikero.data.remote.RemoteHotelDataSource
 import kotlinx.coroutines.flow.Flow
 
@@ -14,6 +15,29 @@ class HotelRepository(
     private val localds: HotelDatasource,
     private val remoteds: RemoteHotelDataSource
 ) {
+    suspend fun getRemoteServiciosEvento(): List<ServicioEvento> {
+        val servicioEventoDTO = remoteds.getServiciosEventos()
+        if (servicioEventoDTO.isEmpty()) {
+            Log.d("Repository", "No rooms fetched from API")
+            return emptyList()
+        }
+        val serviciosEventosLocales = servicioEventoDTO.map { it.toServicioEvento() }
+        Log.d("Repository", "Guardando Servicios locales")
+        localds.saveServicioEventos(serviciosEventosLocales)
+        Log.d("Repository", "Servicios")
+        return serviciosEventosLocales
+    }
+
+    suspend fun saveServicioEvento(servicios: List<ServicioEvento>) {
+        localds.saveServicioEventos(servicios)
+    }
+
+    suspend fun getLocalServiciosEventos(): Flow<List<ServicioEvento>> {
+        return localds.getAllServiciosEvento()
+    }
+
+
+// ------------------------------ ReservasEventos --------------------------------
 
     suspend fun getRemoteReservasEventos(): List<ReservaEventos> {
         val reservasEventosDTO = remoteds.getReservaEventos()

@@ -5,6 +5,7 @@ import com.pabloat.hotelperikero.data.remote.dtos.ReseniaDTO
 import com.pabloat.hotelperikero.data.remote.dtos.ReservaDTO
 import com.pabloat.hotelperikero.data.remote.dtos.ReservaEventoDTO
 import com.pabloat.hotelperikero.data.remote.dtos.ServicioDTO
+import com.pabloat.hotelperikero.data.remote.dtos.ServicioEventoDTO
 
 class RemoteHotelDataSource(private val apiService: ApiService) {
     suspend fun getHabitaciones(): List<HabitacionDTO> {
@@ -31,4 +32,11 @@ class RemoteHotelDataSource(private val apiService: ApiService) {
         val response = apiService.getReservaEventos()
         return response.data
     }
+
+    suspend fun getServiciosEventos(): List<ServicioEventoDTO> {
+        val response = apiService.getServiciosEvento()
+        return response.data
+    }
+
+
 }

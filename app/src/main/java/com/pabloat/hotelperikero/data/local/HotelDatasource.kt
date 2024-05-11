@@ -7,11 +7,13 @@ import com.pabloat.hotelperikero.data.local.dao.LocalReseniaDao
 import com.pabloat.hotelperikero.data.local.dao.LocalReservaDao
 import com.pabloat.hotelperikero.data.local.dao.LocalReservaEventosDao
 import com.pabloat.hotelperikero.data.local.dao.LocalServicioDao
+import com.pabloat.hotelperikero.data.local.dao.LocalServicioEventoDao
 import com.pabloat.hotelperikero.data.local.entities.Habitacion
 import com.pabloat.hotelperikero.data.local.entities.Resenia
 import com.pabloat.hotelperikero.data.local.entities.Reserva
 import com.pabloat.hotelperikero.data.local.entities.ReservaEventos
 import com.pabloat.hotelperikero.data.local.entities.Servicio
+import com.pabloat.hotelperikero.data.local.entities.ServicioEvento
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
@@ -25,6 +27,17 @@ class HotelDatasource (applicationContext: Context){
     private val servicioDao: LocalServicioDao = db.servicioDao()
     private val reseniaDao: LocalReseniaDao = db.reseniaDao()
     private val reservaEventosDao: LocalReservaEventosDao = db.reservaEventosDao()
+    private val servicioEventoDao: LocalServicioEventoDao = db.servicioEventoDao()
+
+    @OptIn(DelicateCoroutinesApi::class)
+    suspend fun getAllServiciosEvento(): Flow<List<ServicioEvento>> {
+        return servicioEventoDao.getAll().stateIn(GlobalScope)
+    }
+
+    suspend fun saveServicioEventos(servicioEvento: List<ServicioEvento>) {
+        servicioEventoDao.insertAll(servicioEvento)
+        checkDatabase()
+    }
 
     @OptIn(DelicateCoroutinesApi::class)
     suspend fun getAllReservasEventos(): Flow<List<ReservaEventos>> {
@@ -80,6 +93,8 @@ class HotelDatasource (applicationContext: Context){
         val reservas = reservaDao.getAll().first()
         val servicios = servicioDao.getAll().first()
         val resenias = reseniaDao.getAll().first()
+        val reservaEventos = reservaEventosDao.getAll().first()
+        val serviciosEventos = servicioEventoDao.getAll().first()
         Log.d("DatabaseCheck", "Habitaciones en la base de datos: ${habitaciones.size}")
         Log.d("DatabaseCheck", "Reservas en la base de datos: ${reservas.size}")
         Log.d("DatabaseCheck", "Reservas en la base de datos: ${servicios.size}")
