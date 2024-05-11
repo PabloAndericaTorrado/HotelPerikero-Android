@@ -64,11 +64,6 @@ fun TopBar() {
 }
 
 @Composable
-fun Header() {
-    // Aquí puedes poner una imagen de fondo con texto encima como en tu sitio web
-}
-
-@Composable
 fun RoomSection(rooms: List<State<List<Habitacion>>>) { // Asume que Room es una clase con los datos necesarios
     Column(modifier = Modifier.padding(16.dp)) {
         Text("Nuestras habitaciones mejor valoradas", style = MaterialTheme.typography.titleMedium)

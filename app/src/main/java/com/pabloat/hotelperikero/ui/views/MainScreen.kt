@@ -57,7 +57,7 @@ fun MainScreen(
 fun ServiceSectionMain(servicios: List<Servicio>) {
     Column(modifier = Modifier.padding(16.dp).fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-        Text("Todos Nuestros Servicios", style = MaterialTheme.typography.headlineSmall)
+        Text("¡Todos Nuestros Servicios!", style = MaterialTheme.typography.headlineSmall)
         Spacer(modifier = Modifier.height(10.dp))
         LazyRow {
             items(servicios) { servicio ->
@@ -96,13 +96,10 @@ fun ServiceCardMain(servicio: Servicio) {
                 modifier = Modifier.padding(vertical = 4.dp)
             )
             Text(
-                "Precio: ${servicio.precio}",
+                "Precio: ${servicio.precio}€",
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(vertical = 4.dp)
             )
-            Button(onClick = { /* Acción */ }, modifier = Modifier.fillMaxWidth()) {
-                Text("Más información")
-            }
         }
     }
 }
@@ -110,17 +107,17 @@ fun ServiceCardMain(servicio: Servicio) {
 fun getServiceImageResource(servicioid: Int?): Int {
     val imageIndex = ((servicioid?.minus(1))?.rem(10) ?: 1) + 1  // Esto calcula un índice del 1 al 10 repetido
     return when (imageIndex) {
-        1 -> R.drawable.habitacion_1
-        2 -> R.drawable.habitacion_2
-        3 -> R.drawable.habitacion_3
-        4 -> R.drawable.habitacion_4
-        5 -> R.drawable.habitacion_5
-        6 -> R.drawable.habitacion_6
-        7 -> R.drawable.habitacion_7
-        8 -> R.drawable.habitacion_8
-        9 -> R.drawable.habitacion_9
-        10 -> R.drawable.habitacion_10
-        else -> R.drawable.habitacion_1 // Un recurso por defecto, en caso de error en el cálculo
+        1 -> R.drawable.servicio_1
+        2 -> R.drawable.servicio_2
+        3 -> R.drawable.servicio_3
+        4 -> R.drawable.servicio_4
+        5 -> R.drawable.servicio_5
+        6 -> R.drawable.servicio_6
+        7 -> R.drawable.servicio_7
+        8 -> R.drawable.servicio_8
+        9 -> R.drawable.servicio_9
+        10 -> R.drawable.servicio_10
+        else -> R.drawable.servicio_1 // Un recurso por defecto, en caso de error en el cálculo
     }
 }
 
@@ -163,7 +160,7 @@ fun RoomSectionMain(rooms: List<Habitacion>) {
         .padding(16.dp)
         .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-        Text("Nuestras habitaciones mejor valoradas", style = MaterialTheme.typography.headlineSmall)
+        Text("¡Nuestras Mejores Habitaciones!", style = MaterialTheme.typography.headlineSmall)
         Spacer(modifier = Modifier.height(10.dp))
         LazyRow {
             items(rooms) { room ->
