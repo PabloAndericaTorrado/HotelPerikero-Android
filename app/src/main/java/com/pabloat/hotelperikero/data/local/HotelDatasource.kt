@@ -5,10 +5,12 @@ import android.util.Log
 import com.pabloat.hotelperikero.data.local.dao.LocalHabitacionDao
 import com.pabloat.hotelperikero.data.local.dao.LocalReseniaDao
 import com.pabloat.hotelperikero.data.local.dao.LocalReservaDao
+import com.pabloat.hotelperikero.data.local.dao.LocalReservaEventosDao
 import com.pabloat.hotelperikero.data.local.dao.LocalServicioDao
 import com.pabloat.hotelperikero.data.local.entities.Habitacion
 import com.pabloat.hotelperikero.data.local.entities.Resenia
 import com.pabloat.hotelperikero.data.local.entities.Reserva
+import com.pabloat.hotelperikero.data.local.entities.ReservaEventos
 import com.pabloat.hotelperikero.data.local.entities.Servicio
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -22,6 +24,17 @@ class HotelDatasource (applicationContext: Context){
     private val reservaDao: LocalReservaDao = db.reservaDao()
     private val servicioDao: LocalServicioDao = db.servicioDao()
     private val reseniaDao: LocalReseniaDao = db.reseniaDao()
+    private val reservaEventosDao: LocalReservaEventosDao = db.reservaEventosDao()
+
+    @OptIn(DelicateCoroutinesApi::class)
+    suspend fun getAllReservasEventos(): Flow<List<ReservaEventos>> {
+        return reservaEventosDao.getAll().stateIn(GlobalScope)
+    }
+
+    suspend fun saveReservasEventos(reservaEventos: List<ReservaEventos>) {
+        reservaEventosDao.insertAll(reservaEventos)
+        checkDatabase()
+    }
 
     @OptIn(DelicateCoroutinesApi::class)
     suspend fun getAllResenias(): Flow<List<Resenia>> {

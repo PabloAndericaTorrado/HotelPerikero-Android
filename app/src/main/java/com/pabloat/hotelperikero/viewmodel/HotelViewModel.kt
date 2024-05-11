@@ -7,6 +7,7 @@ import com.pabloat.hotelperikero.data.HotelRepository
 import com.pabloat.hotelperikero.data.local.entities.Habitacion
 import com.pabloat.hotelperikero.data.local.entities.Resenia
 import com.pabloat.hotelperikero.data.local.entities.Reserva
+import com.pabloat.hotelperikero.data.local.entities.ReservaEventos
 import com.pabloat.hotelperikero.data.local.entities.Servicio
 import com.pabloat.hotelperikero.ui.util.ScreenState
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -30,8 +31,8 @@ class HotelViewModel(private val repository: HotelRepository) : ViewModel() {
     private val _resenias = MutableStateFlow<List<Resenia>>(emptyList())
     val resenias: StateFlow<List<Resenia>> = _resenias.asStateFlow()
 
-
-
+    private val _reservasEventos = MutableStateFlow<List<ReservaEventos>>(emptyList())
+    val reservasEventos: StateFlow<List<ReservaEventos>> = _reservasEventos.asStateFlow()
 
     private val _uiState: MutableStateFlow<ScreenState> = MutableStateFlow(ScreenState.Loading)
 
@@ -39,6 +40,16 @@ class HotelViewModel(private val repository: HotelRepository) : ViewModel() {
         _uiState.value =
             ScreenState.Error("Ha ocurrido un error, revise su conexión a internet o inténtelo de nuevo más tarde")
     }
+    fun fetchReservasEventos() = viewModelScope.launch {
+        _uiState.value = ScreenState.Loading
+        try {
+            val reservaEventos = repository.getRemoteReservasEventos()
+            _reservasEventos.value = reservaEventos
+        } catch (e: Exception) {
+            _uiState.value = ScreenState.Error(e.message ?: "Unknown error")
+        }
+    }
+
 
     fun fetchResenias() = viewModelScope.launch {
         _uiState.value = ScreenState.Loading

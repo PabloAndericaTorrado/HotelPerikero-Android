@@ -61,6 +61,7 @@ fun MainApp() {
         mainViewModel.fetchReservas()
         mainViewModel.fetchServicios()
         mainViewModel.fetchResenias()
+        mainViewModel.fetchReservasEventos()
     }
 
     Scaffold(topBar = { MainTopBar() }) {

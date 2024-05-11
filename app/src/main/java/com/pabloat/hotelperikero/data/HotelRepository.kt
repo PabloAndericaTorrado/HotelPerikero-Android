@@ -5,11 +5,40 @@ import com.pabloat.hotelperikero.data.local.HotelDatasource
 import com.pabloat.hotelperikero.data.local.entities.Habitacion
 import com.pabloat.hotelperikero.data.local.entities.Resenia
 import com.pabloat.hotelperikero.data.local.entities.Reserva
+import com.pabloat.hotelperikero.data.local.entities.ReservaEventos
 import com.pabloat.hotelperikero.data.local.entities.Servicio
 import com.pabloat.hotelperikero.data.remote.RemoteHotelDataSource
 import kotlinx.coroutines.flow.Flow
 
-class HotelRepository(private val localds: HotelDatasource, private val remoteds: RemoteHotelDataSource) {
+class HotelRepository(
+    private val localds: HotelDatasource,
+    private val remoteds: RemoteHotelDataSource
+) {
+
+    suspend fun getRemoteReservasEventos(): List<ReservaEventos> {
+        val reservasEventosDTO = remoteds.getReservaEventos()
+        if (reservasEventosDTO.isEmpty()) {
+            Log.d("Repository", "No rooms fetched from API")
+            return emptyList()
+        }
+        val reservasLocales = reservasEventosDTO.map { it.toReservaEventos() }
+        Log.d("Repository", "Guardando Servicios locales")
+        localds.saveReservasEventos(reservasLocales)
+        Log.d("Repository", "Servicios")
+        return reservasLocales
+    }
+
+    suspend fun saveReservaEvento(reservas: List<ReservaEventos>) {
+        localds.saveReservasEventos(reservas)
+    }
+
+    suspend fun getLocalReservaEvento(): Flow<List<ReservaEventos>> {
+        return localds.getAllReservasEventos()
+    }
+
+
+// ------------------------------ Resenias --------------------------------
+
     suspend fun getRemoteResenias(): List<Resenia> {
         val reseniasDTO = remoteds.getResenias()
         if (reseniasDTO.isEmpty()) {
@@ -31,9 +60,11 @@ class HotelRepository(private val localds: HotelDatasource, private val remoteds
         return localds.getAllResenias()
     }
 
-    suspend fun getRemoteServicios():List<Servicio>{
+// ------------------------------ Servicios --------------------------------
+
+    suspend fun getRemoteServicios(): List<Servicio> {
         val serviciosDTO = remoteds.getServicios()
-        if(serviciosDTO.isEmpty()){
+        if (serviciosDTO.isEmpty()) {
             Log.d("Repository", "No rooms fetched from API")
             return emptyList()
         }
@@ -44,16 +75,18 @@ class HotelRepository(private val localds: HotelDatasource, private val remoteds
         return serviciosLocales
     }
 
-    suspend fun saveServicios(servicios: List<Servicio>){
+    suspend fun saveServicios(servicios: List<Servicio>) {
         localds.saveServicios(servicios)
     }
 
     suspend fun getLocalServicio(): Flow<List<Servicio>> {
         return localds.getAllServicios()
     }
-    suspend fun getRemoteReservas():List<Reserva>{
+
+    // ------------------------------ Reservas --------------------------------
+    suspend fun getRemoteReservas(): List<Reserva> {
         val reservasDTO = remoteds.getReservas()
-        if (reservasDTO.isEmpty()){
+        if (reservasDTO.isEmpty()) {
             Log.d("Repository", "No rooms fetched from API")
             return emptyList()
         }
@@ -64,14 +97,15 @@ class HotelRepository(private val localds: HotelDatasource, private val remoteds
         return reservasLocales
     }
 
-    suspend fun saveReservas(reservas: List<Reserva>){
+    suspend fun saveReservas(reservas: List<Reserva>) {
         localds.saveReservas(reservas)
     }
+
     suspend fun getLocalReserva(): Flow<List<Reserva>> {
         return localds.getAllReservas()
     }
 
-
+    // ------------------------------ Habitaciones --------------------------------
     suspend fun getRemoteHabitaciones(): List<Habitacion> {
         val habitacionesDTO = remoteds.getHabitaciones()
         if (habitacionesDTO.isEmpty()) {
