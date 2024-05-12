@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import com.pabloat.hotelperikero.ui.views.ContactScreen
 import com.pabloat.hotelperikero.ui.views.HabitacionesScreen
 import com.pabloat.hotelperikero.ui.views.MainScreen
+import com.pabloat.hotelperikero.ui.views.ReseniasScreen
 import com.pabloat.hotelperikero.ui.views.ServiciosScreen
 import com.pabloat.hotelperikero.viewmodel.HotelViewModel
 
@@ -42,6 +43,10 @@ fun MainNavigation(
 
         composable(Destinations.ServiciosScreen.route){
             ServiciosScreen(navHostController = onNavController,mainViewmodel)
+        }
+
+        composable(Destinations.ReseniasScreen.route){
+            ReseniasScreen(navHostController = onNavController,mainViewmodel)
         }
     }
 }
