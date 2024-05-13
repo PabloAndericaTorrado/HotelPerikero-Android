@@ -184,6 +184,10 @@ class HotelRepository(
         return localds.getRandomHabitaciones()
     }
 
+    suspend fun getHabitacionById(id: Int?): Habitacion? {
+        return localds.getHabitacionById(id)
+    }
+
 
 }
 

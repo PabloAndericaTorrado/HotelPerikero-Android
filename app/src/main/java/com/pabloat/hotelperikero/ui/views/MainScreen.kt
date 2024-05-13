@@ -1,8 +1,6 @@
 package com.pabloat.hotelperikero.ui.views
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -69,7 +66,11 @@ fun MainScreen(
 
         ) {
             WelcomeSection(navHostController)
-            RoomSectionMain(rooms = rooms, navHostController = navHostController)
+            RoomSectionMain(
+                rooms = rooms,
+                navHostController = navHostController,
+                mainViewModel = mainViewModel
+            )
             Spacer(modifier = Modifier.height(16.dp))
             ServiceSectionMain(servicios = servicios,navHostController = navHostController)
             EspacioSectionMain(navHostController = navHostController, mainViewModel = mainViewModel,espacios = espacios)
@@ -84,8 +85,8 @@ fun ServiceSectionMain(servicios: List<Servicio>,navHostController: NavHostContr
     val LightBlue = Color(173, 216, 230)  // Un ejemplo de light blue
 
     Column(modifier = Modifier
-        .padding(16.dp)
-        .fillMaxWidth(),
+        .fillMaxWidth()
+        .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
         Text("¡Todos Nuestros Servicios!", style = MaterialTheme.typography.headlineSmall, color = Color.White)
         Text("¡Toca Aquí Para Ver Más!", modifier = Modifier.clickable { navHostController.navigate(Destinations.ServiciosScreen.route) }, color = Color.White)
@@ -172,7 +173,11 @@ fun WelcomeSection(navHostController: NavHostController) {
 }
 
 @Composable
-fun RoomSectionMain(rooms: List<Habitacion>,navHostController: NavHostController) {
+fun RoomSectionMain(
+    rooms: List<Habitacion>,
+    navHostController: NavHostController,
+    mainViewModel: HotelViewModel
+) {
     Column(modifier = Modifier
         .padding(16.dp)
         .fillMaxWidth(),
@@ -182,18 +187,18 @@ fun RoomSectionMain(rooms: List<Habitacion>,navHostController: NavHostController
         Spacer(modifier = Modifier.height(10.dp))
         LazyRow {
             items(rooms) { room ->
-                RoomCardMain(room)
+                RoomCardMain(room, navHostController, mainViewModel = mainViewModel)
             }
         }
     }
 }
 
 @Composable
-fun RoomCardMain(room: Habitacion) {
+fun RoomCardMain(room: Habitacion, nav: NavHostController, mainViewModel: HotelViewModel) {
     Card(
         modifier = Modifier
             .padding(10.dp)
-            .width(200.dp),
+            .width(200.dp)
     ) {
         Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
             Image(
@@ -208,7 +213,11 @@ fun RoomCardMain(room: Habitacion) {
             Text(" ${room.descripcion}", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(vertical = 4.dp),color = Color.Black)
             Text("Precio: ${room.precio}€/Noche", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(vertical = 4.dp),color = Color.Black)
             if (room.disponibilidad == 1) {
-                Button(onClick = { /* Acción */ }, modifier = Modifier.fillMaxWidth()) {
+                Button(onClick = {
+                    nav.navigate(Destinations.HabitacionDetalleScreen.route); mainViewModel.selectHabitacionId(
+                    room.id
+                )
+                }, modifier = Modifier.fillMaxWidth()) {
                     Text("Más información")
                 }
             } else {

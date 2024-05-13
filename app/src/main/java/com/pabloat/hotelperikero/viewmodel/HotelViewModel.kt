@@ -194,6 +194,36 @@ class HotelViewModel(private val repository: HotelRepository) : ViewModel() {
         }
     }
 
+    private var HabitacionId: Int? = null
+
+
+    suspend fun getHabitacionByIdFlow(id: Int?): Habitacion? {
+        return repository.getHabitacionById(id)
+    }
+
+    var habitacionssss: Habitacion? = null
+
+    fun getHabitacionById(id: Int?): Habitacion? {
+        viewModelScope.launch {
+            HabitacionId = id
+            val habitacion = getHabitacionByIdFlow(id)
+            habitacionssss = habitacion
+            Log.d("VM", "Habitación obtenida: $habitacion")
+        }
+        return habitacionssss
+    }
+
+    private val _selectedHabitacionId = MutableStateFlow<Int?>(null)
+    val selectedHabitacionId = _selectedHabitacionId.asStateFlow()
+
+    fun selectHabitacionId(id: Int?) {
+        _selectedHabitacionId.value = id
+    }
+
+
+
+
+
 
 
 

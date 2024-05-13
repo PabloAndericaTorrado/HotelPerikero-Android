@@ -1,6 +1,7 @@
 package com.pabloat.hotelperikero.navigation
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -10,6 +11,7 @@ import androidx.navigation.compose.composable
 
 import com.pabloat.hotelperikero.ui.views.ContactScreen
 import com.pabloat.hotelperikero.ui.views.EspaciosScreen
+import com.pabloat.hotelperikero.ui.views.HabitacionDetalleScreen
 import com.pabloat.hotelperikero.ui.views.HabitacionesScreen
 import com.pabloat.hotelperikero.ui.views.MainScreen
 import com.pabloat.hotelperikero.ui.views.ReseniasScreen
@@ -27,6 +29,8 @@ fun MainNavigation(
 
     val destinoInicial = Destinations.MainScreen.route
     val habitaciones = mainViewmodel.habitaciones.collectAsState().value
+    val id = mainViewmodel.selectedHabitacionId.collectAsState().value
+    Log.d("Habitacion ID", "ID: $id")
     val randomHabitaciones = mainViewmodel.fetchRandomRooms() // NO LA BORREIS SI SE USA
 
     NavHost(navController = onNavController, startDestination = destinoInicial) {
@@ -52,6 +56,13 @@ fun MainNavigation(
 
         composable(Destinations.EspaciosScreen.route){
             EspaciosScreen(navHostController = onNavController,mainViewmodel)
+        }
+
+        composable(Destinations.HabitacionDetalleScreen.route) {
+            HabitacionDetalleScreen(
+                navHostController = onNavController, viewModel = mainViewmodel,
+                habitacionId = id
+            )
         }
     }
 }

@@ -7,6 +7,7 @@ import androidx.room.Query
 import com.pabloat.hotelperikero.data.local.entities.Habitacion
 import kotlinx.coroutines.flow.Flow
 
+
 @Dao
 interface LocalHabitacionDao {
     @Query("SELECT * FROM Habitacion")
@@ -18,5 +19,9 @@ interface LocalHabitacionDao {
     suspend fun insertAll(habitaciones: List<Habitacion>)
     @Query("SELECT * FROM Habitacion ORDER BY RANDOM() LIMIT 5")
     suspend fun getRandomHabitaciones(): List<Habitacion>
+
+    @Query("SELECT * FROM Habitacion WHERE id = :id")
+    suspend fun getHabitacionById(id: Int?): Habitacion
+
 
 }

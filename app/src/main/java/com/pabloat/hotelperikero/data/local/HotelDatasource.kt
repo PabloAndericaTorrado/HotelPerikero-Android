@@ -102,6 +102,10 @@ class HotelDatasource (applicationContext: Context){
         checkDatabase() // Llamar después de guardar
     }
 
+    suspend fun getHabitacionById(id: Int?): Habitacion? {
+        return habitacionDao.getHabitacionById(id)
+    }
+
     private suspend fun checkDatabase() {
         val habitaciones = habitacionDao.getAll().first()
         val reservas = reservaDao.getAll().first()
