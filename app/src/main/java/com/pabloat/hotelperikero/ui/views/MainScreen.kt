@@ -218,7 +218,7 @@ fun RoomCardMain(room: Habitacion, nav: NavHostController, mainViewModel: HotelV
                     room.id
                 )
                 }, modifier = Modifier.fillMaxWidth()) {
-                    Text("Más información")
+                    Text("Ir a la Habitación")
                 }
             } else {
                 Text("No disponible", color = Color.Red, modifier = Modifier.padding(4.dp))
