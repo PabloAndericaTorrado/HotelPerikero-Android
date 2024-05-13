@@ -14,8 +14,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -36,6 +41,27 @@ import com.pabloat.hotelperikero.viewmodel.HotelViewModel
 fun EspaciosScreen(navHostController: NavHostController, mainViewModel: HotelViewModel) {
    val espacios = mainViewModel.espacios.collectAsState().value
     Scaffold(
+        topBar = {
+            TopAppBar(
+                backgroundColor = Color.Gray,
+                title = {
+                    androidx.compose.material3.Text(
+                        "¡Nuestros Espacios!",
+                        color = Color.White,
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { navHostController.popBackStack() }) {
+                        Icon(
+                            Icons.Filled.ArrowBack,
+                            contentDescription = "Regresar",
+                            tint = Color.White
+                        )
+                    }
+                }
+            )
+        },
         content = { padding ->
             Image(painter = painterResource(id = R.drawable.fondo_oscurecido),
                 contentDescription = "background",
@@ -45,11 +71,6 @@ fun EspaciosScreen(navHostController: NavHostController, mainViewModel: HotelVie
                 .padding(padding)
                 .fillMaxWidth()
                 .fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                androidx.compose.material3.Text(
-                    "¡Nuestros Espacios Disponibles!",
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = Color.White
-                )
                 EspacioList(espacios = espacios)
             }
         }
