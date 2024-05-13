@@ -176,6 +176,23 @@ class HotelViewModel(private val repository: HotelRepository) : ViewModel() {
         }
     }
 
+    fun fetchRandomResenias(){
+        viewModelScope.launch {
+            _uiState.value = ScreenState.Loading
+            try {
+                val resenias = repository.getRemoteResenias()
+                if (resenias.isNotEmpty()) {
+                    _resenias.value = resenias
+                    _uiState.value = ScreenState.SuccessResenias(resenias)
+                } else {
+                    _uiState.value = ScreenState.Error("No se encontraron reseñas")
+                }
+            } catch (e: Exception) {
+                _uiState.value = ScreenState.Error(e.message ?: "Unknown error")
+            }
+        }
+    }
+
 
 
 

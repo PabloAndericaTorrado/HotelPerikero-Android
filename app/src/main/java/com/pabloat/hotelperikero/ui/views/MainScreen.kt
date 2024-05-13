@@ -1,6 +1,7 @@
 package com.pabloat.hotelperikero.ui.views
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,6 +18,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -51,6 +53,10 @@ fun MainScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { padding ->
+        Image(painter = painterResource(id = R.drawable.fondo1),
+            contentDescription = "background",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop)
         Column(
             modifier = Modifier
                 .padding(padding)
@@ -59,21 +65,25 @@ fun MainScreen(
 
         ) {
             WelcomeSection(navHostController)
-            RoomSectionMain(rooms = rooms)
+            RoomSectionMain(rooms = rooms, navHostController = navHostController)
             Spacer(modifier = Modifier.height(16.dp))
-            ServiceSectionMain(servicios = servicios)
+            ServiceSectionMain(servicios = servicios,navHostController = navHostController)
+            FooterSection(navHostController)  // Llamada al nuevo Composable para el pie de página
 
         }
     }
 }
 
 @Composable
-fun ServiceSectionMain(servicios: List<Servicio>) {
+fun ServiceSectionMain(servicios: List<Servicio>,navHostController: NavHostController) {
+    val LightBlue = Color(173, 216, 230)  // Un ejemplo de light blue
+
     Column(modifier = Modifier
         .padding(16.dp)
         .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-        Text("¡Todos Nuestros Servicios!", style = MaterialTheme.typography.headlineSmall)
+        Text("¡Todos Nuestros Servicios!", style = MaterialTheme.typography.headlineSmall, color = Color.White)
+        Text("¡Toca Aquí Para Ver Más!", modifier = Modifier.clickable { navHostController.navigate(Destinations.ServiciosScreen.route) }, color = Color.White)
         Spacer(modifier = Modifier.height(10.dp))
         LazyRow {
             items(servicios) { servicio ->
@@ -92,7 +102,9 @@ fun ServiceCardMain(servicio: Servicio) {
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
-        Column {
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .fillMaxWidth(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
             Image(
                 painter = painterResource(id = getServiceImageResource(servicio.id)), // Necesitas implementar esta función
                 contentDescription = "Imagen del servicio ${servicio.descripcion}",
@@ -105,16 +117,6 @@ fun ServiceCardMain(servicio: Servicio) {
                 servicio.nombre,
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(top = 4.dp)
-            )
-            Text(
-                "Descripción: ${servicio.descripcion}",
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(vertical = 4.dp)
-            )
-            Text(
-                "Precio: ${servicio.precio}€",
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(vertical = 4.dp)
             )
         }
     }
@@ -146,12 +148,6 @@ fun WelcomeSection(navHostController: NavHostController) {
             .height(200.dp),
         contentAlignment = Alignment.Center
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.fondo1), // Asume que 'fondo1' es el ID de tu recurso
-            contentDescription = null, // No es necesario describir visualmente el fondo
-            contentScale = ContentScale.Crop, // Ajusta la imagen para que llene el fondo
-            modifier = Modifier.matchParentSize() // Asegura que la imagen llene el Box
-        )
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -171,12 +167,13 @@ fun WelcomeSection(navHostController: NavHostController) {
 }
 
 @Composable
-fun RoomSectionMain(rooms: List<Habitacion>) {
+fun RoomSectionMain(rooms: List<Habitacion>,navHostController: NavHostController) {
     Column(modifier = Modifier
         .padding(16.dp)
         .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-        Text("¡Nuestras Mejores Habitaciones!", style = MaterialTheme.typography.headlineSmall)
+        Text("¡Nuestras Mejores Habitaciones!", style = MaterialTheme.typography.headlineSmall, color = Color.White)
+        Text("¡Toca Aquí Para Ver Reseñas!", style = MaterialTheme.typography.bodySmall, modifier = Modifier.clickable { navHostController.navigate(Destinations.ReseniasScreen.route) }, color = Color.White)
         Spacer(modifier = Modifier.height(10.dp))
         LazyRow {
             items(rooms) { room ->
@@ -192,21 +189,19 @@ fun RoomCardMain(room: Habitacion) {
         modifier = Modifier
             .padding(10.dp)
             .width(200.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
-        Column {
+        Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
             Image(
                 painter = painterResource(id = getHabitacionImageResource(room.id)),
-                contentDescription = "Imagen de la habitación ${room.descripcion}",
+                contentDescription = "Imagen de la habitación ${room.id}",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .height(180.dp)
                     .fillMaxWidth()
             )
-            Text(room.tipo, style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 4.dp))
-            Text(" ${room.descripcion}", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(vertical = 4.dp))
-            Text("Precio: ${room.precio}€/Noche", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(vertical = 4.dp))
+            Text(room.tipo, style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 4.dp), color = Color.Black)
+            Text(" ${room.descripcion}", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(vertical = 4.dp),color = Color.Black)
+            Text("Precio: ${room.precio}€/Noche", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(vertical = 4.dp),color = Color.Black)
             if (room.disponibilidad == 1) {
                 Button(onClick = { /* Acción */ }, modifier = Modifier.fillMaxWidth()) {
                     Text("Más información")
@@ -214,6 +209,27 @@ fun RoomCardMain(room: Habitacion) {
             } else {
                 Text("No disponible", color = Color.Red, modifier = Modifier.padding(4.dp))
             }
+        }
+    }
+}
+
+@Composable
+fun FooterSection(navHostController: NavHostController) {
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("Contacto", style = MaterialTheme.typography.titleMedium, color = Color.White)
+        Text("Teléfono: +123 456 7890", style = MaterialTheme.typography.bodyMedium, color = Color.White)
+        Text("Email: info@perikerohotel.com", style = MaterialTheme.typography.bodyMedium, color = Color.White)
+        Text("Dirección: C. Estébanez Calderón, 10, Marbella", style = MaterialTheme.typography.bodyMedium, color = Color.White)
+        Spacer(modifier = Modifier.height(10.dp))
+        Button(onClick = { navHostController.navigate(Destinations.Contacto.route) }, colors = ButtonDefaults.buttonColors()
+        ){
+            Text("Más Información", color = Color.White)
         }
     }
 }
