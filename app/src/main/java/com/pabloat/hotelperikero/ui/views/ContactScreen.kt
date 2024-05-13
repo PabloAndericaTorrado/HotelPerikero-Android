@@ -2,10 +2,19 @@ package com.pabloat.hotelperikero.ui.views
 
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Card
+import androidx.compose.material.Icon
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.runtime.Composable
@@ -15,11 +24,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import com.pabloat.hotelperikero.R
 
@@ -28,15 +36,14 @@ fun ContactScreen(onNavController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
-            .background(Color(0xFFFAF8F0)), // Un fondo más cálido y suave
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             "Información de Contacto",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Blue, // Uso de colores de tema para coherencia
+            color = Color.White, // Uso de colores de tema para coherencia
             modifier = Modifier.padding(bottom = 16.dp)
         )
         ContactCard(
@@ -54,6 +61,7 @@ fun ContactScreen(onNavController: NavHostController) {
             modifier = Modifier
                 .height(250.dp)
                 .fillMaxWidth()
+                .fillMaxSize()
                 .clip(RoundedCornerShape(12.dp)) // Esquinas más redondeadas para una apariencia suave
         )
     }
