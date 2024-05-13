@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pabloat.hotelperikero.data.HotelRepository
+import com.pabloat.hotelperikero.data.local.entities.Espacio
 import com.pabloat.hotelperikero.data.local.entities.Habitacion
 import com.pabloat.hotelperikero.data.local.entities.Resenia
 import com.pabloat.hotelperikero.data.local.entities.Reserva
@@ -38,11 +39,23 @@ class HotelViewModel(private val repository: HotelRepository) : ViewModel() {
     private val _serviciosEventos = MutableStateFlow<List<ServicioEvento>>(emptyList())
     val serviciosEventos: StateFlow<List<ServicioEvento>> = _serviciosEventos.asStateFlow()
 
+    private val _espacios = MutableStateFlow<List<Espacio>>(emptyList())
+    val espacios: StateFlow<List<Espacio>> = _espacios.asStateFlow()
+
     private val _uiState: MutableStateFlow<ScreenState> = MutableStateFlow(ScreenState.Loading)
 
     private val handler = CoroutineExceptionHandler { _, exception ->
         _uiState.value =
             ScreenState.Error("Ha ocurrido un error, revise su conexión a internet o inténtelo de nuevo más tarde")
+    }
+    fun fetchEspacios() = viewModelScope.launch {
+        _uiState.value = ScreenState.Loading
+        try {
+            val espacios = repository.getRemoteEspacios()
+            _espacios.value = espacios
+        } catch (e: Exception) {
+            _uiState.value = ScreenState.Error(e.message ?: "Unknown error")
+        }
     }
 
     fun fetchServiciosEventos() = viewModelScope.launch {

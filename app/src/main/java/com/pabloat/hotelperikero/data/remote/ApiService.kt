@@ -1,5 +1,6 @@
 package com.pabloat.hotelperikero.data.remote
 
+import com.pabloat.hotelperikero.data.remote.dtos.EspaciosDTO
 import com.pabloat.hotelperikero.data.remote.dtos.HabitacionesDTO
 import com.pabloat.hotelperikero.data.remote.dtos.ReseniasDTO
 import com.pabloat.hotelperikero.data.remote.dtos.ReservaEventosDTO
@@ -30,6 +31,9 @@ interface ApiService {
 
     @GET("servicioEventos")
     suspend fun getServiciosEvento(): ServicioEventosDTO
+
+    @GET("espacios")
+    suspend fun getEspacios(): EspaciosDTO
 }
 
 

@@ -4,12 +4,14 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.pabloat.hotelperikero.data.local.dao.LocalEspacioDao
 import com.pabloat.hotelperikero.data.local.dao.LocalHabitacionDao
 import com.pabloat.hotelperikero.data.local.dao.LocalReseniaDao
 import com.pabloat.hotelperikero.data.local.dao.LocalReservaDao
 import com.pabloat.hotelperikero.data.local.dao.LocalReservaEventosDao
 import com.pabloat.hotelperikero.data.local.dao.LocalServicioDao
 import com.pabloat.hotelperikero.data.local.dao.LocalServicioEventoDao
+import com.pabloat.hotelperikero.data.local.entities.Espacio
 import com.pabloat.hotelperikero.data.local.entities.Habitacion
 import com.pabloat.hotelperikero.data.local.entities.Resenia
 import com.pabloat.hotelperikero.data.local.entities.Reserva
@@ -24,8 +26,8 @@ import com.pabloat.hotelperikero.data.local.entities.ServicioEvento
 @Database(
     entities = [Habitacion::class,
         Reserva::class, Servicio::class, Resenia::class,
-        ReservaEventos::class, ServicioEvento::class],
-    version = 6
+        ReservaEventos::class, ServicioEvento::class, Espacio::class],
+    version = 7
 )
 abstract class AppDataBase : RoomDatabase() {
     abstract fun habitacionDao(): LocalHabitacionDao
@@ -36,6 +38,8 @@ abstract class AppDataBase : RoomDatabase() {
     abstract fun reservaEventosDao(): LocalReservaEventosDao
 
     abstract fun servicioEventoDao(): LocalServicioEventoDao
+
+    abstract fun espacioDao(): LocalEspacioDao
 
     companion object {
         @Volatile

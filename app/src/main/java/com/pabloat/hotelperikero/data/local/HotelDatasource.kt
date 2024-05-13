@@ -2,12 +2,14 @@ package com.pabloat.hotelperikero.data.local
 
 import android.content.Context
 import android.util.Log
+import com.pabloat.hotelperikero.data.local.dao.LocalEspacioDao
 import com.pabloat.hotelperikero.data.local.dao.LocalHabitacionDao
 import com.pabloat.hotelperikero.data.local.dao.LocalReseniaDao
 import com.pabloat.hotelperikero.data.local.dao.LocalReservaDao
 import com.pabloat.hotelperikero.data.local.dao.LocalReservaEventosDao
 import com.pabloat.hotelperikero.data.local.dao.LocalServicioDao
 import com.pabloat.hotelperikero.data.local.dao.LocalServicioEventoDao
+import com.pabloat.hotelperikero.data.local.entities.Espacio
 import com.pabloat.hotelperikero.data.local.entities.Habitacion
 import com.pabloat.hotelperikero.data.local.entities.Resenia
 import com.pabloat.hotelperikero.data.local.entities.Reserva
@@ -28,6 +30,18 @@ class HotelDatasource (applicationContext: Context){
     private val reseniaDao: LocalReseniaDao = db.reseniaDao()
     private val reservaEventosDao: LocalReservaEventosDao = db.reservaEventosDao()
     private val servicioEventoDao: LocalServicioEventoDao = db.servicioEventoDao()
+    private val espacioDao: LocalEspacioDao = db.espacioDao()
+
+
+    @OptIn(DelicateCoroutinesApi::class)
+    suspend fun getAllEspacios(): Flow<List<Espacio>> {
+        return espacioDao.getAll().stateIn(GlobalScope)
+    }
+
+    suspend fun saveEspacios(espacios: List<Espacio>) {
+        espacioDao.insertAll(espacios)
+        checkDatabase()
+    }
 
     @OptIn(DelicateCoroutinesApi::class)
     suspend fun getAllServiciosEvento(): Flow<List<ServicioEvento>> {
@@ -95,10 +109,14 @@ class HotelDatasource (applicationContext: Context){
         val resenias = reseniaDao.getAll().first()
         val reservaEventos = reservaEventosDao.getAll().first()
         val serviciosEventos = servicioEventoDao.getAll().first()
+        val espacios = espacioDao.getAll().first()
         Log.d("DatabaseCheck", "Habitaciones en la base de datos: ${habitaciones.size}")
         Log.d("DatabaseCheck", "Reservas en la base de datos: ${reservas.size}")
-        Log.d("DatabaseCheck", "Reservas en la base de datos: ${servicios.size}")
+        Log.d("DatabaseCheck", "servicios en la base de datos: ${servicios.size}")
         Log.d("DatabaseCheck", "Resenias en la base de datos: ${resenias.size}")
+        Log.d("DatabaseCheck", "reservaEventos en la base de datos: ${reservaEventos.size}")
+        Log.d("DatabaseCheck", "serviciosEventos en la base de datos: ${serviciosEventos.size}")
+        Log.d("DatabaseCheck", "espacios en la base de datos: ${espacios.size}")
     }
 
     suspend fun getRandomHabitaciones(): List<Habitacion> {
