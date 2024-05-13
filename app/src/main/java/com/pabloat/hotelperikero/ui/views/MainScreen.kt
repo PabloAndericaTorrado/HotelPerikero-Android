@@ -1,5 +1,6 @@
 package com.pabloat.hotelperikero.ui.views
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -36,6 +38,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.pabloat.hotelperikero.R
+import com.pabloat.hotelperikero.data.local.entities.Espacio
 import com.pabloat.hotelperikero.data.local.entities.Habitacion
 import com.pabloat.hotelperikero.data.local.entities.Servicio
 import com.pabloat.hotelperikero.navigation.Destinations
@@ -48,12 +51,13 @@ fun MainScreen(
 ) {
     val rooms by mainViewModel.randomHabitaciones.collectAsState()
     val servicios by mainViewModel.servicios.collectAsState()
+    val espacios by mainViewModel.espacios.collectAsState()
     val scrollState = rememberScrollState()
 
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { padding ->
-        Image(painter = painterResource(id = R.drawable.fondo1),
+        Image(painter = painterResource(id = R.drawable.fondo_oscurecido),
             contentDescription = "background",
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop)
@@ -68,6 +72,7 @@ fun MainScreen(
             RoomSectionMain(rooms = rooms, navHostController = navHostController)
             Spacer(modifier = Modifier.height(16.dp))
             ServiceSectionMain(servicios = servicios,navHostController = navHostController)
+            EspacioSectionMain(navHostController = navHostController, mainViewModel = mainViewModel,espacios = espacios)
             FooterSection(navHostController)  // Llamada al nuevo Composable para el pie de página
 
         }
@@ -154,7 +159,7 @@ fun WelcomeSection(navHostController: NavHostController) {
             Text(
                 "Bienvenidos al Perikero Hotel",
                 style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                color = Color.White,
                 fontWeight = FontWeight.Bold
             )
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -234,3 +239,52 @@ fun FooterSection(navHostController: NavHostController) {
     }
 }
 
+@Composable
+fun EspacioSectionMain(espacios: List<Espacio>,navHostController: NavHostController, mainViewModel: HotelViewModel) {
+    Column(modifier = Modifier
+        .padding(16.dp)
+        .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+        Text("¡Celebra Con Nosotros!", style = MaterialTheme.typography.headlineSmall, color = Color.White)
+        Text("¡Toca Aquí Para Reservar!", style = MaterialTheme.typography.bodySmall, modifier = Modifier.clickable { navHostController.navigate(Destinations.EspaciosScreen.route) }, color = Color.White)
+        Spacer(modifier = Modifier.height(10.dp))
+        LazyRow {
+            items(espacios) { espacio ->
+                EsapcioCardMain(espacio)
+            }
+        }
+    }
+}
+
+@Composable
+fun EsapcioCardMain(espacio: Espacio) {
+    Card(
+        modifier = Modifier
+            .padding(10.dp)
+            .width(200.dp),
+    ) {
+        Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+            Image(
+                painter = painterResource(id = getEspacioImageResource(espacio.id)),
+                contentDescription = "Imagen de la habitación ${espacio.id}",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .height(180.dp)
+                    .fillMaxWidth()
+            )
+            Text(espacio.nombre, style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 4.dp), color = Color.Black)
+            Text("Precio: ${espacio.precio}€/Hora", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(vertical = 4.dp),color = Color.Black)
+        }
+    }
+}
+
+fun getEspacioImageResource(espacioId: Int?): Int {
+    return when (espacioId) {
+        1 -> R.drawable.espacio_1
+        2 -> R.drawable.espacio_2
+        3 -> R.drawable.espacio_3
+        4 -> R.drawable.espacio_4
+        5 -> R.drawable.espacio_5
+        else -> R.drawable.espacio_1 // Un recurso por defecto, en caso de error en el cálculo
+    }
+}

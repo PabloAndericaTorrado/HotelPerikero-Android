@@ -132,6 +132,7 @@ class HotelViewModel(private val repository: HotelRepository) : ViewModel() {
         }
     }
 
+
     fun loadLocalRooms() = viewModelScope.launch {
         val localRooms = repository.getLocalHabitacion().collect { rooms ->
             _habitaciones.value = rooms
