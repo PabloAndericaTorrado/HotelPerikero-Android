@@ -106,15 +106,15 @@ fun ContactScreen(onNavController: NavHostController) {
 fun ContactCard(title: String, details: String, icon: ImageVector? = null) {
     Card(
         backgroundColor = Color.White,
-        shape = RoundedCornerShape(12.dp), // Esquinas más redondeadas
-        elevation = 4.dp, // Sombra sutil para profundidad
+        shape = RoundedCornerShape(12.dp),
+        elevation = 4.dp,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 10.dp) // Espaciado vertical aumentado
+            .padding(vertical = 10.dp)
     ) {
         Row(
             modifier = Modifier
-                .padding(20.dp) // Padding interno más generoso para un aspecto lujoso
+                .padding(20.dp)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -123,13 +123,13 @@ fun ContactCard(title: String, details: String, icon: ImageVector? = null) {
                     icon,
                     contentDescription = null,
                     tint = Color.Blue,
-                    modifier = Modifier.size(50.dp) // Icono más grande para mayor presencia
+                    modifier = Modifier.size(50.dp)
                 )
                 Spacer(Modifier.width(20.dp))
             }
             Column {
-                Text(title, fontSize = 20.sp, fontWeight = FontWeight.Bold) // Texto más grande y en negrita
-                Text(details, style = TextStyle(fontSize = 18.sp, color = Color.DarkGray)) // Color suavizado para el texto
+                Text(title, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Text(details, style = TextStyle(fontSize = 18.sp, color = Color.DarkGray))
             }
         }
     }

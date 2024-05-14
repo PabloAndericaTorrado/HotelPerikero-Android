@@ -28,14 +28,13 @@ fun MainNavigation(
 
 
     val destinoInicial = Destinations.MainScreen.route
-    val habitaciones = mainViewmodel.habitaciones.collectAsState().value
     val id = mainViewmodel.selectedHabitacionId.collectAsState().value
     Log.d("Habitacion ID", "ID: $id")
-    val randomHabitaciones = mainViewmodel.fetchRandomRooms() // NO LA BORREIS SI SE USA
+    //val randomHabitaciones = mainViewmodel.fetchRandomRooms() // NO LA BORREIS SI SE USA
 
     NavHost(navController = onNavController, startDestination = destinoInicial) {
         composable(Destinations.MainScreen.route) {
-            MainScreen(navHostController = onNavController,mainViewmodel)
+            MainScreen(navHostController = onNavController, mainViewModel = mainViewmodel)
         }
 
         composable(Destinations.Contacto.route){
@@ -43,7 +42,7 @@ fun MainNavigation(
         }
 
         composable(Destinations.HabitacionesScreen.route){
-            HabitacionesScreen(habitaciones, navHostController = onNavController,mainViewmodel)
+            HabitacionesScreen(navHostController = onNavController,mainViewmodel)
         }
 
         composable(Destinations.ServiciosScreen.route){

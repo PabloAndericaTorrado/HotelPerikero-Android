@@ -39,8 +39,7 @@ fun HabitacionDetalleScreen(
     navHostController: NavHostController,
     viewModel: HotelViewModel
 ) {
-    val habitacion =
-        viewModel.getHabitacionById(habitacionId) // Assumed asynchronous fetch handled elsewhere
+    val habitacion = viewModel.getHabitacionById(habitacionId)
     val servicios by viewModel.servicios.collectAsState()
 
 

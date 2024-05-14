@@ -1,6 +1,5 @@
 package com.pabloat.hotelperikero.ui.views
 
-//noinspection UsingMaterialAndMaterial3Libraries
 import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -22,6 +21,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,14 +35,15 @@ import com.pabloat.hotelperikero.data.local.entities.Habitacion
 import com.pabloat.hotelperikero.navigation.Destinations
 import com.pabloat.hotelperikero.viewmodel.HotelViewModel
 
-
-@SuppressLint(
-    "UnusedMaterial3ScaffoldPaddingParameter", "SuspiciousIndentation",
-    "UnusedMaterialScaffoldPaddingParameter"
-)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "SuspiciousIndentation", "UnusedMaterialScaffoldPaddingParameter")
 @ExperimentalFoundationApi
 @Composable
-fun HabitacionesScreen(habitaciones: List<Habitacion>, navHostController: NavHostController, mainViewModel: HotelViewModel) {
+fun HabitacionesScreen(
+    navHostController: NavHostController,
+    mainViewModel: HotelViewModel
+) {
+    val habitaciones by mainViewModel.habitaciones.collectAsState()
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -59,18 +61,13 @@ fun HabitacionesScreen(habitaciones: List<Habitacion>, navHostController: NavHos
                     }
                 }
             )
-
         }
-
-
-    )
-    {
+    ) {
         RoomList(
             habitaciones = habitaciones,
             nav = navHostController,
             mainViewModel = mainViewModel
         )
-
     }
 }
 
@@ -87,7 +84,6 @@ fun RoomList(
     }
 }
 
-
 @Composable
 fun RoomCard(habitacion: Habitacion, nav: NavHostController, mainViewModel: HotelViewModel) {
     Card(
@@ -95,15 +91,16 @@ fun RoomCard(habitacion: Habitacion, nav: NavHostController, mainViewModel: Hote
             .padding(10.dp)
             .fillMaxWidth()
             .clickable {
-                nav.navigate(Destinations.HabitacionDetalleScreen.route); mainViewModel.selectHabitacionId(
-                habitacion.id
-            )
+                nav.navigate(Destinations.HabitacionDetalleScreen.route)
+                mainViewModel.selectHabitacionId(habitacion.id)
             },
     ) {
-        Column(Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Image(
-                painter = painterResource(id = getHabitacionImageResource(habitacion.id)), // Usa un ID de recurso adecuado
+                painter = painterResource(id = getHabitacionImageResource(habitacion.id)),
                 contentDescription = "Imagen de la habitación ${habitacion.descripcion}",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -113,13 +110,12 @@ fun RoomCard(habitacion: Habitacion, nav: NavHostController, mainViewModel: Hote
             Text(habitacion.tipo, style = MaterialTheme.typography.bodyLarge)
             Text(habitacion.descripcion, style = MaterialTheme.typography.bodySmall)
             Text("${habitacion.precio}€/Noche", style = MaterialTheme.typography.bodySmall)
-
         }
     }
 }
 
 fun getHabitacionImageResource(habitacionId: Int?): Int {
-    val imageIndex = ((habitacionId?.minus(1))?.rem(10) ?: 1) + 1  // Esto calcula un índice del 1 al 10 repetido
+    val imageIndex = ((habitacionId?.minus(1))?.rem(10) ?: 1) + 1
     return when (imageIndex) {
         1 -> R.drawable.habitacion_1
         2 -> R.drawable.habitacion_2
@@ -131,48 +127,6 @@ fun getHabitacionImageResource(habitacionId: Int?): Int {
         8 -> R.drawable.habitacion_8
         9 -> R.drawable.habitacion_9
         10 -> R.drawable.habitacion_10
-        else -> R.drawable.habitacion_1 // Un recurso por defecto, en caso de error en el cálculo
+        else -> R.drawable.habitacion_1
     }
 }
-
-
-
-
-/*
-@Composable
-fun ServiceSection(services: List<Service>) { // Asume que Service es una clase con los datos necesarios
-    Column(modifier = Modifier.padding(16.dp)) {
-        Text("Nuestros servicios mejor valorados", style = MaterialTheme.typography.h6)
-        Spacer(modifier = Modifier.height(10.dp))
-        Row(
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            services.forEach { service ->
-                ServiceCard(service)
-            }
-        }
-    }
-}
-
-@Composable
-fun ServiceCard(service: Service) {
-    Card(
-        elevation = 10.dp,
-        modifier = Modifier.padding(10.dp)
-    ) {
-        Column {
-            Image(
-                painter = painterResource(id = R.drawable.placeholder), // Sustituye esto por tus imágenes
-                contentDescription = "Imagen servicio",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.height(180.dp).fillMaxWidth()
-            )
-            Text(service.name, style = MaterialTheme.typography.h6)
-            Button(onClick = { /* Acción */ }) {
-                Text("Más información")
-            }
-        }
-    }
-}
-
- */

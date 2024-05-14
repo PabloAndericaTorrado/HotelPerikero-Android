@@ -54,16 +54,17 @@ fun MainScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { padding ->
-        Image(painter = painterResource(id = R.drawable.fondo_oscurecido),
+        Image(
+            painter = painterResource(id = R.drawable.fondo_oscurecido),
             contentDescription = "background",
             modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop)
+            contentScale = ContentScale.Crop
+        )
         Column(
             modifier = Modifier
                 .padding(padding)
                 .fillMaxSize()
-                .verticalScroll(scrollState) // Agregar capacidad de desplazamiento vertical
-
+                .verticalScroll(scrollState)
         ) {
             WelcomeSection(navHostController)
             RoomSectionMain(
@@ -72,17 +73,16 @@ fun MainScreen(
                 mainViewModel = mainViewModel
             )
             Spacer(modifier = Modifier.height(16.dp))
-            ServiceSectionMain(servicios = servicios,navHostController = navHostController)
-            EspacioSectionMain(navHostController = navHostController, mainViewModel = mainViewModel,espacios = espacios)
-            FooterSection(navHostController)  // Llamada al nuevo Composable para el pie de página
-
+            ServiceSectionMain(servicios = servicios, navHostController = navHostController)
+            EspacioSectionMain(espacios = espacios, navHostController = navHostController)
+            FooterSection(navHostController)
         }
     }
 }
 
+
 @Composable
 fun ServiceSectionMain(servicios: List<Servicio>,navHostController: NavHostController) {
-    val LightBlue = Color(173, 216, 230)  // Un ejemplo de light blue
 
     Column(modifier = Modifier
         .fillMaxWidth()
@@ -249,7 +249,7 @@ fun FooterSection(navHostController: NavHostController) {
 }
 
 @Composable
-fun EspacioSectionMain(espacios: List<Espacio>,navHostController: NavHostController, mainViewModel: HotelViewModel) {
+fun EspacioSectionMain(espacios: List<Espacio>, navHostController: NavHostController) {
     Column(modifier = Modifier
         .padding(16.dp)
         .fillMaxWidth(),
