@@ -30,6 +30,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
 import com.pabloat.hotelperikero.R
 import com.pabloat.hotelperikero.data.local.entities.Habitacion
 import com.pabloat.hotelperikero.navigation.Destinations
@@ -100,7 +101,7 @@ fun RoomCard(habitacion: Habitacion, nav: NavHostController, mainViewModel: Hote
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(id = getHabitacionImageResource(habitacion.id)),
+                painter = rememberAsyncImagePainter(model= getHabitacionImageUrl(habitacion.id)),
                 contentDescription = "Imagen de la habitación ${habitacion.descripcion}",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -114,19 +115,3 @@ fun RoomCard(habitacion: Habitacion, nav: NavHostController, mainViewModel: Hote
     }
 }
 
-fun getHabitacionImageResource(habitacionId: Int?): Int {
-    val imageIndex = ((habitacionId?.minus(1))?.rem(10) ?: 1) + 1
-    return when (imageIndex) {
-        1 -> R.drawable.habitacion_1
-        2 -> R.drawable.habitacion_2
-        3 -> R.drawable.habitacion_3
-        4 -> R.drawable.habitacion_4
-        5 -> R.drawable.habitacion_5
-        6 -> R.drawable.habitacion_6
-        7 -> R.drawable.habitacion_7
-        8 -> R.drawable.habitacion_8
-        9 -> R.drawable.habitacion_9
-        10 -> R.drawable.habitacion_10
-        else -> R.drawable.habitacion_1
-    }
-}

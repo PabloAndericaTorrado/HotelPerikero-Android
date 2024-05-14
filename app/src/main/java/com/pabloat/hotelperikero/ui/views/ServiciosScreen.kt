@@ -34,6 +34,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
 import com.pabloat.hotelperikero.R
 import com.pabloat.hotelperikero.data.local.entities.Servicio
 import com.pabloat.hotelperikero.viewmodel.HotelViewModel
@@ -117,7 +118,7 @@ fun ServicioCard(servicio: Servicio) {
                 .fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(id = getServiceImageResource(servicio.id)),
+                painter = rememberAsyncImagePainter(model= getServiceImageUrl(servicio.id)),
                 contentDescription = "Imagen del servicio ${servicio.nombre}",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier

@@ -31,6 +31,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
 import com.pabloat.hotelperikero.R
 import com.pabloat.hotelperikero.data.local.entities.Espacio
 import com.pabloat.hotelperikero.viewmodel.HotelViewModel
@@ -96,7 +97,7 @@ fun EspacioCard(espacio: Espacio) {
         Column(Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
             Image(
-                painter = painterResource(id = getEspacioImageResource(espacio.id)), // Implementar esta función para obtener recursos de imagen
+                painter = rememberAsyncImagePainter(model = getEspacioImageUrl(espacio.id)), // Implementar esta función para obtener recursos de imagen
                 contentDescription = "Imagen del espacio ${espacio.nombre}",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier

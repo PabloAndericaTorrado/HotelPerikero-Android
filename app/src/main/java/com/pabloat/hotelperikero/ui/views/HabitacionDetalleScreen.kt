@@ -30,6 +30,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
 import com.pabloat.hotelperikero.R
 import com.pabloat.hotelperikero.viewmodel.HotelViewModel
 
@@ -90,7 +91,7 @@ fun HabitacionDetalleScreen(
                     modifier = Modifier.align(Alignment.CenterHorizontally), color = Color.White
                 )
                 Image(
-                    painter = painterResource(id = getHabitacionImageResource(room.id ?: -1)),
+                    painter = rememberAsyncImagePainter(model= getHabitacionImageUrl(room.id ?: -1)),
                     contentDescription = "Imagen detallada de la habitación",
                     modifier = Modifier
                         .height(240.dp)

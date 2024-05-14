@@ -29,7 +29,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class HotelViewModel(private val repository: HotelRepository) : ViewModel() {
-
     val habitaciones: StateFlow<List<Habitacion>> = cacheHabitaciones.asStateFlow()
     val reservas: StateFlow<List<Reserva>> = cacheReservas.asStateFlow()
     val servicios: StateFlow<List<Servicio>> = cacheServicios.asStateFlow()
@@ -47,19 +46,28 @@ class HotelViewModel(private val repository: HotelRepository) : ViewModel() {
     }
 
     init {
-        fetchInitialData()
+        if (cacheHabitaciones.value.isEmpty()) {
+            fetchInitialData()
+        } else {
+            _uiState.value = ScreenState.Success(cacheHabitaciones.value)
+        }
     }
 
     private fun fetchInitialData() {
-        viewModelScope.launch {
-            fetchRooms()
-            fetchRandomRooms()
-            fetchReservas()
-            fetchServicios()
-            fetchResenias()
-            fetchReservasEventos()
-            fetchServiciosEventos()
-            fetchEspacios()
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                fetchRooms()
+                fetchRandomRooms()
+                fetchReservas()
+                fetchServicios()
+                fetchResenias()
+                fetchReservasEventos()
+                fetchServiciosEventos()
+                fetchEspacios()
+                _uiState.value = ScreenState.Success(cacheHabitaciones.value) // Proporciona la lista de habitaciones
+            } catch (e: Exception) {
+                _uiState.value = ScreenState.Error(e.message ?: "Unknown error")
+            }
         }
     }
 
