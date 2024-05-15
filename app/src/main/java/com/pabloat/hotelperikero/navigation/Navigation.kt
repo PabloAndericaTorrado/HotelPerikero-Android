@@ -13,6 +13,7 @@ import com.pabloat.hotelperikero.ui.views.ContactScreen
 import com.pabloat.hotelperikero.ui.views.EspaciosScreen
 import com.pabloat.hotelperikero.ui.views.HabitacionDetalleScreen
 import com.pabloat.hotelperikero.ui.views.HabitacionesScreen
+import com.pabloat.hotelperikero.ui.views.LoginScreen
 import com.pabloat.hotelperikero.ui.views.MainScreen
 import com.pabloat.hotelperikero.ui.views.ReseniasScreen
 import com.pabloat.hotelperikero.ui.views.ServiciosScreen
@@ -27,12 +28,17 @@ fun MainNavigation(
 ) {
 
 
-    val destinoInicial = Destinations.MainScreen.route
+    val destinoInicial = Destinations.LoginScreen.route
     val id = mainViewmodel.selectedHabitacionId.collectAsState().value
     Log.d("Habitacion ID", "ID: $id")
     //val randomHabitaciones = mainViewmodel.fetchRandomRooms() // NO LA BORREIS SI SE USA
 
     NavHost(navController = onNavController, startDestination = destinoInicial) {
+
+        composable(Destinations.LoginScreen.route) {
+            LoginScreen(navController = onNavController)
+        }
+
         composable(Destinations.MainScreen.route) {
             MainScreen(navHostController = onNavController, mainViewModel = mainViewmodel)
         }

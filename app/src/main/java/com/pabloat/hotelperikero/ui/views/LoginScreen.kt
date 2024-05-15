@@ -15,12 +15,12 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -32,29 +32,87 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.pabloat.hotelperikero.navigation.Destinations
-import com.pabloat.hotelperikero.viewmodel.FireBaseViewModel
-import com.pabloat.hotelperikero.viewmodel.PreferenceUtils
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
+import java.io.IOException
+
+data class LoginResponse(val success: Boolean, val userName: String?, val responseCode: Int)
+
+fun parseLoginResponse(responseBody: String?, responseCode: Int): LoginResponse {
+    return try {
+        val jsonResponse = JSONObject(responseBody ?: "{}")
+        val data = jsonResponse.optJSONObject("data")
+        val success = data != null && responseCode == 200
+        val userName = data?.optString("name", null.toString())
+        LoginResponse(success = success, userName = userName, responseCode = responseCode)
+    } catch (e: Exception) {
+        Log.e("LoginUser", "Error parsing response: ${e.message}")
+        LoginResponse(success = false, userName = null, responseCode = responseCode)
+    }
+}
 
 
-/**
- * Composable para mostrar el formulario de inicio de sesión o registro de usuario.
- *
- * @param isCreatedAccount Indica si se está creando una nueva cuenta de usuario.
- * @param onDone La acción a realizar cuando se completa el formulario.
- */
+@OptIn(DelicateCoroutinesApi::class)
+fun loginUser(email: String, password: String, onResult: (LoginResponse) -> Unit) {
+    val client = OkHttpClient()
+
+    val json = JSONObject().apply {
+        put("email", email)
+        put("password", password)
+    }
+
+    val requestBody = json.toString().toRequestBody("application/json; charset=utf-8".toMediaType())
+
+    val request = Request.Builder()
+        .url("http://telamarinera.duckdns.org:16020/api/login")
+        .post(requestBody)
+        .build()
+
+    Log.d("LoginUser", "Request: ${request.url}, Body: $json")
+
+    client.newCall(request).enqueue(object : Callback {
+        override fun onFailure(call: Call, e: IOException) {
+            e.printStackTrace()
+            GlobalScope.launch(Dispatchers.Main) {
+                Log.e("LoginUser", "Request failed: ${e.message}")
+                onResult(LoginResponse(success = false, userName = null, responseCode = 0))
+            }
+        }
+
+        override fun onResponse(call: Call, response: Response) {
+            val responseBody = response.body?.string()
+            val responseCode = response.code
+            Log.d("LoginUser", "Response code: $responseCode, Body: $responseBody")
+
+            val loginResponse = parseLoginResponse(responseBody, responseCode)
+            Log.d("LoginUser", "Parsed response - success: ${loginResponse.success}, userName: ${loginResponse.userName}")
+
+            GlobalScope.launch(Dispatchers.Main) {
+                onResult(loginResponse)
+            }
+        }
+    })
+}
+
+
+
 @Composable
 fun UserForm(
     isCreatedAccount: Boolean = false,
-    onDone: (String, String) -> Unit = { email, pwd -> }
+    onDone: (String, String) -> Unit = { _, _ -> }
 ) {
     val email = rememberSaveable { mutableStateOf("") }
     val password = rememberSaveable { mutableStateOf("") }
@@ -69,7 +127,6 @@ fun UserForm(
     ) {
         EmailInput(emailState = email)
         PasswordInput(passwordState = password, labelId = "Password", passwordVisible = passwordVisible)
-        // enviar el formulario y ocultar el teclado
         SubmitButton(textId = if (isCreatedAccount) "Crear cuenta " else "Login", inputValido = valido) {
             onDone(email.value.trim(), password.value.trim())
             keyboardController?.hide()
@@ -77,13 +134,6 @@ fun UserForm(
     }
 }
 
-/**
- * Composable para mostrar el botón de envío del formulario.
- *
- * @param textId El texto que se mostrará en el botón.
- * @param inputValido Indica si la entrada del formulario es válida o no.
- * @param onClic La acción a realizar cuando se hace clic en el botón.
- */
 @Composable
 fun SubmitButton(
     textId: String,
@@ -105,13 +155,6 @@ fun SubmitButton(
     }
 }
 
-/**
- * Composable para mostrar el campo de entrada de contraseña.
- *
- * @param passwordState El estado de la contraseña.
- * @param labelId El ID del campo de texto.
- * @param passwordVisible Indica si la contraseña es visible o no.
- */
 @Composable
 fun PasswordInput(
     passwordState: MutableState<String>,
@@ -130,7 +173,6 @@ fun PasswordInput(
         modifier = Modifier
             .padding(bottom = 10.dp, start = 10.dp, end = 10.dp)
             .fillMaxWidth(),
-        // Se le indica que el teclado a utilizar es el de contraseña.
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         visualTransformation = visualTransformation,
         trailingIcon = {
@@ -141,11 +183,6 @@ fun PasswordInput(
     )
 }
 
-/**
- * Composable para mostrar el icono de visualización de contraseña.
- *
- * @param passwordVisible El estado de visibilidad de la contraseña.
- */
 @Composable
 fun PasswordVisibleIcon(passwordVisible: MutableState<Boolean>) {
     val image = if (passwordVisible.value)
@@ -161,14 +198,6 @@ fun PasswordVisibleIcon(passwordVisible: MutableState<Boolean>) {
     }
 }
 
-/**
- * Composable para mostrar un campo de entrada de texto genérico.
- *
- * @param valueState El estado del valor del campo de texto.
- * @param labelId El ID del campo de texto.
- * @param isSingleLine Indica si el campo de texto es de una sola línea.
- * @param keyboardType El tipo de teclado a utilizar.
- */
 @Composable
 fun InputField(
     valueState: MutableState<String>,
@@ -188,12 +217,6 @@ fun InputField(
     )
 }
 
-/**
- * Composable para mostrar el campo de entrada de correo electrónico.
- *
- * @param emailState El estado del correo electrónico.
- * @param labelId El ID del campo de texto.
- */
 @Composable
 fun EmailInput(
     emailState: MutableState<String>,
@@ -206,18 +229,11 @@ fun EmailInput(
     )
 }
 
-/**
- * Composable para mostrar la pantalla de inicio de sesión.
- *
- * @param navController Controlador de navegación para la navegación entre pantallas.
- * @param fireBaseViewModel ViewModel para interactuar con Firebase Authentication.
- */
 @Composable
-fun LoginScreen(navController: NavController, fireBaseViewModel: FireBaseViewModel = viewModel()) {
-    val showSnackbar = remember { mutableStateOf(false) }
-    val showLoginForm = rememberSaveable { mutableStateOf(true) }
-    val context = LocalContext.current
-    val preferencesUtils = PreferenceUtils()
+fun LoginScreen(navController: NavController) {
+    val showDialog = remember { mutableStateOf(false) }
+    val dialogTitle = remember { mutableStateOf("") }
+    val dialogMessage = remember { mutableStateOf("") }
     val rememberMeState = remember { mutableStateOf(false) }
 
     Surface(modifier = Modifier.fillMaxSize()) {
@@ -225,72 +241,59 @@ fun LoginScreen(navController: NavController, fireBaseViewModel: FireBaseViewMod
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            if (showLoginForm.value) {
-                Text(text = "Inicia sesión")
-                UserForm(isCreatedAccount = false) { email, password ->
-                    Log.d("MV", "Logueado con $email y $password")
-                    fireBaseViewModel.storeEmail(email)
-                    Log.d("MV", "Entra en el try")
-                    fireBaseViewModel.SingInWithEmailAndPassword(
-                        context, email, password,
-                        home = {
-                            if (fireBaseViewModel.getStoredEmail() == "admin@admin.com") {
-                                Log.d("MV", "Es ADMIN")
-                                navController.navigate(Destinations.ManageScreen.route)
-                            } else {
-                                Log.d("MV", "No es ADMIN")
-                                navController.navigate(Destinations.InitScreen.route)
-                            }
-                        },
-                        fail = {
-                            showSnackbar.value = true
+            Text(text = "Inicia sesión")
+            UserForm(isCreatedAccount = false) { email, password ->
+                loginUser(email, password) { response ->
+                    when (response.responseCode) {
+                        200 -> {
+                            dialogTitle.value = "Bienvenido"
+                            dialogMessage.value = "Bienvenido, ${response.userName}"
+                            showDialog.value = true
+                            // Navegar después de mostrar el diálogo
+                            navController.navigate(Destinations.MainScreen.route)
                         }
-                    )
-
-                    Log.d("MV", "Aqui Chat")
-                }
-                if (showSnackbar.value) {
-                    ShowSnackbar(showSnackbar)
-                }
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start
-                ) {
-                    Checkbox(
-                        checked = rememberMeState.value,
-                        onCheckedChange = { isChecked ->
-                            rememberMeState.value = isChecked
-                            preferencesUtils.saveRememberMeState(isChecked, context)
-                        },
-                    )
-                    Text(text = "Recuérdame")
-                }
-            } else {
-                Text("Crea una cuenta")
-                UserForm(isCreatedAccount = true) { email, password ->
-                    Log.d("MV", "Creando cuenta con $email,$password")
-                    fireBaseViewModel.createUserWithEmailAndPassword(email, password) {
-                        navController.navigate(Destinations.InitScreen.route)
+                        220 -> {
+                            dialogTitle.value = "Error"
+                            dialogMessage.value = "La contraseña es incorrecta"
+                            showDialog.value = true
+                        }
+                        else -> {
+                            dialogTitle.value = "Error"
+                            dialogMessage.value = "El correo o la contraseña no son correctos"
+                            showDialog.value = true
+                        }
                     }
                 }
+            }
+            if (showDialog.value) {
+                ShowDialog(showDialog, dialogTitle, dialogMessage)
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Checkbox(
+                    checked = rememberMeState.value,
+                    onCheckedChange = { isChecked ->
+                        rememberMeState.value = isChecked
+                        //TODO: GUARDAR EL LOGIN EN PREFERENCIAS
+                    },
+                )
+                Text(text = "Recuérdame")
             }
             Spacer(modifier = Modifier.height(15.dp))
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                val text1 =
-                    if (showLoginForm.value) "¿No tienes cuenta?"
-                    else "¿Ya tienes cuenta?"
-                val text2 =
-                    if (showLoginForm.value) "Regístrate"
-                    else "Inicia sesión"
+                val text1 = "¿No tienes cuenta?"
+                val text2 = "Regístrate"
                 Text(text = text1)
                 Text(
                     text = text2,
                     modifier = Modifier
-                        .clickable { showLoginForm.value = !showLoginForm.value }
+                        .clickable { /* TODO: TE MANDA A LA REGISTER SCREEN */ }
                         .padding(start = 5.dp),
                     color = Color.Cyan
                 )
@@ -299,22 +302,21 @@ fun LoginScreen(navController: NavController, fireBaseViewModel: FireBaseViewMod
     }
 }
 
-/**
- * Composable para mostrar una Snackbar.
- *
- * @param showSnackbar El estado que indica si se debe mostrar la Snackbar.
- */
 @Composable
-private fun ShowSnackbar(showSnackbar: MutableState<Boolean>) {
-    if (showSnackbar.value) {
-        Snackbar(
-            action = {
-                TextButton(onClick = { showSnackbar.value = false }) {
-                    Text("Cerrar")
+fun ShowDialog(showDialog: MutableState<Boolean>, title: MutableState<String>, message: MutableState<String>) {
+    if (showDialog.value) {
+        AlertDialog(
+            onDismissRequest = { showDialog.value = false },
+            confirmButton = {
+                TextButton(onClick = { showDialog.value = false }) {
+                    Text("OK")
                 }
-            }
-        ) {
-            Text("El correo o la contraseña no son correctos")
-        }
+            },
+            title = { Text(text = title.value) },
+            text = { Text(text = message.value) }
+        )
     }
 }
+
+
+
