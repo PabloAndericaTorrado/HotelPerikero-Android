@@ -295,4 +295,8 @@ class HotelViewModel(private val repository: HotelRepository) : ViewModel() {
             _userData.emit(data)
         }
     }
+
+    fun isUserLoggedIn(): Boolean {
+        return _userData.value != null
+    }
 }

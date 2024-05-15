@@ -3,6 +3,7 @@ package com.pabloat.hotelperikero.ui.views
 //noinspection UsingMaterialAndMaterial3Libraries
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.pabloat.hotelperikero.R
+import com.pabloat.hotelperikero.navigation.Destinations
 import com.pabloat.hotelperikero.viewmodel.HotelViewModel
 
 @Composable
@@ -42,7 +44,7 @@ fun HabitacionDetalleScreen(
 ) {
     val habitacion = viewModel.getHabitacionById(habitacionId)
     val servicios by viewModel.servicios.collectAsState()
-
+    val userLoggedIn by viewModel.userData.collectAsState() // Obteniendo el estado del usuario
 
     Scaffold(
         topBar = {
@@ -66,16 +68,8 @@ fun HabitacionDetalleScreen(
                     }
                 }
             )
-
         }
-
     ) { padding ->
-        Image(
-            painter = painterResource(id = R.drawable.fondo_oscurecido),
-            contentDescription = "background",
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
-        )
         Column(
             modifier = Modifier
                 .padding(padding)
@@ -113,21 +107,31 @@ fun HabitacionDetalleScreen(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 if (room.disponibilidad == 1) {
-                    Button(
-                        onClick = {
-                            // Reservar habitación
-                            Log.d(
-                                "HabitacionDetalleScreen",
-                                "Reservar habitación ${room.numero_habitacion}"
+                    if (userLoggedIn != null) {
+                        Button(
+                            onClick = {
+                                // Reservar habitación
+                                Log.d(
+                                    "HabitacionDetalleScreen",
+                                    "Reservar habitación ${room.numero_habitacion}"
+                                )
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(20.dp)
+                        ) {
+                            Text(
+                                "Reservar Ahora",
+                                modifier = Modifier.padding(vertical = 8.dp),
+                                color = Color.White
                             )
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(20.dp)
-                    ) {
+                        }
+                    } else {
                         Text(
-                            "Reservar Ahora",
-                            modifier = Modifier.padding(vertical = 8.dp),
-                            color = Color.White
+                            "Necesitas Iniciar Sesión",
+                            color = Color.Red,
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally)
+                                .clickable { navHostController.navigate(Destinations.LoginScreen.route) }
                         )
                     }
                 } else {
@@ -147,5 +151,5 @@ fun HabitacionDetalleScreen(
             ServiceSectionMain(servicios = servicios, navHostController = navHostController)
         }
     }
-
 }
+

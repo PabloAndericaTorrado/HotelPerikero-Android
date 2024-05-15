@@ -28,7 +28,7 @@ fun MainNavigation(
 ) {
 
 
-    val destinoInicial = Destinations.LoginScreen.route
+    val destinoInicial = Destinations.MainScreen.route
     val id = mainViewmodel.selectedHabitacionId.collectAsState().value
     Log.d("Habitacion ID", "ID: $id")
     //val randomHabitaciones = mainViewmodel.fetchRandomRooms() // NO LA BORREIS SI SE USA
