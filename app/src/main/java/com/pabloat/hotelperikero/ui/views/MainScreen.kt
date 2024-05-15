@@ -1,43 +1,30 @@
 package com.pabloat.hotelperikero.ui.views
 
+import androidx.compose.animation.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
-import com.pabloat.hotelperikero.R
 import com.pabloat.hotelperikero.data.local.entities.Espacio
 import com.pabloat.hotelperikero.data.local.entities.Habitacion
 import com.pabloat.hotelperikero.data.local.entities.Servicio
@@ -55,31 +42,167 @@ fun MainScreen(
     val scrollState = rememberScrollState()
 
     Scaffold(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
-        Box(modifier = Modifier.fillMaxSize()) {
-            Image(
-                painter = painterResource(id = R.drawable.fondo_oscurecido),
-                contentDescription = "background",
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
+        Column(
+            modifier = Modifier
+                .padding(padding)
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+        ) {
+            WelcomeSection(navHostController)
+            RoomSectionMain(
+                rooms = rooms,
+                navHostController = navHostController,
+                mainViewModel = mainViewModel
             )
-            Column(
-                modifier = Modifier
-                    .padding(padding)
-                    .fillMaxSize()
-                    .verticalScroll(scrollState)
+            Spacer(modifier = Modifier.height(16.dp))
+            ServiceSectionMain(servicios = servicios, navHostController = navHostController)
+            EspacioSectionMain(espacios = espacios, navHostController = navHostController)
+            FooterSection(navHostController)
+        }
+    }
+}
+
+@Composable
+fun WelcomeSection(navHostController: NavHostController) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(200.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                "Bienvenidos al Perikero Hotel",
+                style = MaterialTheme.typography.headlineMedium.copy(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 28.sp
+                ),
+                color = MaterialTheme.colorScheme.primary,
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(
+                onClick = { navHostController.navigate(Destinations.HabitacionesScreen.route) },
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
-                WelcomeSection(navHostController)
-                RoomSectionMain(
-                    rooms = rooms,
-                    navHostController = navHostController,
-                    mainViewModel = mainViewModel
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                ServiceSectionMain(servicios = servicios, navHostController = navHostController)
-                EspacioSectionMain(espacios = espacios, navHostController = navHostController)
-                FooterSection(navHostController)
+                Text(text = "Reserva Aquí!", style = MaterialTheme.typography.titleLarge)
+            }
+        }
+    }
+}
+
+@Composable
+fun RoomSectionMain(
+    rooms: List<Habitacion>,
+    navHostController: NavHostController,
+    mainViewModel: HotelViewModel
+) {
+    Column(
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            "¡Nuestras Mejores Habitaciones!",
+            style = MaterialTheme.typography.headlineSmall.copy(
+                fontSize = 24.sp
+            ),
+            color = MaterialTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            "¡Toca Aquí Para Ver Reseñas!",
+            style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier
+                .clickable { navHostController.navigate(Destinations.ReseniasScreen.route) }
+                .padding(horizontal = 16.dp),
+            color = MaterialTheme.colorScheme.primary,
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        LazyRow {
+            items(rooms) { room ->
+                AnimatedVisibility(
+                    visible = true,
+                    enter = slideInVertically() + fadeIn(),
+                    exit = slideOutVertically() + fadeOut()
+                ) {
+                    RoomCardMain(room, navHostController, mainViewModel = mainViewModel)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun RoomCardMain(room: Habitacion, nav: NavHostController, mainViewModel: HotelViewModel) {
+    Card(
+        modifier = Modifier
+            .padding(10.dp)
+            .width(250.dp)
+            .shadow(8.dp, shape = RoundedCornerShape(16.dp)),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = rememberAsyncImagePainter(model = getHabitacionImageUrl(room.id)),
+                contentDescription = "Imagen de la habitación ${room.id}",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .height(180.dp)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                room.tipo,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                room.descripcion,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Justify,
+                modifier = Modifier.padding(horizontal = 8.dp)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                "Precio: ${room.precio}€/Noche",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 8.dp)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            if (room.disponibilidad == 1) {
+                Button(
+                    onClick = {
+                        nav.navigate(Destinations.HabitacionDetalleScreen.route)
+                        mainViewModel.selectHabitacionId(room.id)
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Ir a la Habitación", style = MaterialTheme.typography.bodyMedium)
+                }
+            } else {
+                Text("No disponible", color = Color.Red, modifier = Modifier.padding(4.dp))
             }
         }
     }
@@ -90,13 +213,28 @@ fun ServiceSectionMain(servicios: List<Servicio>, navHostController: NavHostCont
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxSize(),
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text("¡Todos Nuestros Servicios!", style = MaterialTheme.typography.headlineSmall, color = Color.White)
-        Text("¡Toca Aquí Para Ver Más!", modifier = Modifier.clickable { navHostController.navigate(Destinations.ServiciosScreen.route) }, color = Color.White)
-        Spacer(modifier = Modifier.height(10.dp))
+        Text(
+            "¡Todos Nuestros Servicios!",
+            style = MaterialTheme.typography.headlineSmall.copy(
+                fontSize = 24.sp
+            ),
+            color = MaterialTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            "¡Toca Aquí Para Ver Más!",
+            modifier = Modifier
+                .clickable { navHostController.navigate(Destinations.ServiciosScreen.route) }
+                .padding(horizontal = 16.dp),
+            color = MaterialTheme.colorScheme.primary,
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(16.dp))
         LazyRow {
             items(servicios) { servicio ->
                 ServiceCardMain(servicio)
@@ -111,14 +249,14 @@ fun ServiceCardMain(servicio: Servicio) {
     Card(
         modifier = Modifier
             .padding(10.dp)
-            .width(200.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+            .width(250.dp)
+            .shadow(8.dp, shape = RoundedCornerShape(16.dp)),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .fillMaxWidth(),
+                .padding(16.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -129,12 +267,142 @@ fun ServiceCardMain(servicio: Servicio) {
                 modifier = Modifier
                     .height(180.dp)
                     .fillMaxWidth()
+                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
             )
+            Spacer(modifier = Modifier.height(8.dp))
             Text(
                 servicio.nombre,
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(top = 4.dp)
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = 4.dp),
+                color = MaterialTheme.colorScheme.onSurface
             )
+        }
+    }
+}
+
+@Composable
+fun EspacioSectionMain(espacios: List<Espacio>, navHostController: NavHostController) {
+    Column(
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            "¡Celebra Con Nosotros!",
+            style = MaterialTheme.typography.headlineSmall.copy(
+                fontSize = 24.sp
+            ),
+            color = MaterialTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            "¡Toca Aquí Para Reservar!",
+            style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier
+                .clickable { navHostController.navigate(Destinations.EspaciosScreen.route) }
+                .padding(horizontal = 16.dp),
+            color = MaterialTheme.colorScheme.primary,
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        LazyRow {
+            items(espacios) { espacio ->
+                EspacioCardMain(espacio)
+            }
+        }
+    }
+}
+
+@Composable
+fun EspacioCardMain(espacio: Espacio) {
+    Card(
+        modifier = Modifier
+            .padding(10.dp)
+            .width(250.dp)
+            .shadow(8.dp, shape = RoundedCornerShape(16.dp)),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = rememberAsyncImagePainter(model = getEspacioImageUrl(espacio.id)),
+                contentDescription = "Imagen del espacio ${espacio.id}",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .height(180.dp)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                espacio.nombre,
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = 4.dp),
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                "Precio: ${espacio.precio}€/Hora",
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 8.dp),
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
+    }
+}
+
+@Composable
+fun FooterSection(navHostController: NavHostController) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            "Contacto",
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            "Teléfono: +123 456 7890",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            "Email: info@perikerohotel.com",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            "Dirección: C. Estébanez Calderón, 10, Marbella",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(
+            onClick = { navHostController.navigate(Destinations.Contacto.route) },
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+        ) {
+            Text("Más Información", color = MaterialTheme.colorScheme.onPrimary)
         }
     }
 }
@@ -156,93 +424,6 @@ fun getServiceImageUrl(servicioId: Int?): String {
     return imageUrls[servicioId] ?: "https://example.com/default_service.jpg"
 }
 
-@Composable
-fun WelcomeSection(navHostController: NavHostController) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(200.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                "Bienvenidos al Perikero Hotel",
-                style = MaterialTheme.typography.headlineMedium,
-                color = Color.White,
-                fontWeight = FontWeight.Bold
-            )
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(text = "Reserva Aquí!", style = MaterialTheme.typography.titleLarge, color = Color.Red, modifier = Modifier.clickable {
-                    navHostController.navigate(Destinations.HabitacionesScreen.route)
-                })
-            }
-        }
-    }
-}
-
-@Composable
-fun RoomSectionMain(
-    rooms: List<Habitacion>,
-    navHostController: NavHostController,
-    mainViewModel: HotelViewModel
-) {
-    Column(
-        modifier = Modifier
-            .padding(16.dp)
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text("¡Nuestras Mejores Habitaciones!", style = MaterialTheme.typography.headlineSmall, color = Color.White)
-        Text("¡Toca Aquí Para Ver Reseñas!", style = MaterialTheme.typography.bodySmall, modifier = Modifier.clickable { navHostController.navigate(Destinations.ReseniasScreen.route) }, color = Color.White)
-        Spacer(modifier = Modifier.height(10.dp))
-        LazyRow {
-            items(rooms) { room ->
-                RoomCardMain(room, navHostController, mainViewModel = mainViewModel)
-            }
-        }
-    }
-}
-
-@Composable
-fun RoomCardMain(room: Habitacion, nav: NavHostController, mainViewModel: HotelViewModel) {
-    Card(
-        modifier = Modifier
-            .padding(10.dp)
-            .width(200.dp)
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = rememberAsyncImagePainter(model = getHabitacionImageUrl(room.id)),
-                contentDescription = "Imagen de la habitación ${room.id}",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .height(180.dp)
-                    .fillMaxWidth()
-            )
-            Text(room.tipo, style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 4.dp), color = Color.Black)
-            Text(" ${room.descripcion}", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(vertical = 4.dp), color = Color.Black)
-            Text("Precio: ${room.precio}€/Noche", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(vertical = 4.dp), color = Color.Black)
-            if (room.disponibilidad == 1) {
-                Button(onClick = {
-                    nav.navigate(Destinations.HabitacionDetalleScreen.route)
-                    mainViewModel.selectHabitacionId(room.id)
-                }, modifier = Modifier.fillMaxWidth()) {
-                    Text("Ir a la Habitación")
-                }
-            } else {
-                Text("No disponible", color = Color.Red, modifier = Modifier.padding(4.dp))
-            }
-        }
-    }
-}
-
 fun getHabitacionImageUrl(habitacionId: Int?): String {
     val imageUrls = mapOf(
         1 to "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyUG2CquISf_UIK3TsoUhBtHHtelaaA_vbRUJNIU_va-DnHM58",
@@ -257,72 +438,7 @@ fun getHabitacionImageUrl(habitacionId: Int?): String {
         10 to "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjQidgZGLaqBGB-RLcXMZVp1h4u_l88_YRGWEn6aTfaWrLm28B"
     )
 
-    return imageUrls[((habitacionId?.minus(1))?.rem(10) ?: 1) + 1 ] ?: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQvfiexSpDCqSXw3QvxeGLc_642uhdT3oS-09cijzF-XmEQD-hk"
-}
-
-@Composable
-fun FooterSection(navHostController: NavHostController) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text("Contacto", style = MaterialTheme.typography.titleMedium, color = Color.White)
-        Text("Teléfono: +123 456 7890", style = MaterialTheme.typography.bodyMedium, color = Color.White)
-        Text("Email: info@perikerohotel.com", style = MaterialTheme.typography.bodyMedium, color = Color.White)
-        Text("Dirección: C. Estébanez Calderón, 10, Marbella", style = MaterialTheme.typography.bodyMedium, color = Color.White)
-        Spacer(modifier = Modifier.height(10.dp))
-        Button(onClick = { navHostController.navigate(Destinations.Contacto.route) }, colors = ButtonDefaults.buttonColors()) {
-            Text("Más Información", color = Color.White)
-        }
-    }
-}
-
-@Composable
-fun EspacioSectionMain(espacios: List<Espacio>, navHostController: NavHostController) {
-    Column(
-        modifier = Modifier
-            .padding(16.dp)
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text("¡Celebra Con Nosotros!", style = MaterialTheme.typography.headlineSmall, color = Color.White)
-        Text("¡Toca Aquí Para Reservar!", style = MaterialTheme.typography.bodySmall, modifier = Modifier.clickable { navHostController.navigate(Destinations.EspaciosScreen.route) }, color = Color.White)
-        Spacer(modifier = Modifier.height(10.dp))
-        LazyRow {
-            items(espacios) { espacio ->
-                EspacioCardMain(espacio)
-            }
-        }
-    }
-}
-
-@Composable
-fun EspacioCardMain(espacio: Espacio) {
-    Card(
-        modifier = Modifier
-            .padding(10.dp)
-            .width(200.dp)
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = rememberAsyncImagePainter(model = getEspacioImageUrl(espacio.id)),
-                contentDescription = "Imagen del espacio ${espacio.id}",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .height(180.dp)
-                    .fillMaxWidth()
-            )
-            Text(espacio.nombre, style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 4.dp), color = Color.Black)
-            Text("Precio: ${espacio.precio}€/Hora", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(vertical = 4.dp), color = Color.Black)
-        }
-    }
+    return imageUrls[((habitacionId?.minus(1))?.rem(10) ?: 1) + 1] ?: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQvfiexSpDCqSXw3QvxeGLc_642uhdT3oS-09cijzF-XmEQD-hk"
 }
 
 fun getEspacioImageUrl(espacioId: Int?): String {
