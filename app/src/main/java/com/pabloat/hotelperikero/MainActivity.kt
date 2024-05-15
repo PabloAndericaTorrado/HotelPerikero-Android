@@ -1,8 +1,10 @@
 package com.pabloat.hotelperikero
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -32,6 +34,7 @@ import com.pabloat.hotelperikero.viewmodel.HotelViewModelFactory
 
 class MainActivity : ComponentActivity() {
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -45,6 +48,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainApp() {
     val context = LocalContext.current
@@ -64,12 +68,6 @@ fun MainApp() {
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Box(modifier = Modifier.weight(1f)) {
-                Image(
-                    painter = painterResource(id = R.drawable.fondo_oscurecido),
-                    contentDescription = "background",
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
                 MainNavigation(
                     onNavController = navHostController,
                     mainViewmodel = mainViewModel,

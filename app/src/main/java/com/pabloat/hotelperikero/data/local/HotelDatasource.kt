@@ -106,6 +106,15 @@ class HotelDatasource (applicationContext: Context){
         return habitacionDao.getHabitacionById(id)
     }
 
+    suspend fun insertReserva(reserva: Reserva) {
+        reservaDao.insert(reserva)
+    }
+
+    suspend fun getReservasByHabitacion(habitacionId: Int): List<Reserva> {
+        return reservaDao.getReservasByHabitacion(habitacionId)
+    }
+
+
     private suspend fun checkDatabase() {
         val habitaciones = habitacionDao.getAll().first()
         val reservas = reservaDao.getAll().first()

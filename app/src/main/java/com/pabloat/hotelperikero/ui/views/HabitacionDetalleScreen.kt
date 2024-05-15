@@ -85,7 +85,11 @@ fun HabitacionDetalleScreen(
                     modifier = Modifier.align(Alignment.CenterHorizontally), color = Color.White
                 )
                 Image(
-                    painter = rememberAsyncImagePainter(model= getHabitacionImageUrl(room.id ?: -1)),
+                    painter = rememberAsyncImagePainter(
+                        model = getHabitacionImageUrl(
+                            room.id ?: -1
+                        )
+                    ),
                     contentDescription = "Imagen detallada de la habitación",
                     modifier = Modifier
                         .height(240.dp)
@@ -108,13 +112,10 @@ fun HabitacionDetalleScreen(
                 Spacer(modifier = Modifier.height(8.dp))
                 if (room.disponibilidad == 1) {
                     if (userLoggedIn != null) {
+                        val userId = userLoggedIn!!.getInt("id")
                         Button(
                             onClick = {
-                                // Reservar habitación
-                                Log.d(
-                                    "HabitacionDetalleScreen",
-                                    "Reservar habitación ${room.numero_habitacion}"
-                                )
+                                navHostController.navigate("reservation_form/${room.id}/$userId")
                             },
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(20.dp)
@@ -152,4 +153,3 @@ fun HabitacionDetalleScreen(
         }
     }
 }
-

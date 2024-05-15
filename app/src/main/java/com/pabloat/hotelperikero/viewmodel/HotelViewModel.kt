@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONObject
 
 class HotelViewModel(private val repository: HotelRepository) : ViewModel() {
@@ -298,5 +299,17 @@ class HotelViewModel(private val repository: HotelRepository) : ViewModel() {
 
     fun isUserLoggedIn(): Boolean {
         return _userData.value != null
+    }
+
+    fun addReserva(reserva: Reserva) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.insertReserva(reserva)
+        }
+    }
+
+    suspend fun getReservasByHabitacion(habitacionId: Int): List<Reserva> {
+        return withContext(Dispatchers.IO) {
+            repository.getReservasByHabitacion(habitacionId)
+        }
     }
 }

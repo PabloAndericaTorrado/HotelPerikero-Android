@@ -157,6 +157,14 @@ class HotelRepository(
         return localds.getAllReservas()
     }
 
+    suspend fun insertReserva(reserva: Reserva) {
+        localds.insertReserva(reserva)
+    }
+
+    suspend fun getReservasByHabitacion(habitacionId: Int): List<Reserva> {
+        return localds.getReservasByHabitacion(habitacionId)
+    }
+
     // ------------------------------ Habitaciones --------------------------------
     suspend fun getRemoteHabitaciones(): List<Habitacion> {
         val habitacionesDTO = remoteds.getHabitaciones()
