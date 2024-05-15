@@ -2,32 +2,14 @@ package com.pabloat.hotelperikero.ui.views
 
 import android.util.Log
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,19 +19,18 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.pabloat.hotelperikero.navigation.Destinations
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import com.pabloat.hotelperikero.viewmodel.HotelViewModel
+import kotlinx.coroutines.*
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.io.IOException
 
-data class LoginResponse(val success: Boolean, val userName: String?, val responseCode: Int)
+data class LoginResponse(val success: Boolean, val userName: String?, val responseCode: Int, val responseBody: JSONObject?)
 
 fun parseLoginResponse(responseBody: String?, responseCode: Int): LoginResponse {
     return try {
@@ -57,13 +38,12 @@ fun parseLoginResponse(responseBody: String?, responseCode: Int): LoginResponse 
         val data = jsonResponse.optJSONObject("data")
         val success = data != null && responseCode == 200
         val userName = data?.optString("name", null.toString())
-        LoginResponse(success = success, userName = userName, responseCode = responseCode)
+        LoginResponse(success = success, userName = userName, responseCode = responseCode, responseBody = data)
     } catch (e: Exception) {
         Log.e("LoginUser", "Error parsing response: ${e.message}")
-        LoginResponse(success = false, userName = null, responseCode = responseCode)
+        LoginResponse(success = false, userName = null, responseCode = responseCode, responseBody = null)
     }
 }
-
 
 @OptIn(DelicateCoroutinesApi::class)
 fun loginUser(email: String, password: String, onResult: (LoginResponse) -> Unit) {
@@ -88,7 +68,7 @@ fun loginUser(email: String, password: String, onResult: (LoginResponse) -> Unit
             e.printStackTrace()
             GlobalScope.launch(Dispatchers.Main) {
                 Log.e("LoginUser", "Request failed: ${e.message}")
-                onResult(LoginResponse(success = false, userName = null, responseCode = 0))
+                onResult(LoginResponse(success = false, userName = null, responseCode = 0, responseBody = null))
             }
         }
 
@@ -106,8 +86,6 @@ fun loginUser(email: String, password: String, onResult: (LoginResponse) -> Unit
         }
     })
 }
-
-
 
 @Composable
 fun UserForm(
@@ -230,7 +208,7 @@ fun EmailInput(
 }
 
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(navController: NavController, viewModel: HotelViewModel) {
     val showDialog = remember { mutableStateOf(false) }
     val dialogTitle = remember { mutableStateOf("") }
     val dialogMessage = remember { mutableStateOf("") }
@@ -248,8 +226,8 @@ fun LoginScreen(navController: NavController) {
                         200 -> {
                             dialogTitle.value = "Bienvenido"
                             dialogMessage.value = "Bienvenido, ${response.userName}"
+                            viewModel.setUserData(response.responseBody)
                             showDialog.value = true
-                            // Navegar después de mostrar el diálogo
                             navController.navigate(Destinations.MainScreen.route)
                         }
                         220 -> {
@@ -317,6 +295,3 @@ fun ShowDialog(showDialog: MutableState<Boolean>, title: MutableState<String>, m
         )
     }
 }
-
-
-

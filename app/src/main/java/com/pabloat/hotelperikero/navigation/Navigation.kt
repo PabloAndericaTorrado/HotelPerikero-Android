@@ -36,7 +36,7 @@ fun MainNavigation(
     NavHost(navController = onNavController, startDestination = destinoInicial) {
 
         composable(Destinations.LoginScreen.route) {
-            LoginScreen(navController = onNavController)
+            LoginScreen(navController = onNavController, mainViewmodel)
         }
 
         composable(Destinations.MainScreen.route) {

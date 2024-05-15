@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 
 class HotelViewModel(private val repository: HotelRepository) : ViewModel() {
     val habitaciones: StateFlow<List<Habitacion>> = cacheHabitaciones.asStateFlow()
@@ -284,5 +285,14 @@ class HotelViewModel(private val repository: HotelRepository) : ViewModel() {
 
     fun selectHabitacionId(id: Int?) {
         _selectedHabitacionId.value = id
+    }
+
+    private val _userData = MutableStateFlow<JSONObject?>(null)
+    val userData: StateFlow<JSONObject?> = _userData
+
+    fun setUserData(data: JSONObject?) {
+        viewModelScope.launch {
+            _userData.emit(data)
+        }
     }
 }
