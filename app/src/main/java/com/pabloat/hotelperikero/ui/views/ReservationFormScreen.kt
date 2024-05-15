@@ -158,30 +158,42 @@ fun ReservationFormScreen(
                 } else {
                     val checkIn = checkInDate.text
                     val checkOut = checkOutDate.text
-                    viewModel.viewModelScope.launch {
-                        if (!isRoomAvailable(habitacionId, checkIn, checkOut)) {
-                            errorMessage.value =
-                                "La habitación ya está reservada en las fechas seleccionadas"
-                        } else {
-                            val totalPrice =
-                                calculateTotalPrice(checkIn, checkOut, habitacion.precio.toDouble())
-                            val now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
-                            val reserva = Reserva(
-                                id = null,
-                                users_id = userId,
-                                habitacion_id = habitacionId,
-                                check_in = checkIn,
-                                check_out = checkOut,
-                                precio_total = totalPrice.toString(),
-                                pagado = 0,
-                                confirmado = 0,
-                                dni = null,
-                                numero_personas = numeroPersonas.value.toInt(),
-                                created_at = now,
-                                updated_at = now
-                            )
-                            viewModel.addReserva(reserva)
-                            navHostController.popBackStack()
+                    val checkInParsed = LocalDate.parse(checkIn, dateFormatter)
+                    val checkOutParsed = LocalDate.parse(checkOut, dateFormatter)
+                    val today = LocalDate.now()
+
+                    when {
+                        checkInParsed.isAfter(checkOutParsed) -> {
+                            errorMessage.value = "La fecha de Check-In no puede ser posterior a la de Check-Out"
+                        }
+                        checkInParsed.isBefore(today) || checkOutParsed.isBefore(today) -> {
+                            errorMessage.value = "Las fechas deben ser posteriores al día de hoy ${today.format(dateFormatter)}"
+                        }
+                        else -> {
+                            viewModel.viewModelScope.launch {
+                                if (!isRoomAvailable(habitacionId, checkIn, checkOut)) {
+                                    errorMessage.value = "La habitación ya está reservada en las fechas seleccionadas"
+                                } else {
+                                    val totalPrice = calculateTotalPrice(checkIn, checkOut, habitacion.precio.toDouble())
+                                    val now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
+                                    val reserva = Reserva(
+                                        id = null,
+                                        users_id = userId,
+                                        habitacion_id = habitacionId,
+                                        check_in = checkIn,
+                                        check_out = checkOut,
+                                        precio_total = totalPrice.toString(),
+                                        pagado = 0,
+                                        confirmado = 0,
+                                        dni = null,
+                                        numero_personas = numeroPersonas.value.toInt(),
+                                        created_at = now,
+                                        updated_at = now
+                                    )
+                                    viewModel.addReserva(reserva)
+                                    navHostController.popBackStack()
+                                }
+                            }
                         }
                     }
                 }
