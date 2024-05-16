@@ -53,7 +53,7 @@ fun NavigationBottomBar(navHostController: NavHostController) {
         NavigationItem(
             Icons.Filled.AccountCircle,
             "Perfil",
-            "com.pabloat.GameHubConnect.ui.views.ProfileScreen"
+            "ProfileScreen"
         )
     )
 

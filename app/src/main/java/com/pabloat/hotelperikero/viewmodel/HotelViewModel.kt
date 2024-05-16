@@ -352,4 +352,17 @@ class HotelViewModel(private val repository: HotelRepository) : ViewModel() {
         }
         return null
     }
+
+    fun logIn(user: JSONObject) {
+        viewModelScope.launch {
+            _userData.value = user
+        }
+    }
+
+    // Método para cerrar sesión
+    fun logOut() {
+        viewModelScope.launch {
+            _userData.value = null
+        }
+    }
 }

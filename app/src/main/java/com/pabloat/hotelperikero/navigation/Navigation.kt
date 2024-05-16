@@ -17,6 +17,7 @@ import com.pabloat.hotelperikero.ui.views.HabitacionDetalleScreen
 import com.pabloat.hotelperikero.ui.views.HabitacionesScreen
 import com.pabloat.hotelperikero.ui.views.LoginScreen
 import com.pabloat.hotelperikero.ui.views.MainScreen
+import com.pabloat.hotelperikero.ui.views.ProfileScreen
 import com.pabloat.hotelperikero.ui.views.ReseniasScreen
 import com.pabloat.hotelperikero.ui.views.ReservationEspaciosFormScreen
 import com.pabloat.hotelperikero.ui.views.ReservationFormScreen
@@ -68,6 +69,10 @@ fun MainNavigation(
 
         composable(Destinations.EspaciosScreen.route) {
             EspaciosScreen(navHostController = onNavController, mainViewmodel)
+        }
+
+        composable(Destinations.ProfileScreen.route) {
+            ProfileScreen(navHostController = onNavController, mainViewmodel)
         }
 
         composable("reservation_form/{habitacionId}/{userId}") { backStackEntry ->
