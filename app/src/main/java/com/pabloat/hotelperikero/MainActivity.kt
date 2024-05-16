@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,9 +16,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.pabloat.hotelperikero.data.HotelRepository
@@ -29,6 +26,7 @@ import com.pabloat.hotelperikero.data.remote.RemoteHotelDataSource
 import com.pabloat.hotelperikero.data.remote.RetrofitBuilder
 import com.pabloat.hotelperikero.navigation.MainNavigation
 import com.pabloat.hotelperikero.navigation.MainTopBar
+import com.pabloat.hotelperikero.ui.util.NavigationBottomBar
 import com.pabloat.hotelperikero.viewmodel.HotelViewModel
 import com.pabloat.hotelperikero.viewmodel.HotelViewModelFactory
 
@@ -74,6 +72,7 @@ fun MainApp() {
                     context = context
                 )
             }
+            NavigationBottomBar(navHostController)
         }
     }
 }
