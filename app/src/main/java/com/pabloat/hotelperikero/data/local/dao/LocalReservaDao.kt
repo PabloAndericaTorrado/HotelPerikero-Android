@@ -26,5 +26,7 @@ interface LocalReservaDao {
     @Query("SELECT * FROM reserva WHERE habitacion_id = :habitacionId")
     suspend fun getReservasByHabitacion(habitacionId: Int): List<Reserva>
 
+    @Query("SELECT * FROM Reserva WHERE users_id = :userId")
+    suspend fun getReservasByUserId(userId: Int): List<Reserva>
 
 }

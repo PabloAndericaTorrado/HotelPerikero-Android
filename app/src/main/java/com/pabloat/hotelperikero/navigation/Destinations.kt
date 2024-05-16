@@ -18,4 +18,6 @@ sealed class Destinations(val route: String) {
         Destinations(route = "reservationEspacio_form/{espacioId}/{userId}")
     object ProfileScreen : Destinations(route = "ProfileScreen")
 
+    object UserReservationsScreen : Destinations(route = "UserReservationsScreen")
+
 }

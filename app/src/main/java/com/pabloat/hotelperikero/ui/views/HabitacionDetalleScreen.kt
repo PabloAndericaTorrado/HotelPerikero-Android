@@ -1,7 +1,6 @@
 package com.pabloat.hotelperikero.ui.views
 
 //noinspection UsingMaterialAndMaterial3Libraries
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -28,11 +27,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
-import com.pabloat.hotelperikero.R
 import com.pabloat.hotelperikero.navigation.Destinations
 import com.pabloat.hotelperikero.viewmodel.HotelViewModel
 
@@ -44,7 +41,7 @@ fun HabitacionDetalleScreen(
 ) {
     val habitacion = viewModel.getHabitacionById(habitacionId)
     val servicios by viewModel.servicios.collectAsState()
-    val userLoggedIn by viewModel.userData.collectAsState() // Obteniendo el estado del usuario
+    val userLoggedIn by viewModel.userData.collectAsState()
 
     Scaffold(
         topBar = {

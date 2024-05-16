@@ -36,5 +36,6 @@ class CacheLists {
         var cacheServicioEventos = MutableStateFlow<List<ServicioEvento>>(emptyList())
         var cacheUsers = MutableStateFlow<List<User>>(emptyList())
         var cacheRandomHabitaciones = MutableStateFlow<List<Habitacion>>(emptyList())
+        var cacheUserReservations = MutableStateFlow<List<Reserva>>(emptyList())
     }
 }

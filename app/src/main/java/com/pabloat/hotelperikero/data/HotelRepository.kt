@@ -179,6 +179,10 @@ class HotelRepository(
         return localds.getReservasByHabitacion(habitacionId)
     }
 
+    suspend fun getReservasByUserId(user_id: Int): List<Reserva> {
+        return localds.getReservasByUserId(user_id)
+    }
+
     // ------------------------------ Habitaciones --------------------------------
     suspend fun getRemoteHabitaciones(): List<Habitacion> {
         val habitacionesDTO = remoteds.getHabitaciones()

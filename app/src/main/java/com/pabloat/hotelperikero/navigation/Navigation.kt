@@ -23,6 +23,7 @@ import com.pabloat.hotelperikero.ui.views.ReservationEspaciosFormScreen
 import com.pabloat.hotelperikero.ui.views.ReservationFormScreen
 import com.pabloat.hotelperikero.ui.views.ServiciosEventosScreen
 import com.pabloat.hotelperikero.ui.views.ServiciosScreen
+import com.pabloat.hotelperikero.ui.views.UserReservationsScreen
 import com.pabloat.hotelperikero.viewmodel.HotelViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -117,6 +118,10 @@ fun MainNavigation(
                 navHostController = onNavController, viewModel = mainViewmodel,
                 espacioId = 1
             )
+        }
+
+        composable(Destinations.UserReservationsScreen.route) {
+            UserReservationsScreen(navHostController = onNavController, viewModel = mainViewmodel)
         }
 
     }

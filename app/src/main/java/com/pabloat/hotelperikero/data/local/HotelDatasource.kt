@@ -126,6 +126,11 @@ class HotelDatasource (applicationContext: Context){
         return reservaEventosDao.getReservasByEspacio(espacioId)
     }
 
+    suspend fun getReservasByUserId(user_id: Int): List<Reserva> {
+        return reservaDao.getReservasByUserId(user_id)
+    }
+
+
 
     private suspend fun checkDatabase() {
         val habitaciones = habitacionDao.getAll().first()

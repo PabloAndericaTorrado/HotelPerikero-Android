@@ -49,7 +49,7 @@ fun NavigationBottomBar(navHostController: NavHostController) {
         ),
         NavigationItem(Icons.Filled.Search, "Busqueda", "HabitacionesScreen"),
         NavigationItem(Icons.Filled.MeetingRoom, "Espacios", "EspaciosScreen"),
-        NavigationItem(Icons.Filled.Event, "Reservas", ""),
+        NavigationItem(Icons.Filled.Event, "Reservas", "UserReservationsScreen"),
         NavigationItem(
             Icons.Filled.AccountCircle,
             "Perfil",

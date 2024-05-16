@@ -19,6 +19,7 @@ import com.pabloat.hotelperikero.ui.util.CacheLists.Companion.cacheReservaEvento
 import com.pabloat.hotelperikero.ui.util.CacheLists.Companion.cacheReservas
 import com.pabloat.hotelperikero.ui.util.CacheLists.Companion.cacheServicioEventos
 import com.pabloat.hotelperikero.ui.util.CacheLists.Companion.cacheServicios
+import com.pabloat.hotelperikero.ui.util.CacheLists.Companion.cacheUserReservations
 import com.pabloat.hotelperikero.ui.util.ScreenState
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -40,6 +41,7 @@ class HotelViewModel(private val repository: HotelRepository) : ViewModel() {
     val serviciosEventos: StateFlow<List<ServicioEvento>> = cacheServicioEventos.asStateFlow()
     val espacios: StateFlow<List<Espacio>> = cacheEspacios.asStateFlow()
     val randomHabitaciones: StateFlow<List<Habitacion>> = cacheRandomHabitaciones.asStateFlow()
+    val userReservations: StateFlow<List<Reserva>> = cacheUserReservations.asStateFlow()
 
     private val _uiState: MutableStateFlow<ScreenState> = MutableStateFlow(ScreenState.Loading)
     val uiState: StateFlow<ScreenState> = _uiState.asStateFlow()
@@ -67,6 +69,7 @@ class HotelViewModel(private val repository: HotelRepository) : ViewModel() {
                 fetchReservasEventos()
                 fetchServiciosEventos()
                 fetchEspacios()
+
                 _uiState.value = ScreenState.Success(cacheHabitaciones.value) // Proporciona la lista de habitaciones
             } catch (e: Exception) {
                 _uiState.value = ScreenState.Error(e.message ?: "Unknown error")
@@ -323,6 +326,17 @@ class HotelViewModel(private val repository: HotelRepository) : ViewModel() {
     suspend fun getReservasByEspacio(espacioId: Int): List<ReservaEventos> {
         return withContext(Dispatchers.IO) {
             repository.getReservasByEspacio(espacioId)
+        }
+    }
+
+    fun loadUserReservations(userId: Int) {
+        viewModelScope.launch {
+            try {
+                val userReservations = repository.getReservasByUserId(userId)
+                cacheUserReservations.value = userReservations
+            } catch (e: Exception) {
+                _uiState.value = ScreenState.Error(e.message ?: "Unknown error")
+            }
         }
     }
 
