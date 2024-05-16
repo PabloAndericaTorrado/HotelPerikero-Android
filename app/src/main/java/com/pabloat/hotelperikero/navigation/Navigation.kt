@@ -10,15 +10,17 @@ import androidx.compose.runtime.collectAsState
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-
 import com.pabloat.hotelperikero.ui.views.ContactScreen
+import com.pabloat.hotelperikero.ui.views.EspacioDetalleScreen
 import com.pabloat.hotelperikero.ui.views.EspaciosScreen
 import com.pabloat.hotelperikero.ui.views.HabitacionDetalleScreen
 import com.pabloat.hotelperikero.ui.views.HabitacionesScreen
 import com.pabloat.hotelperikero.ui.views.LoginScreen
 import com.pabloat.hotelperikero.ui.views.MainScreen
 import com.pabloat.hotelperikero.ui.views.ReseniasScreen
+import com.pabloat.hotelperikero.ui.views.ReservationEspaciosFormScreen
 import com.pabloat.hotelperikero.ui.views.ReservationFormScreen
+import com.pabloat.hotelperikero.ui.views.ServiciosEventosScreen
 import com.pabloat.hotelperikero.ui.views.ServiciosScreen
 import com.pabloat.hotelperikero.viewmodel.HotelViewModel
 
@@ -31,8 +33,9 @@ fun MainNavigation(
     context: Context
 ) {
     val destinoInicial = Destinations.MainScreen.route
-    val id = mainViewmodel.selectedHabitacionId.collectAsState().value
-    Log.d("Habitacion ID", "ID: $id")
+    val idHabitacion = mainViewmodel.selectedHabitacionId.collectAsState().value
+    val idEspacio = mainViewmodel.selectedespaciosID.collectAsState().value
+    Log.d("MainNavigation", "idEspacio: $idEspacio")
 
     NavHost(navController = onNavController, startDestination = destinoInicial) {
         composable(Destinations.LoginScreen.route) {
@@ -53,6 +56,10 @@ fun MainNavigation(
 
         composable(Destinations.ServiciosScreen.route) {
             ServiciosScreen(navHostController = onNavController, mainViewmodel)
+        }
+
+        composable(Destinations.ServiciosEventosScreen.route) {
+            ServiciosEventosScreen(navHostController = onNavController, mainViewmodel)
         }
 
         composable(Destinations.ReseniasScreen.route) {
@@ -78,11 +85,34 @@ fun MainNavigation(
             }
         }
 
+        composable("reservationEspacio_form/{espacioId}/{userId}") { backStackEntry ->
+            val espacioId = backStackEntry.arguments?.getString("espacioId")?.toIntOrNull()
+            val userId = backStackEntry.arguments?.getString("userId")?.toIntOrNull()
+            if (espacioId != null && userId != null) {
+                ReservationEspaciosFormScreen(
+                    espacioId = espacioId,
+                    userId = userId,
+                    navHostController = onNavController,
+                    viewModel = mainViewmodel
+                )
+            } else {
+                // Manejar el caso de error aquí
+            }
+        }
+
         composable(Destinations.HabitacionDetalleScreen.route) {
             HabitacionDetalleScreen(
                 navHostController = onNavController, viewModel = mainViewmodel,
-                habitacionId = id
+                habitacionId = idHabitacion
             )
         }
+
+        composable(Destinations.EspacioDetalleScreen.route) {
+            EspacioDetalleScreen(
+                navHostController = onNavController, viewModel = mainViewmodel,
+                espacioId = 1
+            )
+        }
+
     }
 }

@@ -106,12 +106,24 @@ class HotelDatasource (applicationContext: Context){
         return habitacionDao.getHabitacionById(id)
     }
 
+    suspend fun getEspaciosById(id: Int?): Espacio? {
+        return espacioDao.getEspacioById(id)
+    }
+
     suspend fun insertReserva(reserva: Reserva) {
         reservaDao.insert(reserva)
     }
 
+    suspend fun insertReservaevento(reserva: ReservaEventos) {
+        reservaEventosDao.insert(reserva)
+    }
+
     suspend fun getReservasByHabitacion(habitacionId: Int): List<Reserva> {
         return reservaDao.getReservasByHabitacion(habitacionId)
+    }
+
+    suspend fun getReservasByEspacio(espacioId: Int): List<ReservaEventos> {
+        return reservaEventosDao.getReservasByEspacio(espacioId)
     }
 
 

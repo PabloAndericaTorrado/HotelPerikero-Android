@@ -14,8 +14,11 @@ interface LocalReservaEventosDao {
     fun getAll(): Flow<List<ReservaEventos>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(reservaEventos: List<ReservaEventos>)
+    suspend fun insert(reservaEventos: ReservaEventos)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(reservaEventos: List<ReservaEventos>)
+
+    @Query("SELECT * FROM ReservaEventos WHERE espacio_id = :espacioId")
+    suspend fun getReservasByEspacio(espacioId: Int): List<ReservaEventos>
 }

@@ -1,5 +1,6 @@
 package com.pabloat.hotelperikero.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pabloat.hotelperikero.data.HotelRepository
@@ -307,9 +308,48 @@ class HotelViewModel(private val repository: HotelRepository) : ViewModel() {
         }
     }
 
+    fun addReservaEvento(reserva: ReservaEventos) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.insertReservaEvento(reserva)
+        }
+    }
+
     suspend fun getReservasByHabitacion(habitacionId: Int): List<Reserva> {
         return withContext(Dispatchers.IO) {
             repository.getReservasByHabitacion(habitacionId)
         }
+    }
+
+    suspend fun getReservasByEspacio(espacioId: Int): List<ReservaEventos> {
+        return withContext(Dispatchers.IO) {
+            repository.getReservasByEspacio(espacioId)
+        }
+    }
+
+    private val _selectedespaciosID = MutableStateFlow<Int?>(null)
+    val selectedespaciosID: StateFlow<Int?> = _selectedespaciosID.asStateFlow()
+    fun selectEspacioId(id: Int?) {
+        _selectedespaciosID.value = id
+        Log.d("MainNavigation", "Espacio ViewModel: $id")
+    }
+
+    fun getEspacioById(id: Int?): Espacio? {
+        val cachedRoom = cacheEspacios.value.find { it.id == id }
+        if (cachedRoom != null) {
+            return cachedRoom
+        }
+        viewModelScope.launch(handler + Dispatchers.IO) {
+            try {
+                val room = repository.getEspaciosById(id)
+                room?.let {
+                    val updatedList = cacheEspacios.value.toMutableList().apply { add(it) }
+                    cacheEspacios.value = updatedList
+                    repository.saveEspacios(updatedList)
+                }
+            } catch (e: Exception) {
+                _uiState.value = ScreenState.Error(e.message ?: "Unknown error")
+            }
+        }
+        return null
     }
 }

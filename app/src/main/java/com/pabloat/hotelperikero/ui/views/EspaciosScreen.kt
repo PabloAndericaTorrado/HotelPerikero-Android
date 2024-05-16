@@ -1,8 +1,7 @@
 package com.pabloat.hotelperikero.ui.views
 
-//noinspection UsingMaterialAndMaterial3Libraries
 import android.annotation.SuppressLint
-import androidx.compose.foundation.ExperimentalFoundationApi
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,25 +27,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
-import com.pabloat.hotelperikero.R
 import com.pabloat.hotelperikero.data.local.entities.Espacio
+import com.pabloat.hotelperikero.navigation.Destinations
 import com.pabloat.hotelperikero.viewmodel.HotelViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "SuspiciousIndentation")
-@ExperimentalFoundationApi
 @Composable
 fun EspaciosScreen(navHostController: NavHostController, mainViewModel: HotelViewModel) {
-   val espacios = mainViewModel.espacios.collectAsState().value
+    val espacios = mainViewModel.espacios.collectAsState().value
     Scaffold(
         topBar = {
             TopAppBar(
                 backgroundColor = Color.Gray,
                 title = {
-                    androidx.compose.material3.Text(
+                    Text(
                         "¡Nuestros Espacios!",
                         color = Color.White,
                         style = MaterialTheme.typography.titleLarge
@@ -64,38 +61,53 @@ fun EspaciosScreen(navHostController: NavHostController, mainViewModel: HotelVie
             )
         },
         content = { padding ->
-            Image(painter = painterResource(id = R.drawable.fondo_oscurecido),
-                contentDescription = "background",
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop)
             Column(modifier = Modifier
                 .padding(padding)
                 .fillMaxWidth()
                 .fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                EspacioList(espacios = espacios)
+                EspacioList(
+                    espacios = espacios,
+                    navHostController = navHostController,
+                    mainViewModel = mainViewModel
+                )
             }
         }
     )
 }
 
 @Composable
-fun EspacioList(espacios: List<Espacio>) {
+fun EspacioList(
+    espacios: List<Espacio>,
+    navHostController: NavHostController,
+    mainViewModel: HotelViewModel
+) {
     LazyColumn(modifier = Modifier.padding(16.dp)) {
         items(espacios) { espacio ->
-            EspacioCard(espacio = espacio)
+            EspacioCard(
+                espacio = espacio,
+                navHostController = navHostController,
+                mainViewModel = mainViewModel
+            )
         }
     }
 }
 
 @Composable
-fun EspacioCard(espacio: Espacio) {
+fun EspacioCard(
+    espacio: Espacio,
+    navHostController: NavHostController,
+    mainViewModel: HotelViewModel
+) {
     Card(
         modifier = Modifier
             .padding(10.dp)
             .fillMaxWidth()
     ) {
-        Column(Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
             Image(
                 painter = rememberAsyncImagePainter(model = getEspacioImageUrl(espacio.id)), // Implementar esta función para obtener recursos de imagen
                 contentDescription = "Imagen del espacio ${espacio.nombre}",
@@ -108,7 +120,12 @@ fun EspacioCard(espacio: Espacio) {
             Text(espacio.descripcion, style = MaterialTheme.typography.bodySmall)
             Text("${espacio.precio}€ por hora", style = MaterialTheme.typography.bodySmall)
             if (espacio.disponible == 1) {
-                Button(onClick = { /* Acción, por ejemplo, navegar a detalles */ }) {
+                Button(onClick = {
+                    mainViewModel.selectEspacioId(espacio.id);
+                    navHostController.navigate(Destinations.EspacioDetalleScreen.route);
+                    Log.d("MainNavigation", "Espacio seleccionado: ${espacio.id}")
+
+                }) {
                     Text("Reservar")
                 }
             } else {

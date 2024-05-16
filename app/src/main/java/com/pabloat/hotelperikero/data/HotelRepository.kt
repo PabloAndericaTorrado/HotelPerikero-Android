@@ -40,6 +40,10 @@ class HotelRepository(
         return localds.getAllEspacios()
     }
 
+    suspend fun getEspaciosById(id: Int?): Espacio? {
+        return localds.getEspaciosById(id)
+    }
+
 
 // ------------------------------ ServiciosEventos --------------------------------
 
@@ -87,6 +91,16 @@ class HotelRepository(
     suspend fun getLocalReservaEvento(): Flow<List<ReservaEventos>> {
         return localds.getAllReservasEventos()
     }
+
+    suspend fun insertReservaEvento(reserva: ReservaEventos) {
+        localds.insertReservaevento(reserva)
+    }
+
+
+    suspend fun getReservasByEspacio(espacioId: Int): List<ReservaEventos> {
+        return localds.getReservasByEspacio(espacioId)
+    }
+
 
 
 // ------------------------------ Resenias --------------------------------

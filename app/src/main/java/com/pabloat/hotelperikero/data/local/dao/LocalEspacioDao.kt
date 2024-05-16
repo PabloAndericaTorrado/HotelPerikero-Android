@@ -17,4 +17,7 @@ interface LocalEspacioDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(espacios: List<Espacio>)
+
+    @Query("SELECT * FROM Espacio WHERE id = :id")
+    suspend fun getEspacioById(id: Int?): Espacio?
 }

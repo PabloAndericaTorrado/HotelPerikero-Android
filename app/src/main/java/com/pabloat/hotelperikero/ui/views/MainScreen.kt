@@ -1,15 +1,33 @@
 package com.pabloat.hotelperikero.ui.views
 
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -28,6 +46,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.pabloat.hotelperikero.data.local.entities.Espacio
 import com.pabloat.hotelperikero.data.local.entities.Habitacion
 import com.pabloat.hotelperikero.data.local.entities.Servicio
+import com.pabloat.hotelperikero.data.local.entities.ServicioEvento
 import com.pabloat.hotelperikero.navigation.Destinations
 import com.pabloat.hotelperikero.viewmodel.HotelViewModel
 
@@ -451,4 +470,95 @@ fun getEspacioImageUrl(espacioId: Int?): String {
     )
 
     return imageUrls[espacioId] ?: "https://www.theimperialbcn.com/wp-content/uploads/2016/05/salon-imperial-hztl.jpg"
+}
+
+fun getServiceEventoImageUrl(servicioEventoId: Int?): String {
+    val imageUrls = mapOf(
+        1 to "https://raw.githubusercontent.com/PabloAndericaTorrado/HotelPerikero-Laravel/main/public/servicio_eventos_images/servicio_1.jpg?token=GHSAT0AAAAAACQZLRQZZGRHI4OOUVSAMUIWZSF2QLQ",
+        2 to "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREZe56xJe5VLsfrDSEyXBV4Jn2T8hrrZjUFeg1VxJQclfUqJvY",
+        3 to "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSZ47U2HyP8K1kjS9heZAFqlMtGszRi3P9sEKEvp5WNbotd84ed",
+        4 to "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTIWax5kfzHqFRn29t273VInfxUnfNCi-Sq7XtqKeFhYtJFK9ee",
+        5 to "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTTt7tOl3foEwKXD6owwZqNEc90lpDY19V6wGPy2BG3i0i_qqDF",
+        6 to "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTMcB2YAStYXAt5unrMqmHnrA3TZb2t7TT3K9Qzm3jrQdKUsCU5",
+        7 to "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQ_tVERH2a4bY7ONnFq9-j3EUx1h76ShdeeGG9fgrl1JVnAV8aa",
+    )
+
+    return imageUrls[servicioEventoId]
+        ?: "https://github.com/PabloAndericaTorrado/HotelPerikero-Laravel/blob/main/public/servicio_eventos_images/servicio_7.jpg?raw=true"
+}
+
+@Composable
+fun ServiceEspacioSectionMain(
+    servicios: List<ServicioEvento>,
+    navHostController: NavHostController
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            "¡Todos Nuestros Servicios!",
+            style = MaterialTheme.typography.headlineSmall.copy(
+                fontSize = 24.sp
+            ),
+            color = MaterialTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            "¡Toca Aquí Para Ver Más!",
+            modifier = Modifier
+                .clickable { navHostController.navigate(Destinations.ServiciosEventosScreen.route) }
+                .padding(horizontal = 16.dp),
+            color = MaterialTheme.colorScheme.primary,
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        LazyRow {
+            items(servicios) { servicio ->
+                ServiceEspacioCardMain(servicio)
+            }
+        }
+    }
+}
+
+@Composable
+fun ServiceEspacioCardMain(servicio: ServicioEvento) {
+    val painter = rememberAsyncImagePainter(model = getServiceEventoImageUrl(servicio.id))
+    Card(
+        modifier = Modifier
+            .padding(10.dp)
+            .width(250.dp)
+            .shadow(8.dp, shape = RoundedCornerShape(16.dp)),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painter,
+                contentDescription = "Imagen del servicio ${servicio.descripcion}",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .height(180.dp)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                servicio.nombre,
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = 4.dp),
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
+    }
 }
