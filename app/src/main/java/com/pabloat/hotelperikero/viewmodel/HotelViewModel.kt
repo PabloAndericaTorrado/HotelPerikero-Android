@@ -11,6 +11,7 @@ import com.pabloat.hotelperikero.data.local.entities.Reserva
 import com.pabloat.hotelperikero.data.local.entities.ReservaEventos
 import com.pabloat.hotelperikero.data.local.entities.Servicio
 import com.pabloat.hotelperikero.data.local.entities.ServicioEvento
+import com.pabloat.hotelperikero.data.remote.RetrofitBuilder
 import com.pabloat.hotelperikero.ui.util.CacheLists.Companion.cacheEspacios
 import com.pabloat.hotelperikero.ui.util.CacheLists.Companion.cacheHabitaciones
 import com.pabloat.hotelperikero.ui.util.CacheLists.Companion.cacheRandomHabitaciones
@@ -32,6 +33,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
+import retrofit2.Response
 
 class HotelViewModel(private val repository: HotelRepository) : ViewModel() {
     val habitaciones: StateFlow<List<Habitacion>> = cacheHabitaciones.asStateFlow()
@@ -391,6 +393,24 @@ class HotelViewModel(private val repository: HotelRepository) : ViewModel() {
     fun logOut() {
         viewModelScope.launch {
             _userData.value = null
+        }
+    }
+
+    fun createReserva(reserva: Reserva, onSuccess: () -> Unit, onError: (String) -> Unit) {
+        viewModelScope.launch {
+            try {
+                val response: Response<Reserva> = RetrofitBuilder.apiService.createReserva(reserva)
+                if (response.isSuccessful) {
+                    Log.d("HotelViewModel", "Reserva creada exitosamente: ${response.body()}")
+                    onSuccess()
+                } else {
+                    Log.e("HotelViewModel", "Error al crear la reserva: ${response.errorBody()?.string()}")
+                    onError("Error al crear la reserva: ${response.message()}")
+                }
+            } catch (e: Exception) {
+                Log.e("HotelViewModel", "Excepción al crear la reserva", e)
+                onError("Excepción al crear la reserva: ${e.message}")
+            }
         }
     }
 }
