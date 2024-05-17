@@ -21,4 +21,8 @@ interface LocalReservaEventosDao {
 
     @Query("SELECT * FROM ReservaEventos WHERE espacio_id = :espacioId")
     suspend fun getReservasByEspacio(espacioId: Int): List<ReservaEventos>
+
+
+    @Query("SELECT * FROM ReservaEventos WHERE users_id = :userId")
+    suspend fun getReservasEventoByUserId(userId: Int): List<ReservaEventos>
 }

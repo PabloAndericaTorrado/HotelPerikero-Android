@@ -19,6 +19,7 @@ import com.pabloat.hotelperikero.ui.util.CacheLists.Companion.cacheReservaEvento
 import com.pabloat.hotelperikero.ui.util.CacheLists.Companion.cacheReservas
 import com.pabloat.hotelperikero.ui.util.CacheLists.Companion.cacheServicioEventos
 import com.pabloat.hotelperikero.ui.util.CacheLists.Companion.cacheServicios
+import com.pabloat.hotelperikero.ui.util.CacheLists.Companion.cacheUserEventReservations
 import com.pabloat.hotelperikero.ui.util.CacheLists.Companion.cacheUserReservations
 import com.pabloat.hotelperikero.ui.util.ScreenState
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -42,6 +43,9 @@ class HotelViewModel(private val repository: HotelRepository) : ViewModel() {
     val espacios: StateFlow<List<Espacio>> = cacheEspacios.asStateFlow()
     val randomHabitaciones: StateFlow<List<Habitacion>> = cacheRandomHabitaciones.asStateFlow()
     val userReservations: StateFlow<List<Reserva>> = cacheUserReservations.asStateFlow()
+    val userEventReservations: StateFlow<List<ReservaEventos>> =
+        cacheUserEventReservations.asStateFlow()
+
 
     private val _uiState: MutableStateFlow<ScreenState> = MutableStateFlow(ScreenState.Loading)
     val uiState: StateFlow<ScreenState> = _uiState.asStateFlow()
@@ -326,6 +330,16 @@ class HotelViewModel(private val repository: HotelRepository) : ViewModel() {
     suspend fun getReservasByEspacio(espacioId: Int): List<ReservaEventos> {
         return withContext(Dispatchers.IO) {
             repository.getReservasByEspacio(espacioId)
+        }
+    }
+    fun loadUserEventReservations(userId: Int) {
+        viewModelScope.launch {
+            try {
+                val userEventReservations = repository.getReservasEventosByUserId(userId)
+                cacheUserEventReservations.value = userEventReservations
+            } catch (e: Exception) {
+                _uiState.value = ScreenState.Error(e.message ?: "Unknown error")
+            }
         }
     }
 

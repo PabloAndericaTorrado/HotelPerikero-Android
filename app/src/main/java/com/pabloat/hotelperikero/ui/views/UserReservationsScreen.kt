@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.pabloat.hotelperikero.data.local.entities.Reserva
+import com.pabloat.hotelperikero.data.local.entities.ReservaEventos
 import com.pabloat.hotelperikero.navigation.Destinations
 import com.pabloat.hotelperikero.viewmodel.HotelViewModel
 
@@ -38,16 +39,22 @@ fun UserReservationsScreen(
 ) {
     val userLoggedIn by viewModel.userData.collectAsState()
     val userReservations by viewModel.userReservations.collectAsState()
+    val userEventReservations by viewModel.userEventReservations.collectAsState()
     if (userLoggedIn != null) {
         val userId = userLoggedIn!!.getInt("id")
         viewModel.loadUserReservations(userId)
-
+        viewModel.loadUserEventReservations(userId)
         Scaffold(
 
         ) {
             Column {
                 UserReservationList(
                     userReservations = userReservations,
+                    navHostController = navHostController
+                )
+
+                UserEventReservationList(
+                    userEventReservations = userEventReservations,
                     navHostController = navHostController
                 )
             }
@@ -61,6 +68,19 @@ fun UserReservationsScreen(
         )
     }
 }
+
+@Composable
+fun UserEventReservationList(
+    userEventReservations: List<ReservaEventos>,
+    navHostController: NavHostController
+) {
+    LazyColumn(modifier = Modifier.padding(16.dp)) {
+        items(userEventReservations) { reservaEvento ->
+            UserEventReservationCard(reserva = reservaEvento, navHostController = navHostController)
+        }
+    }
+}
+
 
 @Composable
 fun UserReservationList(
@@ -112,6 +132,58 @@ fun UserReservationCard(
                     Text("Check-Out: ${reserva.check_out}")
                     Text("Precio: ${reserva.precio_total}")
                     Text("Número de huespedes: ${reserva.numero_personas}")
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = { showDialog = false },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
+                ) {
+                    Text("Cerrar")
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun UserEventReservationCard(
+    reserva: ReservaEventos,
+    navHostController: NavHostController
+) {
+    var showDialog by remember { mutableStateOf(false) }
+
+    Card(
+        modifier = Modifier
+            .padding(10.dp)
+            .fillMaxWidth()
+            .clickable {
+                showDialog = true
+            }
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.Start
+        ) {
+            Text(
+                "Reserva de Evento ID: ${reserva.id}",
+                style = MaterialTheme.typography.titleMedium
+            )
+            Text("Check-In: ${reserva.check_in}", style = MaterialTheme.typography.bodyMedium)
+            Text("Check-Out: ${reserva.check_out}", style = MaterialTheme.typography.bodyMedium)
+        }
+    }
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text("Detalles de la reserva de evento") },
+            text = {
+                Column {
+                    Text("Reserva de Evento ID: ${reserva.id}")
+                    Text("Check-In: ${reserva.check_in}")
+                    Text("Check-Out: ${reserva.check_out}")
+                    Text("Precio Total: ${reserva.precio_total}")
+                    Text("Cantidad de Personas: ${reserva.cantidad_personas}")
                 }
             },
             confirmButton = {

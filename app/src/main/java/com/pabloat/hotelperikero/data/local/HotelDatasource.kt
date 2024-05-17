@@ -130,6 +130,10 @@ class HotelDatasource (applicationContext: Context){
         return reservaDao.getReservasByUserId(user_id)
     }
 
+    suspend fun getReservasEventosByUserId(user_id: Int): List<ReservaEventos> {
+        return reservaEventosDao.getReservasEventoByUserId(user_id)
+    }
+
 
 
     private suspend fun checkDatabase() {

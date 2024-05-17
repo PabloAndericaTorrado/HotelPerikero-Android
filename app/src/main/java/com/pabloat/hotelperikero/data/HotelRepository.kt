@@ -101,6 +101,10 @@ class HotelRepository(
         return localds.getReservasByEspacio(espacioId)
     }
 
+    suspend fun getReservasEventosByUserId(user_id: Int): List<ReservaEventos> {
+        return localds.getReservasEventosByUserId(user_id)
+    }
+
 
 
 // ------------------------------ Resenias --------------------------------
