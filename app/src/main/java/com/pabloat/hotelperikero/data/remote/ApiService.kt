@@ -39,7 +39,7 @@ interface ApiService {
     @GET("espacios")
     suspend fun getEspacios(): EspaciosDTO
 
-    @POST("reservas")
+    @POST("reservas/create")
     fun createReserva(@Body reserva: Reserva): Call<Reserva>
 }
 
