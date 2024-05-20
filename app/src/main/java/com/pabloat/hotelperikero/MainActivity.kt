@@ -29,6 +29,7 @@ import com.pabloat.hotelperikero.navigation.MainTopBar
 import com.pabloat.hotelperikero.ui.util.NavigationBottomBar
 import com.pabloat.hotelperikero.viewmodel.HotelViewModel
 import com.pabloat.hotelperikero.viewmodel.HotelViewModelFactory
+import com.pabloat.hotelperikero.viewmodel.ReservaViewModelFactory
 
 class MainActivity : ComponentActivity() {
 
@@ -53,9 +54,11 @@ fun MainApp() {
     val appDatabase = remember { AppDataBase.getDatabase(context) }
     val remoteDataSource = remember { RemoteHotelDataSource(RetrofitBuilder.apiService) }
     val localDataSource = remember { HotelDatasource(context) }
+    val reservaDao = remember { appDatabase.reservaDao() }
     val repository = remember { HotelRepository(localDataSource, remoteDataSource) }
     val viewModelFactory = remember { HotelViewModelFactory(repository) }
     val mainViewModel: HotelViewModel = viewModel(factory = viewModelFactory)
+    val reservaViewModelFactory = remember { ReservaViewModelFactory(reservaDao) }
     val navHostController = rememberNavController()
 
     Scaffold(topBar = { MainTopBar() }) {
@@ -69,7 +72,8 @@ fun MainApp() {
                 MainNavigation(
                     onNavController = navHostController,
                     mainViewmodel = mainViewModel,
-                    context = context
+                    context = context,
+                    reservaViewModelFactory = reservaViewModelFactory // Pasamos el ViewModelFactory aquí
                 )
             }
             NavigationBottomBar(navHostController)

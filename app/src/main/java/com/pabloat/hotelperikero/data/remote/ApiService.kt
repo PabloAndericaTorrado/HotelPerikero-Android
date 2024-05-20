@@ -8,12 +8,10 @@ import com.pabloat.hotelperikero.data.remote.dtos.ReservaEventosDTO
 import com.pabloat.hotelperikero.data.remote.dtos.ReservasDTO
 import com.pabloat.hotelperikero.data.remote.dtos.ServicioEventosDTO
 import com.pabloat.hotelperikero.data.remote.dtos.ServiciosDTO
-import retrofit2.Response
+import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
-import retrofit2.http.PUT
-import retrofit2.http.Path
 
 /**
  * ApiService es una interfaz que se encarga de definir las peticiones que se pueden realizar a la API.
@@ -42,7 +40,7 @@ interface ApiService {
     suspend fun getEspacios(): EspaciosDTO
 
     @POST("reservas")
-    suspend fun createReserva(@Body reserva: Reserva): Response<Reserva>
+    fun createReserva(@Body reserva: Reserva): Call<Reserva>
 }
 
 
