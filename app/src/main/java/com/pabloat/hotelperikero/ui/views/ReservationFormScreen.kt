@@ -74,7 +74,7 @@ fun ReservationFormScreen(
     userId: Int,
     navHostController: NavHostController,
     viewModel: HotelViewModel,
-    reservaDao: LocalReservaDao // Pasa el DAO como parámetro
+    reservaDao: LocalReservaDao
 ) {
     val reservaViewModel: ReservaViewModel =
         viewModel(factory = ReservaViewModelFactory(reservaDao))
@@ -113,22 +113,6 @@ fun ReservationFormScreen(
         } catch (e: DateTimeParseException) {
             false
         }
-    }
-
-    fun formatInputAsDate(input: TextFieldValue): TextFieldValue {
-        val cleaned = input.text.replace("-", "")
-        val newText = buildString {
-            for (i in cleaned.indices) {
-                if (i == 4 || i == 6) append('-')
-                append(cleaned[i])
-            }
-        }
-        val newCursorPosition =
-            newText.length.coerceAtMost(input.selection.start + (newText.length - input.text.length))
-        return TextFieldValue(
-            text = newText,
-            selection = TextRange(newCursorPosition)
-        )
     }
 
     fun calculateTotalPrice(checkIn: String, checkOut: String, pricePerNight: Double): Double {

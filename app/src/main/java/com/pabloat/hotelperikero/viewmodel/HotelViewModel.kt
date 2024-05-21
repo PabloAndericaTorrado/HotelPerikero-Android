@@ -399,45 +399,4 @@ class HotelViewModel(private val repository: HotelRepository) : ViewModel() {
             _userData.value = null
         }
     }
-
-    fun createReserva(reserva: Reserva, onSuccess: () -> Unit, onError: (String) -> Unit) {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val call: Call<Reserva> = RetrofitBuilder.apiService.createReserva(reserva)
-                call.enqueue(object : Callback<Reserva> {
-                    override fun onResponse(call: Call<Reserva>, response: Response<Reserva>) {
-                        if (response.isSuccessful) {
-                            Log.d(
-                                "HotelViewModel",
-                                "Reserva creada exitosamente: ${response.body()}"
-                            )
-                            viewModelScope.launch(Dispatchers.Main) {
-                                onSuccess()
-                            }
-                        } else {
-                            val errorBody = response.errorBody()?.string() ?: "Error desconocido"
-                            Log.e("HotelViewModel", "Error al crear la reserva: $errorBody")
-                            viewModelScope.launch(Dispatchers.Main) {
-                                onError("Error al crear la reserva: $errorBody")
-                            }
-                        }
-                    }
-
-                    override fun onFailure(call: Call<Reserva>, t: Throwable) {
-                        Log.e("HotelViewModel", "Excepción al crear la reserva", t)
-                        viewModelScope.launch(Dispatchers.Main) {
-                            onError("Excepción al crear la reserva: ${t.message}")
-                        }
-                    }
-                })
-            } catch (e: Exception) {
-                Log.e("HotelViewModel", "Excepción al crear la reserva", e)
-                viewModelScope.launch(Dispatchers.Main) {
-                    onError("Excepción al crear la reserva: ${e.message}")
-                }
-            }
-        }
-    }
-
-
 }

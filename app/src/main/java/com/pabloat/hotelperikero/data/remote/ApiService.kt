@@ -1,6 +1,7 @@
 package com.pabloat.hotelperikero.data.remote
 
 import com.pabloat.hotelperikero.data.local.entities.Reserva
+import com.pabloat.hotelperikero.data.local.entities.ReservaEventos
 import com.pabloat.hotelperikero.data.remote.dtos.EspaciosDTO
 import com.pabloat.hotelperikero.data.remote.dtos.HabitacionesDTO
 import com.pabloat.hotelperikero.data.remote.dtos.ReseniasDTO
@@ -41,6 +42,9 @@ interface ApiService {
 
     @POST("reservas/create")
     fun createReserva(@Body reserva: Reserva): Call<Reserva>
+
+    @POST("reservaEventos/create")
+    fun createReservaEventos(@Body reservaEvento: ReservaEventos): Call<ReservaEventos>
 }
 
 
