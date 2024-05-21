@@ -1,23 +1,44 @@
 package com.pabloat.hotelperikero.ui.views
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -28,19 +49,19 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
-import com.pabloat.hotelperikero.R
 import com.pabloat.hotelperikero.data.local.dao.LocalReservaDao
 import com.pabloat.hotelperikero.data.local.entities.Reserva
 import com.pabloat.hotelperikero.viewmodel.HotelViewModel
 import com.pabloat.hotelperikero.viewmodel.ReservaViewModel
 import com.pabloat.hotelperikero.viewmodel.ReservaViewModelFactory
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import java.time.temporal.ChronoUnit
-import kotlinx.coroutines.launch
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -57,6 +78,8 @@ fun ReservationFormScreen(
     var checkOutDate by remember { mutableStateOf(TextFieldValue("")) }
     val numeroPersonas = remember { mutableStateOf("") }
     val errorMessage = remember { mutableStateOf("") }
+    val showDialog = remember { mutableStateOf(false) }
+
 
     val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
@@ -253,9 +276,9 @@ fun ReservationFormScreen(
                                             created_at = now,
                                             updated_at = now
                                         )
-                                     //   viewModel.addReserva(reserva)
+                                        //   viewModel.addReserva(reserva)
                                         reservaViewModel.crearReserva(reserva)  // Crear reserva en Room y en el servidor
-                                        navHostController.popBackStack()
+                                        //navHostController.popBackStack()
                                     }
                                 }
                             }
@@ -270,6 +293,33 @@ fun ReservationFormScreen(
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text("Reservar", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            }
+            LaunchedEffect(key1 = reservaViewModel.reservaCreada.collectAsState().value) {
+                reservaViewModel.reservaCreada.value?.let {
+                    showDialog.value = true
+                    reservaViewModel.resetReservaCreada()
+                }
+            }
+
+            if (showDialog.value) {
+                AlertDialog(
+                    onDismissRequest = { showDialog.value = false },
+                    title = { Text("Reserva efectuada con éxito") },
+                    text = {
+                        Text("¡Tu reserva ha sido creada con éxito para el día ${checkInDate.text}!")
+                    },
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                showDialog.value = false
+                                navHostController.popBackStack()
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
+                        ) {
+                            Text("Cerrar")
+                        }
+                    }
+                )
             }
         }
     }
