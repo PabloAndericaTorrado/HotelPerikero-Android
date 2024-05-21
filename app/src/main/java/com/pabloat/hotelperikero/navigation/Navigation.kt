@@ -26,6 +26,7 @@ import com.pabloat.hotelperikero.ui.views.ServiciosEventosScreen
 import com.pabloat.hotelperikero.ui.views.ServiciosScreen
 import com.pabloat.hotelperikero.ui.views.UserReservationsScreen
 import com.pabloat.hotelperikero.viewmodel.HotelViewModel
+import com.pabloat.hotelperikero.viewmodel.ReservaEventosViewModelFactory
 import com.pabloat.hotelperikero.viewmodel.ReservaViewModelFactory
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -35,7 +36,8 @@ fun MainNavigation(
     onNavController: NavHostController,
     mainViewmodel: HotelViewModel,
     context: Context,
-    reservaViewModelFactory: ReservaViewModelFactory // Añade esto aquí
+    reservaViewModelFactory: ReservaViewModelFactory,
+    reservaEventosViewModelFactory: ReservaEventosViewModelFactory
 ) {
     val destinoInicial = Destinations.MainScreen.route
     val idHabitacion = mainViewmodel.selectedHabitacionId.collectAsState().value
@@ -89,7 +91,7 @@ fun MainNavigation(
                     userId = userId,
                     navHostController = onNavController,
                     viewModel = mainViewmodel,
-                    reservaDao = reservaViewModelFactory.reservaDao // Pasa el DAO aquí
+                    reservaDao = reservaViewModelFactory.reservaDao
                 )
             } else {
                 // Manejar el caso de error aquí
@@ -104,7 +106,8 @@ fun MainNavigation(
                     espacioId = espacioId,
                     userId = userId,
                     navHostController = onNavController,
-                    viewModel = mainViewmodel
+                    viewModel = mainViewmodel,
+                    reservaEventosDao = reservaEventosViewModelFactory.reservaEventosDao
                 )
             } else {
                 // Manejar el caso de error aquí
