@@ -6,6 +6,7 @@ import com.pabloat.hotelperikero.data.remote.dtos.EspaciosDTO
 import com.pabloat.hotelperikero.data.remote.dtos.HabitacionesDTO
 import com.pabloat.hotelperikero.data.remote.dtos.ReseniasDTO
 import com.pabloat.hotelperikero.data.remote.dtos.ReservaEventosDTO
+import com.pabloat.hotelperikero.data.remote.dtos.ReservaServiciosDTO
 import com.pabloat.hotelperikero.data.remote.dtos.ReservasDTO
 import com.pabloat.hotelperikero.data.remote.dtos.ServicioEventosDTO
 import com.pabloat.hotelperikero.data.remote.dtos.ServiciosDTO
@@ -45,6 +46,9 @@ interface ApiService {
 
     @POST("reservaEventos/create")
     fun createReservaEventos(@Body reservaEvento: ReservaEventos): Call<ReservaEventos>
+
+    @GET("reservaServicio")
+    suspend fun getReservasServicios(): ReservaServiciosDTO
 }
 
 

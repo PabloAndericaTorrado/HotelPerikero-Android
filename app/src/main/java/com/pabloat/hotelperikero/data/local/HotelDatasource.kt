@@ -7,6 +7,7 @@ import com.pabloat.hotelperikero.data.local.dao.LocalHabitacionDao
 import com.pabloat.hotelperikero.data.local.dao.LocalReseniaDao
 import com.pabloat.hotelperikero.data.local.dao.LocalReservaDao
 import com.pabloat.hotelperikero.data.local.dao.LocalReservaEventosDao
+import com.pabloat.hotelperikero.data.local.dao.LocalReservaServicioDao
 import com.pabloat.hotelperikero.data.local.dao.LocalServicioDao
 import com.pabloat.hotelperikero.data.local.dao.LocalServicioEventoDao
 import com.pabloat.hotelperikero.data.local.entities.Espacio
@@ -14,6 +15,7 @@ import com.pabloat.hotelperikero.data.local.entities.Habitacion
 import com.pabloat.hotelperikero.data.local.entities.Resenia
 import com.pabloat.hotelperikero.data.local.entities.Reserva
 import com.pabloat.hotelperikero.data.local.entities.ReservaEventos
+import com.pabloat.hotelperikero.data.local.entities.ReservaServicio
 import com.pabloat.hotelperikero.data.local.entities.Servicio
 import com.pabloat.hotelperikero.data.local.entities.ServicioEvento
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -31,7 +33,17 @@ class HotelDatasource (applicationContext: Context){
     private val reservaEventosDao: LocalReservaEventosDao = db.reservaEventosDao()
     private val servicioEventoDao: LocalServicioEventoDao = db.servicioEventoDao()
     private val espacioDao: LocalEspacioDao = db.espacioDao()
+    private val reservaServicioDao: LocalReservaServicioDao = db.reservaServicio()
 
+    @OptIn(DelicateCoroutinesApi::class)
+    suspend fun getAllReservasServicios(): Flow<List<ReservaServicio>> {
+        return reservaServicioDao.getAll().stateIn(GlobalScope)
+    }
+
+    suspend fun saveReservasServicios(reservasServicios: List<ReservaServicio>) {
+        reservaServicioDao.insertAll(reservasServicios)
+        checkDatabase()
+    }
 
     @OptIn(DelicateCoroutinesApi::class)
     suspend fun getAllEspacios(): Flow<List<Espacio>> {
@@ -144,6 +156,7 @@ class HotelDatasource (applicationContext: Context){
         val reservaEventos = reservaEventosDao.getAll().first()
         val serviciosEventos = servicioEventoDao.getAll().first()
         val espacios = espacioDao.getAll().first()
+        val reservasServicios = reservaServicioDao.getAll().first()
         Log.d("DatabaseCheck", "Habitaciones en la base de datos: ${habitaciones.size}")
         Log.d("DatabaseCheck", "Reservas en la base de datos: ${reservas.size}")
         Log.d("DatabaseCheck", "servicios en la base de datos: ${servicios.size}")
@@ -151,6 +164,7 @@ class HotelDatasource (applicationContext: Context){
         Log.d("DatabaseCheck", "reservaEventos en la base de datos: ${reservaEventos.size}")
         Log.d("DatabaseCheck", "serviciosEventos en la base de datos: ${serviciosEventos.size}")
         Log.d("DatabaseCheck", "espacios en la base de datos: ${espacios.size}")
+        Log.d("DatabaseCheck", "reservas servicios en la bbdd: ${reservasServicios.size}")
     }
 
     suspend fun getRandomHabitaciones(): List<Habitacion> {

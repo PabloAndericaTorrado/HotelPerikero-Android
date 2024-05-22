@@ -9,15 +9,16 @@ import com.pabloat.hotelperikero.data.local.entities.Habitacion
 import com.pabloat.hotelperikero.data.local.entities.Resenia
 import com.pabloat.hotelperikero.data.local.entities.Reserva
 import com.pabloat.hotelperikero.data.local.entities.ReservaEventos
+import com.pabloat.hotelperikero.data.local.entities.ReservaServicio
 import com.pabloat.hotelperikero.data.local.entities.Servicio
 import com.pabloat.hotelperikero.data.local.entities.ServicioEvento
-import com.pabloat.hotelperikero.data.remote.RetrofitBuilder
 import com.pabloat.hotelperikero.ui.util.CacheLists.Companion.cacheEspacios
 import com.pabloat.hotelperikero.ui.util.CacheLists.Companion.cacheHabitaciones
 import com.pabloat.hotelperikero.ui.util.CacheLists.Companion.cacheRandomHabitaciones
 import com.pabloat.hotelperikero.ui.util.CacheLists.Companion.cacheResenias
 import com.pabloat.hotelperikero.ui.util.CacheLists.Companion.cacheReservaEventos
 import com.pabloat.hotelperikero.ui.util.CacheLists.Companion.cacheReservas
+import com.pabloat.hotelperikero.ui.util.CacheLists.Companion.cacheServiceReservations
 import com.pabloat.hotelperikero.ui.util.CacheLists.Companion.cacheServicioEventos
 import com.pabloat.hotelperikero.ui.util.CacheLists.Companion.cacheServicios
 import com.pabloat.hotelperikero.ui.util.CacheLists.Companion.cacheUserEventReservations
@@ -33,9 +34,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class HotelViewModel(private val repository: HotelRepository) : ViewModel() {
     val habitaciones: StateFlow<List<Habitacion>> = cacheHabitaciones.asStateFlow()
@@ -49,6 +47,8 @@ class HotelViewModel(private val repository: HotelRepository) : ViewModel() {
     val userReservations: StateFlow<List<Reserva>> = cacheUserReservations.asStateFlow()
     val userEventReservations: StateFlow<List<ReservaEventos>> =
         cacheUserEventReservations.asStateFlow()
+    val serviceReservations: StateFlow<List<ReservaServicio>> =
+        cacheServiceReservations.asStateFlow()
 
 
     private val _uiState: MutableStateFlow<ScreenState> = MutableStateFlow(ScreenState.Loading)
@@ -77,12 +77,34 @@ class HotelViewModel(private val repository: HotelRepository) : ViewModel() {
                 fetchReservasEventos()
                 fetchServiciosEventos()
                 fetchEspacios()
+                fetchReservasServicios()
 
                 _uiState.value =
                     ScreenState.Success(cacheHabitaciones.value) // Proporciona la lista de habitaciones
             } catch (e: Exception) {
                 _uiState.value = ScreenState.Error(e.message ?: "Unknown error")
             }
+        }
+    }
+
+    private fun fetchReservasServicios() = viewModelScope.launch(handler + Dispatchers.IO) {
+        repository.getLocalReservasServicios()
+            .onEach { localData ->
+                if (localData.isNotEmpty()) {
+                    cacheServiceReservations.value = localData
+                } else {
+                    val remoteData = fetchRemoteReservaServicios()
+                    cacheServiceReservations.value = remoteData
+                }
+            }.collect()
+    }
+
+    private suspend fun fetchRemoteReservaServicios(): List<ReservaServicio> {
+        return try {
+            repository.getRemoteReservaServicios()
+        } catch (e: Exception) {
+            _uiState.value = ScreenState.Error(e.message ?: "Unknown error")
+            emptyList()
         }
     }
 

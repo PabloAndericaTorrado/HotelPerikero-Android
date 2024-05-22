@@ -7,6 +7,7 @@ import com.pabloat.hotelperikero.data.local.entities.Habitacion
 import com.pabloat.hotelperikero.data.local.entities.Resenia
 import com.pabloat.hotelperikero.data.local.entities.Reserva
 import com.pabloat.hotelperikero.data.local.entities.ReservaEventos
+import com.pabloat.hotelperikero.data.local.entities.ReservaServicio
 import com.pabloat.hotelperikero.data.local.entities.Servicio
 import com.pabloat.hotelperikero.data.local.entities.ServicioEvento
 import com.pabloat.hotelperikero.data.remote.RemoteHotelDataSource
@@ -16,6 +17,31 @@ class HotelRepository(
     private val localds: HotelDatasource,
     private val remoteds: RemoteHotelDataSource
 ) {
+
+
+    // ------------------------------ Reservas Servicios ----------------------
+    suspend fun getRemoteReservaServicios(): List<ReservaServicio> {
+        val reservaServicioDTO = remoteds.getReservaServicios()
+        if (reservaServicioDTO.isEmpty()) {
+            Log.d("Repository", "No rooms fetched from API")
+            return emptyList()
+        }
+        val reservasServiciosLocales = reservaServicioDTO.map { it.toReservaServicio() }
+        Log.d("Repository", "Guardando reservas Servicios locales")
+        localds.saveReservasServicios(reservasServiciosLocales)
+        Log.d("Repository", "Servicios")
+        return reservasServiciosLocales
+    }
+
+    suspend fun saveReservaServicios(reservaServicios: List<ReservaServicio>) {
+        localds.saveReservasServicios(reservaServicios)
+    }
+
+    suspend fun getLocalReservasServicios(): Flow<List<ReservaServicio>> {
+        return localds.getAllReservasServicios()
+    }
+
+
 
     // ------------------------------ espacios --------------------------------
 
