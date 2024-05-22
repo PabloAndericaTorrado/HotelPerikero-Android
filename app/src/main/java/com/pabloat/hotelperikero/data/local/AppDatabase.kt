@@ -9,6 +9,8 @@ import com.pabloat.hotelperikero.data.local.dao.LocalHabitacionDao
 import com.pabloat.hotelperikero.data.local.dao.LocalReseniaDao
 import com.pabloat.hotelperikero.data.local.dao.LocalReservaDao
 import com.pabloat.hotelperikero.data.local.dao.LocalReservaEventosDao
+import com.pabloat.hotelperikero.data.local.dao.LocalReservaParkingAnonimoDao
+import com.pabloat.hotelperikero.data.local.dao.LocalReservaParkingDao
 import com.pabloat.hotelperikero.data.local.dao.LocalReservaServicioDao
 import com.pabloat.hotelperikero.data.local.dao.LocalServicioDao
 import com.pabloat.hotelperikero.data.local.dao.LocalServicioEventoDao
@@ -17,6 +19,8 @@ import com.pabloat.hotelperikero.data.local.entities.Habitacion
 import com.pabloat.hotelperikero.data.local.entities.Resenia
 import com.pabloat.hotelperikero.data.local.entities.Reserva
 import com.pabloat.hotelperikero.data.local.entities.ReservaEventos
+import com.pabloat.hotelperikero.data.local.entities.ReservaParking
+import com.pabloat.hotelperikero.data.local.entities.ReservaParkingAnonimo
 import com.pabloat.hotelperikero.data.local.entities.ReservaServicio
 import com.pabloat.hotelperikero.data.local.entities.Servicio
 import com.pabloat.hotelperikero.data.local.entities.ServicioEvento
@@ -29,8 +33,8 @@ import com.pabloat.hotelperikero.data.local.entities.ServicioEvento
     entities = [Habitacion::class,
         Reserva::class, Servicio::class, Resenia::class,
         ReservaEventos::class, ServicioEvento::class, Espacio::class,
-        ReservaServicio::class],
-    version = 8
+        ReservaServicio::class, ReservaParking::class, ReservaParkingAnonimo::class],
+    version = 9
 )
 abstract class AppDataBase : RoomDatabase() {
     abstract fun habitacionDao(): LocalHabitacionDao
@@ -44,7 +48,10 @@ abstract class AppDataBase : RoomDatabase() {
 
     abstract fun espacioDao(): LocalEspacioDao
 
-    abstract fun reservaServicio(): LocalReservaServicioDao
+    abstract fun reservaServicioDao(): LocalReservaServicioDao
+
+    abstract fun reservaParkingDao(): LocalReservaParkingDao
+    abstract fun reservaParkingAnonimoDao(): LocalReservaParkingAnonimoDao
 
     companion object {
         @Volatile

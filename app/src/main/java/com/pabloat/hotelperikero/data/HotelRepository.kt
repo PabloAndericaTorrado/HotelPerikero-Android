@@ -7,6 +7,8 @@ import com.pabloat.hotelperikero.data.local.entities.Habitacion
 import com.pabloat.hotelperikero.data.local.entities.Resenia
 import com.pabloat.hotelperikero.data.local.entities.Reserva
 import com.pabloat.hotelperikero.data.local.entities.ReservaEventos
+import com.pabloat.hotelperikero.data.local.entities.ReservaParking
+import com.pabloat.hotelperikero.data.local.entities.ReservaParkingAnonimo
 import com.pabloat.hotelperikero.data.local.entities.ReservaServicio
 import com.pabloat.hotelperikero.data.local.entities.Servicio
 import com.pabloat.hotelperikero.data.local.entities.ServicioEvento
@@ -17,7 +19,50 @@ class HotelRepository(
     private val localds: HotelDatasource,
     private val remoteds: RemoteHotelDataSource
 ) {
+    // -------------------------- Reserva Parking Anonimos --------------------
+    suspend fun getRemoteReservaParkingAnonimo(): List<ReservaParkingAnonimo> {
+        val reservaParkingAnonDto = remoteds.getReservasParkingAnonimo()
+        if (reservaParkingAnonDto.isEmpty()) {
+            Log.d("Repository", "No rooms fetched from API")
+            return emptyList()
+        }
+        val reservasParkingLocales = reservaParkingAnonDto.map { it.toReservaParkingAnonimo() }
+        Log.d("Repository", "Guardando reservas Servicios locales")
+        localds.saveReservasParkingAnonimo(reservasParkingLocales)
+        Log.d("Repository", "Servicios")
+        return reservasParkingLocales
+    }
 
+    suspend fun saveReservaParkingAnon(reservaParking: List<ReservaParkingAnonimo>) {
+        localds.saveReservasParkingAnonimo(reservaParking)
+    }
+
+    suspend fun getLocalReservasParkingAnonimo(): Flow<List<ReservaParkingAnonimo>> {
+        return localds.getAllReservasParkingAnonimo()
+    }
+
+
+    // ------------------------------ Reservas Parking ------------------------
+    suspend fun getRemoteReservaParking(): List<ReservaParking> {
+        val reservaParkingDto = remoteds.getReservasParking()
+        if (reservaParkingDto.isEmpty()) {
+            Log.d("Repository", "No rooms fetched from API")
+            return emptyList()
+        }
+        val reservasParkingLocales = reservaParkingDto.map { it.toReservaParking() }
+        Log.d("Repository", "Guardando reservas Servicios locales")
+        localds.saveReservasParking(reservasParkingLocales)
+        Log.d("Repository", "Servicios")
+        return reservasParkingLocales
+    }
+
+    suspend fun saveReservaParking(reservaParking: List<ReservaParking>) {
+        localds.saveReservasParking(reservaParking)
+    }
+
+    suspend fun getLocalReservasParking(): Flow<List<ReservaParking>> {
+        return localds.getAllReservasParking()
+    }
 
     // ------------------------------ Reservas Servicios ----------------------
     suspend fun getRemoteReservaServicios(): List<ReservaServicio> {

@@ -9,11 +9,15 @@ import com.pabloat.hotelperikero.data.local.entities.Habitacion
 import com.pabloat.hotelperikero.data.local.entities.Resenia
 import com.pabloat.hotelperikero.data.local.entities.Reserva
 import com.pabloat.hotelperikero.data.local.entities.ReservaEventos
+import com.pabloat.hotelperikero.data.local.entities.ReservaParking
+import com.pabloat.hotelperikero.data.local.entities.ReservaParkingAnonimo
 import com.pabloat.hotelperikero.data.local.entities.ReservaServicio
 import com.pabloat.hotelperikero.data.local.entities.Servicio
 import com.pabloat.hotelperikero.data.local.entities.ServicioEvento
+import com.pabloat.hotelperikero.ui.util.CacheLists.Companion.cacheAnonParkingReservations
 import com.pabloat.hotelperikero.ui.util.CacheLists.Companion.cacheEspacios
 import com.pabloat.hotelperikero.ui.util.CacheLists.Companion.cacheHabitaciones
+import com.pabloat.hotelperikero.ui.util.CacheLists.Companion.cacheParkingReservations
 import com.pabloat.hotelperikero.ui.util.CacheLists.Companion.cacheRandomHabitaciones
 import com.pabloat.hotelperikero.ui.util.CacheLists.Companion.cacheResenias
 import com.pabloat.hotelperikero.ui.util.CacheLists.Companion.cacheReservaEventos
@@ -49,6 +53,12 @@ class HotelViewModel(private val repository: HotelRepository) : ViewModel() {
         cacheUserEventReservations.asStateFlow()
     val serviceReservations: StateFlow<List<ReservaServicio>> =
         cacheServiceReservations.asStateFlow()
+    val reservasParking: StateFlow<List<ReservaParking>> = cacheParkingReservations.asStateFlow()
+    val reservasParkingAnonimo: StateFlow<List<ReservaParkingAnonimo>> =
+        cacheAnonParkingReservations.asStateFlow()
+
+
+
 
 
     private val _uiState: MutableStateFlow<ScreenState> = MutableStateFlow(ScreenState.Loading)
@@ -78,6 +88,8 @@ class HotelViewModel(private val repository: HotelRepository) : ViewModel() {
                 fetchServiciosEventos()
                 fetchEspacios()
                 fetchReservasServicios()
+                fetchReservasParking()
+                fetchReservasParkingAnonimo()
 
                 _uiState.value =
                     ScreenState.Success(cacheHabitaciones.value) // Proporciona la lista de habitaciones
@@ -86,6 +98,50 @@ class HotelViewModel(private val repository: HotelRepository) : ViewModel() {
             }
         }
     }
+
+    private fun fetchReservasParkingAnonimo() = viewModelScope.launch(handler + Dispatchers.IO) {
+        repository.getLocalReservasParkingAnonimo()
+            .onEach { localData ->
+                if (localData.isNotEmpty()) {
+                    cacheAnonParkingReservations.value = localData
+                } else {
+                    val remoteData = fetchRemoteReservaParkingAnonimo()
+                    cacheAnonParkingReservations.value = remoteData
+                }
+            }.collect()
+    }
+
+    private suspend fun fetchRemoteReservaParkingAnonimo(): List<ReservaParkingAnonimo> {
+        return try {
+            repository.getRemoteReservaParkingAnonimo()
+        } catch (e: Exception) {
+            _uiState.value = ScreenState.Error(e.message ?: "Unknown error")
+            emptyList()
+        }
+    }
+
+    private fun fetchReservasParking() = viewModelScope.launch(handler + Dispatchers.IO) {
+        repository.getLocalReservasParking()
+            .onEach { localData ->
+                if (localData.isNotEmpty()) {
+                    cacheParkingReservations.value = localData
+                } else {
+                    val remoteData = fetchRemoteReservaParking()
+                    cacheParkingReservations.value = remoteData
+                }
+            }.collect()
+    }
+
+    private suspend fun fetchRemoteReservaParking(): List<ReservaParking> {
+        return try {
+            repository.getRemoteReservaParking()
+        } catch (e: Exception) {
+            _uiState.value = ScreenState.Error(e.message ?: "Unknown error")
+            emptyList()
+        }
+    }
+
+
 
     private fun fetchReservasServicios() = viewModelScope.launch(handler + Dispatchers.IO) {
         repository.getLocalReservasServicios()

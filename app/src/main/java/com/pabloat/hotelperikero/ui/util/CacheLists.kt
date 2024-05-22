@@ -5,6 +5,8 @@ import com.pabloat.hotelperikero.data.local.entities.Habitacion
 import com.pabloat.hotelperikero.data.local.entities.Resenia
 import com.pabloat.hotelperikero.data.local.entities.Reserva
 import com.pabloat.hotelperikero.data.local.entities.ReservaEventos
+import com.pabloat.hotelperikero.data.local.entities.ReservaParking
+import com.pabloat.hotelperikero.data.local.entities.ReservaParkingAnonimo
 import com.pabloat.hotelperikero.data.local.entities.ReservaServicio
 import com.pabloat.hotelperikero.data.local.entities.Servicio
 import com.pabloat.hotelperikero.data.local.entities.ServicioEvento
@@ -40,5 +42,8 @@ class CacheLists {
         var cacheUserReservations = MutableStateFlow<List<Reserva>>(emptyList())
         var cacheUserEventReservations = MutableStateFlow<List<ReservaEventos>>(emptyList())
         var cacheServiceReservations = MutableStateFlow<List<ReservaServicio>>(emptyList())
+        var cacheParkingReservations = MutableStateFlow<List<ReservaParking>>(emptyList())
+        var cacheAnonParkingReservations =
+            MutableStateFlow<List<ReservaParkingAnonimo>>(emptyList())
     }
 }

@@ -8,6 +8,8 @@ import com.pabloat.hotelperikero.data.remote.dtos.ReseniasDTO
 import com.pabloat.hotelperikero.data.remote.dtos.ReservaEventosDTO
 import com.pabloat.hotelperikero.data.remote.dtos.ReservaServiciosDTO
 import com.pabloat.hotelperikero.data.remote.dtos.ReservasDTO
+import com.pabloat.hotelperikero.data.remote.dtos.ReservasParkingAnonimosDTO
+import com.pabloat.hotelperikero.data.remote.dtos.ReservasParkingDTO
 import com.pabloat.hotelperikero.data.remote.dtos.ServicioEventosDTO
 import com.pabloat.hotelperikero.data.remote.dtos.ServiciosDTO
 import retrofit2.Call
@@ -49,6 +51,12 @@ interface ApiService {
 
     @GET("reservaServicio")
     suspend fun getReservasServicios(): ReservaServiciosDTO
+
+    @GET("reservaParking")
+    suspend fun getReservasParking(): ReservasParkingDTO
+
+    @GET("reservaParkingAnonimo")
+    suspend fun getReservasParkingAnon(): ReservasParkingAnonimosDTO
 }
 
 

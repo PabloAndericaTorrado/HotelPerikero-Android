@@ -7,6 +7,8 @@ import com.pabloat.hotelperikero.data.local.dao.LocalHabitacionDao
 import com.pabloat.hotelperikero.data.local.dao.LocalReseniaDao
 import com.pabloat.hotelperikero.data.local.dao.LocalReservaDao
 import com.pabloat.hotelperikero.data.local.dao.LocalReservaEventosDao
+import com.pabloat.hotelperikero.data.local.dao.LocalReservaParkingAnonimoDao
+import com.pabloat.hotelperikero.data.local.dao.LocalReservaParkingDao
 import com.pabloat.hotelperikero.data.local.dao.LocalReservaServicioDao
 import com.pabloat.hotelperikero.data.local.dao.LocalServicioDao
 import com.pabloat.hotelperikero.data.local.dao.LocalServicioEventoDao
@@ -15,6 +17,8 @@ import com.pabloat.hotelperikero.data.local.entities.Habitacion
 import com.pabloat.hotelperikero.data.local.entities.Resenia
 import com.pabloat.hotelperikero.data.local.entities.Reserva
 import com.pabloat.hotelperikero.data.local.entities.ReservaEventos
+import com.pabloat.hotelperikero.data.local.entities.ReservaParking
+import com.pabloat.hotelperikero.data.local.entities.ReservaParkingAnonimo
 import com.pabloat.hotelperikero.data.local.entities.ReservaServicio
 import com.pabloat.hotelperikero.data.local.entities.Servicio
 import com.pabloat.hotelperikero.data.local.entities.ServicioEvento
@@ -33,7 +37,31 @@ class HotelDatasource (applicationContext: Context){
     private val reservaEventosDao: LocalReservaEventosDao = db.reservaEventosDao()
     private val servicioEventoDao: LocalServicioEventoDao = db.servicioEventoDao()
     private val espacioDao: LocalEspacioDao = db.espacioDao()
-    private val reservaServicioDao: LocalReservaServicioDao = db.reservaServicio()
+    private val reservaServicioDao: LocalReservaServicioDao = db.reservaServicioDao()
+    private val reservaParkingDao: LocalReservaParkingDao = db.reservaParkingDao()
+    private val reservaParkingAnonimoDao: LocalReservaParkingAnonimoDao =
+        db.reservaParkingAnonimoDao()
+
+    @OptIn(DelicateCoroutinesApi::class)
+    suspend fun getAllReservasParkingAnonimo(): Flow<List<ReservaParkingAnonimo>> {
+        return reservaParkingAnonimoDao.getAll().stateIn(GlobalScope)
+    }
+
+    suspend fun saveReservasParkingAnonimo(reservasParkingAnon: List<ReservaParkingAnonimo>) {
+        reservaParkingAnonimoDao.insertAll(reservasParkingAnon)
+        checkDatabase()
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    suspend fun getAllReservasParking(): Flow<List<ReservaParking>> {
+        return reservaParkingDao.getAll().stateIn(GlobalScope)
+    }
+
+    suspend fun saveReservasParking(reservasParking: List<ReservaParking>) {
+        reservaParkingDao.insertAll(reservasParking)
+        checkDatabase()
+    }
+
 
     @OptIn(DelicateCoroutinesApi::class)
     suspend fun getAllReservasServicios(): Flow<List<ReservaServicio>> {
@@ -157,6 +185,7 @@ class HotelDatasource (applicationContext: Context){
         val serviciosEventos = servicioEventoDao.getAll().first()
         val espacios = espacioDao.getAll().first()
         val reservasServicios = reservaServicioDao.getAll().first()
+        val reservasParking = reservaParkingDao.getAll().first()
         Log.d("DatabaseCheck", "Habitaciones en la base de datos: ${habitaciones.size}")
         Log.d("DatabaseCheck", "Reservas en la base de datos: ${reservas.size}")
         Log.d("DatabaseCheck", "servicios en la base de datos: ${servicios.size}")
@@ -165,6 +194,7 @@ class HotelDatasource (applicationContext: Context){
         Log.d("DatabaseCheck", "serviciosEventos en la base de datos: ${serviciosEventos.size}")
         Log.d("DatabaseCheck", "espacios en la base de datos: ${espacios.size}")
         Log.d("DatabaseCheck", "reservas servicios en la bbdd: ${reservasServicios.size}")
+        Log.d("DatabaseCheck", "reservas parking en la bbdd: ${reservasParking.size}")
     }
 
     suspend fun getRandomHabitaciones(): List<Habitacion> {
