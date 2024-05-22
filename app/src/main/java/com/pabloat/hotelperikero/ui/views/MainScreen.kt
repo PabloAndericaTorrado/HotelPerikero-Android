@@ -474,7 +474,7 @@ fun getEspacioImageUrl(espacioId: Int?): String {
 
 fun getServiceEventoImageUrl(servicioEventoId: Int?): String {
     val imageUrls = mapOf(
-        1 to "https://raw.githubusercontent.com/PabloAndericaTorrado/HotelPerikero-Laravel/main/public/servicio_eventos_images/servicio_1.jpg?token=GHSAT0AAAAAACQZLRQZZGRHI4OOUVSAMUIWZSF2QLQ",
+        1 to "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRm3c0r1syUmIcmMzV8qhf2IAfWTABXpnHYbhpp1OlsgLzaYnYY",
         2 to "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREZe56xJe5VLsfrDSEyXBV4Jn2T8hrrZjUFeg1VxJQclfUqJvY",
         3 to "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSZ47U2HyP8K1kjS9heZAFqlMtGszRi3P9sEKEvp5WNbotd84ed",
         4 to "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTIWax5kfzHqFRn29t273VInfxUnfNCi-Sq7XtqKeFhYtJFK9ee",
@@ -484,7 +484,7 @@ fun getServiceEventoImageUrl(servicioEventoId: Int?): String {
     )
 
     return imageUrls[servicioEventoId]
-        ?: "https://github.com/PabloAndericaTorrado/HotelPerikero-Laravel/blob/main/public/servicio_eventos_images/servicio_7.jpg?raw=true"
+        ?: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRm3c0r1syUmIcmMzV8qhf2IAfWTABXpnHYbhpp1OlsgLzaYnYY"
 }
 
 @Composable
@@ -507,7 +507,6 @@ fun ServiceEspacioSectionMain(
             color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center
         )
-        Spacer(modifier = Modifier.height(8.dp))
         Text(
             "¡Toca Aquí Para Ver Más!",
             modifier = Modifier
@@ -516,7 +515,6 @@ fun ServiceEspacioSectionMain(
             color = MaterialTheme.colorScheme.primary,
             textAlign = TextAlign.Center
         )
-        Spacer(modifier = Modifier.height(16.dp))
         LazyRow {
             items(servicios) { servicio ->
                 ServiceEspacioCardMain(servicio)

@@ -79,7 +79,7 @@ fun EspacioDetalleScreen(
                 Text(
                     text = space.nombre,
                     style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.align(Alignment.CenterHorizontally), color = Color.White
+                    modifier = Modifier.align(Alignment.CenterHorizontally), color = Color.Black
                 )
                 Image(
                     painter = rememberAsyncImagePainter(
@@ -94,17 +94,10 @@ fun EspacioDetalleScreen(
                         .clip(RoundedCornerShape(12.dp)),
                     contentScale = ContentScale.Crop
                 )
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    space.descripcion,
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.align(Alignment.CenterHorizontally), color = Color.White
-                )
-                Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     "Capacidad máxima: ${space.capacidad_maxima} personas",
                     style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.align(Alignment.CenterHorizontally), color = Color.White
+                    modifier = Modifier.align(Alignment.CenterHorizontally), color = Color.Black
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
@@ -151,7 +144,7 @@ fun EspacioDetalleScreen(
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
             }
-            Spacer(modifier = Modifier.padding(16.dp))
+
             ServiceEspacioSectionMain(
                 servicios = serviciosEventos,
                 navHostController = navHostController

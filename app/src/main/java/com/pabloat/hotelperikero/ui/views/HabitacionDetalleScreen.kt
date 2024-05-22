@@ -79,7 +79,7 @@ fun HabitacionDetalleScreen(
                 Text(
                     text = room.tipo,
                     style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.align(Alignment.CenterHorizontally), color = Color.White
+                    modifier = Modifier.align(Alignment.CenterHorizontally), color = Color.Black
                 )
                 Image(
                     painter = rememberAsyncImagePainter(
@@ -93,12 +93,6 @@ fun HabitacionDetalleScreen(
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(12.dp)),
                     contentScale = ContentScale.Crop
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    "${room.descripcion} que contiene las características de ${room.caracteristicas}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.align(Alignment.CenterHorizontally), color = Color.White
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
@@ -145,7 +139,7 @@ fun HabitacionDetalleScreen(
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
             }
-            Spacer(modifier = Modifier.padding(16.dp))
+
             ServiceSectionMain(servicios = servicios, navHostController = navHostController)
         }
     }
