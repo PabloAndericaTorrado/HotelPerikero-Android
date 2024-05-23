@@ -174,6 +174,9 @@ class HotelDatasource (applicationContext: Context){
         return reservaEventosDao.getReservasEventoByUserId(user_id)
     }
 
+    suspend fun getLastReservationId(): Int? {
+        return reservaDao.getLastReservaId()
+    }
 
 
     private suspend fun checkDatabase() {

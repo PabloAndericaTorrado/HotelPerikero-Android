@@ -29,4 +29,7 @@ interface LocalReservaDao {
     @Query("SELECT * FROM Reserva WHERE users_id = :userId")
     suspend fun getReservasByUserId(userId: Int): List<Reserva>
 
+    @Query("SELECT id FROM Reserva ORDER BY id DESC LIMIT 1")
+    suspend fun getLastReservaId(): Int?
+
 }

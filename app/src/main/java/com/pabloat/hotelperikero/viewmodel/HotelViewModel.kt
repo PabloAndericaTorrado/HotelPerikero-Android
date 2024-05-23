@@ -14,6 +14,7 @@ import com.pabloat.hotelperikero.data.local.entities.ReservaParkingAnonimo
 import com.pabloat.hotelperikero.data.local.entities.ReservaServicio
 import com.pabloat.hotelperikero.data.local.entities.Servicio
 import com.pabloat.hotelperikero.data.local.entities.ServicioEvento
+import com.pabloat.hotelperikero.data.remote.dtos.LastIdResponse
 import com.pabloat.hotelperikero.ui.util.CacheLists.Companion.cacheAnonParkingReservations
 import com.pabloat.hotelperikero.ui.util.CacheLists.Companion.cacheEspacios
 import com.pabloat.hotelperikero.ui.util.CacheLists.Companion.cacheHabitaciones
@@ -56,9 +57,6 @@ class HotelViewModel(private val repository: HotelRepository) : ViewModel() {
     val reservasParking: StateFlow<List<ReservaParking>> = cacheParkingReservations.asStateFlow()
     val reservasParkingAnonimo: StateFlow<List<ReservaParkingAnonimo>> =
         cacheAnonParkingReservations.asStateFlow()
-
-
-
 
 
     private val _uiState: MutableStateFlow<ScreenState> = MutableStateFlow(ScreenState.Loading)
@@ -425,6 +423,10 @@ class HotelViewModel(private val repository: HotelRepository) : ViewModel() {
                 _uiState.value = ScreenState.Error(e.message ?: "Unknown error")
             }
         }
+    }
+    suspend fun getLastReservationId(): LastIdResponse {
+        Log.d("Vakero", repository.getLastReservationId().toString())
+        return repository.getLastReservationId()
     }
 
     fun loadUserReservations(userId: Int) {

@@ -13,12 +13,15 @@ import com.pabloat.hotelperikero.data.local.entities.ReservaServicio
 import com.pabloat.hotelperikero.data.local.entities.Servicio
 import com.pabloat.hotelperikero.data.local.entities.ServicioEvento
 import com.pabloat.hotelperikero.data.remote.RemoteHotelDataSource
+import com.pabloat.hotelperikero.data.remote.dtos.LastIdResponse
 import kotlinx.coroutines.flow.Flow
 
 class HotelRepository(
     private val localds: HotelDatasource,
     private val remoteds: RemoteHotelDataSource
 ) {
+
+
     // -------------------------- Reserva Parking Anonimos --------------------
     suspend fun getRemoteReservaParkingAnonimo(): List<ReservaParkingAnonimo> {
         val reservaParkingAnonDto = remoteds.getReservasParkingAnonimo()
@@ -65,6 +68,11 @@ class HotelRepository(
     }
 
     // ------------------------------ Reservas Servicios ----------------------
+
+    suspend fun getLastReservationId(): LastIdResponse {
+        Log.d("Vakero", remoteds.getLastReservationId().toString())
+        return remoteds.getLastReservationId()
+    }
     suspend fun getRemoteReservaServicios(): List<ReservaServicio> {
         val reservaServicioDTO = remoteds.getReservaServicios()
         if (reservaServicioDTO.isEmpty()) {
@@ -175,7 +183,6 @@ class HotelRepository(
     suspend fun getReservasEventosByUserId(user_id: Int): List<ReservaEventos> {
         return localds.getReservasEventosByUserId(user_id)
     }
-
 
 
 // ------------------------------ Resenias --------------------------------

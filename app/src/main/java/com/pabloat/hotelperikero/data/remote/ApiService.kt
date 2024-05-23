@@ -2,8 +2,10 @@ package com.pabloat.hotelperikero.data.remote
 
 import com.pabloat.hotelperikero.data.local.entities.Reserva
 import com.pabloat.hotelperikero.data.local.entities.ReservaEventos
+import com.pabloat.hotelperikero.data.local.entities.ReservaServicio
 import com.pabloat.hotelperikero.data.remote.dtos.EspaciosDTO
 import com.pabloat.hotelperikero.data.remote.dtos.HabitacionesDTO
+import com.pabloat.hotelperikero.data.remote.dtos.LastIdResponse
 import com.pabloat.hotelperikero.data.remote.dtos.ReseniasDTO
 import com.pabloat.hotelperikero.data.remote.dtos.ReservaEventosDTO
 import com.pabloat.hotelperikero.data.remote.dtos.ReservaServiciosDTO
@@ -49,6 +51,9 @@ interface ApiService {
     @POST("reservaEventos/create")
     fun createReservaEventos(@Body reservaEvento: ReservaEventos): Call<ReservaEventos>
 
+    @POST("reservaServicios/create")
+    fun createReservaServicios(@Body reservaServicio: ReservaServicio): Call<ReservaServicio>
+
     @GET("reservaServicio")
     suspend fun getReservasServicios(): ReservaServiciosDTO
 
@@ -57,6 +62,9 @@ interface ApiService {
 
     @GET("reservaParkingAnonimo")
     suspend fun getReservasParkingAnon(): ReservasParkingAnonimosDTO
+
+    @GET("reservas/lastId")
+    suspend fun getLastReservaId(): LastIdResponse
 }
 
 

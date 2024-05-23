@@ -2,6 +2,7 @@ package com.pabloat.hotelperikero.data.remote
 
 import com.pabloat.hotelperikero.data.remote.dtos.EspacioDTO
 import com.pabloat.hotelperikero.data.remote.dtos.HabitacionDTO
+import com.pabloat.hotelperikero.data.remote.dtos.LastIdResponse
 import com.pabloat.hotelperikero.data.remote.dtos.ReseniaDTO
 import com.pabloat.hotelperikero.data.remote.dtos.ReservaDTO
 import com.pabloat.hotelperikero.data.remote.dtos.ReservaEventoDTO
@@ -60,6 +61,10 @@ class RemoteHotelDataSource(private val apiService: ApiService) {
     suspend fun getReservasParkingAnonimo(): List<ReservaParkingAnonimoDTO> {
         val response = apiService.getReservasParkingAnon()
         return response.data
+    }
+
+    suspend fun getLastReservationId(): LastIdResponse {
+        return apiService.getLastReservaId()
     }
 
 

@@ -7,13 +7,17 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CalendarToday
@@ -21,10 +25,12 @@ import androidx.compose.material.icons.filled.People
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -42,10 +48,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewModelScope
@@ -53,8 +57,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.pabloat.hotelperikero.data.local.dao.LocalReservaDao
+import com.pabloat.hotelperikero.data.local.dao.LocalReservaServicioDao
 import com.pabloat.hotelperikero.data.local.entities.Reserva
+import com.pabloat.hotelperikero.data.local.entities.ReservaServicio
+import com.pabloat.hotelperikero.data.local.entities.Servicio
 import com.pabloat.hotelperikero.viewmodel.HotelViewModel
+import com.pabloat.hotelperikero.viewmodel.ReservaServicioViewModel
+import com.pabloat.hotelperikero.viewmodel.ReservaServiciosViewModelFactory
 import com.pabloat.hotelperikero.viewmodel.ReservaViewModel
 import com.pabloat.hotelperikero.viewmodel.ReservaViewModelFactory
 import kotlinx.coroutines.launch
@@ -74,10 +83,14 @@ fun ReservationFormScreen(
     userId: Int,
     navHostController: NavHostController,
     viewModel: HotelViewModel,
-    reservaDao: LocalReservaDao
+    reservaDao: LocalReservaDao,
+    reservaServicioDao: LocalReservaServicioDao
+
 ) {
     val reservaViewModel: ReservaViewModel =
         viewModel(factory = ReservaViewModelFactory(reservaDao))
+    val reservaServicioViewModel: ReservaServicioViewModel =
+        viewModel(factory = ReservaServiciosViewModelFactory(reservaServicioDao))
     val habitacion = viewModel.getHabitacionById(habitacionId) ?: return
     var checkInDate by remember { mutableStateOf("") }
     var checkOutDate by remember { mutableStateOf("") }
@@ -85,7 +98,8 @@ fun ReservationFormScreen(
     val errorMessage = remember { mutableStateOf("") }
     val showDialog = remember { mutableStateOf(false) }
     val successMessage = remember { mutableStateOf("") }
-
+    val servicios by viewModel.servicios.collectAsState()
+    val selectedServicios = remember { mutableStateOf(mutableMapOf<Servicio, Int>()) }
 
     val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
@@ -147,6 +161,8 @@ fun ReservationFormScreen(
             false
         }
     }
+
+    var expanded by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -285,6 +301,69 @@ fun ReservationFormScreen(
                     )
                 }
 
+                OutlinedButton(
+                    onClick = { expanded = !expanded },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)
+                ) {
+                    Text("Seleccionar servicios adicionales")
+                }
+
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    servicios.forEach { servicio ->
+                        var checked by remember {
+                            mutableStateOf(
+                                selectedServicios.value.contains(
+                                    servicio
+                                )
+                            )
+                        }
+                        DropdownMenuItem(onClick = {
+                            checked = !checked
+                            if (checked) {
+                                selectedServicios.value[servicio] = 1  // default quantity
+                            } else {
+                                selectedServicios.value.remove(servicio)
+                            }
+                        }) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Checkbox(
+                                    checked = checked,
+                                    onCheckedChange = { isChecked ->
+                                        checked = isChecked
+                                        if (checked) {
+                                            selectedServicios.value[servicio] =
+                                                1  // default quantity
+                                        } else {
+                                            selectedServicios.value.remove(servicio)
+                                        }
+                                    },
+                                    modifier = Modifier.padding(end = 8.dp)
+                                )
+                                Text(servicio.nombre)
+                                if (checked) {
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    OutlinedTextField(
+                                        value = selectedServicios.value[servicio]?.toString()
+                                            ?: "1",
+                                        onValueChange = { value ->
+                                            selectedServicios.value[servicio] =
+                                                value.toIntOrNull() ?: 1
+                                        },
+                                        label = { Text("Cantidad") },
+                                        modifier = Modifier.width(80.dp),
+                                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
                 Button(
                     onClick = {
                         if (!isValidDate(checkInDate) || !isValidDate(checkOutDate)) {
@@ -338,6 +417,30 @@ fun ReservationFormScreen(
                                             )
                                             //viewModel.addReserva(reserva)
                                             reservaViewModel.crearReserva(reserva)
+
+                                            val response = viewModel.getLastReservationId()
+                                            val reservaId = response.last_id
+
+                                            selectedServicios.value.forEach { (servicio, cantidad) ->
+                                                val reservaServicio = reservaId?.let { it1 ->
+                                                    ReservaServicio(
+                                                        id = null,
+                                                        reserva_id = it1,
+                                                        servicio_id = servicio.id!!,
+                                                        cantidad = cantidad,
+                                                        created_at = now,
+                                                        updated_at = now
+                                                    )
+                                                }
+                                                Log.d("Vakero", reservaServicio.toString())
+                                                if (reservaServicio != null) {
+                                                    reservaServicioViewModel.crearReserva(
+                                                        reservaServicio
+                                                    )
+                                                }
+                                            }
+
+                                            successMessage.value = "¡Reserva creada con éxito!"
                                         }
                                     }
                                 }

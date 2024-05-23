@@ -10,7 +10,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.pabloat.hotelperikero.data.local.dao.LocalReservaDao
 import com.pabloat.hotelperikero.ui.views.ContactScreen
 import com.pabloat.hotelperikero.ui.views.EspacioDetalleScreen
 import com.pabloat.hotelperikero.ui.views.EspaciosScreen
@@ -27,6 +26,7 @@ import com.pabloat.hotelperikero.ui.views.ServiciosScreen
 import com.pabloat.hotelperikero.ui.views.UserReservationsScreen
 import com.pabloat.hotelperikero.viewmodel.HotelViewModel
 import com.pabloat.hotelperikero.viewmodel.ReservaEventosViewModelFactory
+import com.pabloat.hotelperikero.viewmodel.ReservaServiciosViewModelFactory
 import com.pabloat.hotelperikero.viewmodel.ReservaViewModelFactory
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -37,7 +37,8 @@ fun MainNavigation(
     mainViewmodel: HotelViewModel,
     context: Context,
     reservaViewModelFactory: ReservaViewModelFactory,
-    reservaEventosViewModelFactory: ReservaEventosViewModelFactory
+    reservaEventosViewModelFactory: ReservaEventosViewModelFactory,
+    reservaServiciosViewModelFactory: ReservaServiciosViewModelFactory
 ) {
     val destinoInicial = Destinations.MainScreen.route
     val idHabitacion = mainViewmodel.selectedHabitacionId.collectAsState().value
@@ -91,7 +92,8 @@ fun MainNavigation(
                     userId = userId,
                     navHostController = onNavController,
                     viewModel = mainViewmodel,
-                    reservaDao = reservaViewModelFactory.reservaDao
+                    reservaDao = reservaViewModelFactory.reservaDao,
+                    reservaServicioDao = reservaServiciosViewModelFactory.reservaServicioDao
                 )
             } else {
                 // Manejar el caso de error aquí
