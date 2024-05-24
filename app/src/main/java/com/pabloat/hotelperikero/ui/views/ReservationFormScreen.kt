@@ -1,6 +1,7 @@
 package com.pabloat.hotelperikero.ui.views
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -105,7 +106,11 @@ fun ReservationFormScreen(
 
     val context = LocalContext.current
 
-    fun openDatePickerDialog(onDateSelected: (String) -> Unit) {
+    fun openDatePickerDialog(
+        context: Context,
+        onDateSelected: (String) -> Unit,
+        minDate: Long? = null
+    ) {
         val calendar = Calendar.getInstance()
         val datePickerDialog = android.app.DatePickerDialog(
             context,
@@ -117,6 +122,13 @@ fun ReservationFormScreen(
             calendar.get(Calendar.MONTH),
             calendar.get(Calendar.DAY_OF_MONTH)
         )
+
+        if (minDate != null) {
+            datePickerDialog.datePicker.minDate = minDate
+        } else {
+            datePickerDialog.datePicker.minDate = calendar.timeInMillis
+        }
+
         datePickerDialog.show()
     }
 
@@ -226,11 +238,11 @@ fun ReservationFormScreen(
             ) {
                 Button(
                     onClick = {
-                        openDatePickerDialog { date ->
+                        openDatePickerDialog(context, { date ->
                             checkInDate = date
                             errorMessage.value = ""
                             successMessage.value = ""
-                        }
+                        })
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -247,11 +259,22 @@ fun ReservationFormScreen(
 
                 Button(
                     onClick = {
-                        openDatePickerDialog { date ->
-                            checkOutDate = date
-                            errorMessage.value = ""
-                            successMessage.value = ""
+                        val checkInMillis = if (checkInDate.isNotEmpty()) {
+                            LocalDate.parse(checkInDate, dateFormatter)
+                                .atStartOfDay()
+                                .toEpochSecond(java.time.ZoneOffset.UTC) * 1000
+                        } else {
+                            Calendar.getInstance().timeInMillis
                         }
+                        openDatePickerDialog(
+                            context,
+                            onDateSelected = { date ->
+                                checkOutDate = date
+                                errorMessage.value = ""
+                                successMessage.value = ""
+                            },
+                            minDate = checkInMillis
+                        )
                     },
                     modifier = Modifier
                         .fillMaxWidth()
