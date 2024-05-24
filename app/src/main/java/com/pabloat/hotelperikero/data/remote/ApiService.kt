@@ -12,6 +12,7 @@ import com.pabloat.hotelperikero.data.remote.dtos.ReservaServiciosDTO
 import com.pabloat.hotelperikero.data.remote.dtos.ReservasDTO
 import com.pabloat.hotelperikero.data.remote.dtos.ReservasParkingAnonimosDTO
 import com.pabloat.hotelperikero.data.remote.dtos.ReservasParkingDTO
+import com.pabloat.hotelperikero.data.remote.dtos.ReservasResponse
 import com.pabloat.hotelperikero.data.remote.dtos.ServicioEventosDTO
 import com.pabloat.hotelperikero.data.remote.dtos.ServiciosDTO
 import retrofit2.Call
@@ -65,6 +66,9 @@ interface ApiService {
 
     @GET("reservas/lastId")
     suspend fun getLastReservaId(): LastIdResponse
+
+    @POST("reservas/past")
+    fun getPastReservasByUserId(@Body userId: Map<String, Int>): Call<ReservasResponse>
 }
 
 

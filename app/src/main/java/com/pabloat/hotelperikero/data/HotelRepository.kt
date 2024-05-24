@@ -253,6 +253,13 @@ class HotelRepository(
         return localds.getAllReservas()
     }
 
+    suspend fun getPastReservasByUserId(userId: Int): List<Reserva> {
+        val reservas = remoteds.getPastReservasByUserId(userId)
+        Log.d("HotelRepository", "Reservas obtenidas: $reservas")
+        return reservas
+    }
+
+
     suspend fun insertReserva(reserva: Reserva) {
         localds.insertReserva(reserva)
     }

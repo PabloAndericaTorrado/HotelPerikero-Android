@@ -479,4 +479,22 @@ class HotelViewModel(private val repository: HotelRepository) : ViewModel() {
             _userData.value = null
         }
     }
+
+    private val _pastReservas = MutableStateFlow<List<Reserva>>(emptyList())
+    val pastReservas: StateFlow<List<Reserva>> = _pastReservas.asStateFlow()
+
+    fun loadPastReservasByUserId(userId: Int) {
+        viewModelScope.launch {
+            try {
+                Log.d("HotelViewModel", "Llamando a getPastReservasByUserId con userId: $userId")
+                val reservas = repository.getPastReservasByUserId(userId)
+                Log.d("HotelViewModel", "Reservas obtenidas: $reservas")
+                _pastReservas.value = reservas
+            } catch (e: Exception) {
+                Log.e("HotelViewModel", "Excepción al obtener reservas: ${e.message}", e)
+            }
+        }
+    }
+
+
 }
