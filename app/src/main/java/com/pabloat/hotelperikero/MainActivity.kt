@@ -29,7 +29,7 @@ import com.pabloat.hotelperikero.navigation.MainTopBar
 import com.pabloat.hotelperikero.ui.util.NavigationBottomBar
 import com.pabloat.hotelperikero.viewmodel.HotelViewModel
 import com.pabloat.hotelperikero.viewmodel.HotelViewModelFactory
-import com.pabloat.hotelperikero.viewmodel.ReseniaViewModel
+import com.pabloat.hotelperikero.viewmodel.ParkingViewModelFactory
 import com.pabloat.hotelperikero.viewmodel.ReseniaViewModelFactory
 import com.pabloat.hotelperikero.viewmodel.ReservaEventosViewModelFactory
 import com.pabloat.hotelperikero.viewmodel.ReservaServiciosViewModelFactory
@@ -62,6 +62,7 @@ fun MainApp() {
     val reseniaDao = remember { appDatabase.reseniaDao() }
     val reservaEventosDao = remember { appDatabase.reservaEventosDao() }
     val reservaServicioDao = remember { appDatabase.reservaServicioDao() }
+    val reservaParkingDao = remember { appDatabase.reservaParkingDao() }
     val repository = remember { HotelRepository(localDataSource, remoteDataSource) }
     val viewModelFactory = remember { HotelViewModelFactory(repository) }
     val mainViewModel: HotelViewModel = viewModel(factory = viewModelFactory)
@@ -70,6 +71,9 @@ fun MainApp() {
     val reseniaViewModel = remember { ReseniaViewModelFactory(reseniaDao) }
     val reservaServiciosViewModelFactory =
         remember { ReservaServiciosViewModelFactory(reservaServicioDao) }
+    val parkingViewModelFactory = remember {
+        ParkingViewModelFactory(reservaParkingDao)
+    }
     val navHostController = rememberNavController()
 
     Scaffold(topBar = { MainTopBar() }) {
@@ -87,7 +91,8 @@ fun MainApp() {
                     reservaViewModelFactory = reservaViewModelFactory,
                     reservaEventosViewModelFactory = reservaEventosViewModelFactory,
                     //reseniaViewModel = reseniaViewModel
-                    reservaServiciosViewModelFactory = reservaServiciosViewModelFactory
+                    reservaServiciosViewModelFactory = reservaServiciosViewModelFactory,
+                    parkingViewModelFactory = parkingViewModelFactory
                 )
             }
             NavigationBottomBar(navHostController)

@@ -6,7 +6,14 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -16,8 +23,26 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.People
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,19 +58,26 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.pabloat.hotelperikero.data.local.dao.LocalReservaDao
+import com.pabloat.hotelperikero.data.local.dao.LocalReservaParkingDao
 import com.pabloat.hotelperikero.data.local.dao.LocalReservaServicioDao
 import com.pabloat.hotelperikero.data.local.entities.Reserva
+import com.pabloat.hotelperikero.data.local.entities.ReservaParking
 import com.pabloat.hotelperikero.data.local.entities.ReservaServicio
 import com.pabloat.hotelperikero.data.local.entities.Servicio
-import com.pabloat.hotelperikero.ui.views.getHabitacionImageUrl
-import com.pabloat.hotelperikero.viewmodel.*
+import com.pabloat.hotelperikero.viewmodel.HotelViewModel
+import com.pabloat.hotelperikero.viewmodel.ParkingViewModel
+import com.pabloat.hotelperikero.viewmodel.ParkingViewModelFactory
+import com.pabloat.hotelperikero.viewmodel.ReservaServicioViewModel
+import com.pabloat.hotelperikero.viewmodel.ReservaServiciosViewModelFactory
+import com.pabloat.hotelperikero.viewmodel.ReservaViewModel
+import com.pabloat.hotelperikero.viewmodel.ReservaViewModelFactory
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import java.time.temporal.ChronoUnit
-import java.util.*
+import java.util.Calendar
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,10 +89,13 @@ fun ReservationFormScreen(
     navHostController: NavHostController,
     viewModel: HotelViewModel,
     reservaDao: LocalReservaDao,
-    reservaServicioDao: LocalReservaServicioDao
+    reservaServicioDao: LocalReservaServicioDao,
+    reservaParkingEDao: LocalReservaParkingDao
 ) {
     val reservaViewModel: ReservaViewModel = viewModel(factory = ReservaViewModelFactory(reservaDao))
     val reservaServicioViewModel: ReservaServicioViewModel = viewModel(factory = ReservaServiciosViewModelFactory(reservaServicioDao))
+    val parkingViewModel: ParkingViewModel =
+        viewModel(factory = ParkingViewModelFactory(reservaParkingEDao))
     val habitacion = viewModel.getHabitacionById(habitacionId) ?: return
     var checkInDate by remember { mutableStateOf("") }
     var checkOutDate by remember { mutableStateOf("") }
@@ -70,10 +105,68 @@ fun ReservationFormScreen(
     val successMessage = remember { mutableStateOf("") }
     val servicios by viewModel.servicios.collectAsState()
     val selectedServicios = remember { mutableStateOf(mutableMapOf<Servicio, Int>()) }
+    var matricula by remember { mutableStateOf("") }
+    var reservarParking by remember { mutableStateOf(false) }
+    val reservasParking by viewModel.reservasParking.collectAsState()
+    val reservasParkingAnonimo by viewModel.reservasParkingAnonimo.collectAsState()
 
     val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
     val context = LocalContext.current
+
+    fun calcularNuevoId(): Int {
+        var maxId = 0
+        for (reserva in reservasParking) {
+            if (reserva.id != null && reserva.id > maxId) {
+                maxId = reserva.id
+            }
+        }
+        return maxId + 1
+    }
+
+    fun calcularParkingId(checkIn: String, checkOut: String): Int {
+        val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val newCheckIn = LocalDate.parse(checkIn, dateFormatter)
+        val newCheckOut = LocalDate.parse(checkOut, dateFormatter)
+        Log.d("Vakero", newCheckIn.toString())
+
+        Log.d("Vakero", newCheckOut.toString())
+
+
+        val parkingIdsUsados = mutableSetOf<Int>()
+
+        reservasParking.forEach { reserva ->
+            val fechaCheckIn = reserva.fecha_inicio.split(" ").first()
+            val reservaCheckIn = LocalDate.parse(fechaCheckIn, dateFormatter)
+            Log.d("Vakero", reservaCheckIn.toString())
+
+            val fechaCheckOut = reserva.fecha_fin.split(" ").first()
+            val reservaCheckOut = LocalDate.parse(fechaCheckOut, dateFormatter)
+            Log.d("Vakero", reservaCheckOut.toString())
+
+            if (newCheckIn.isBefore(reservaCheckOut) && newCheckOut.isAfter(reservaCheckIn)) {
+                parkingIdsUsados.add(reserva.parking_id)
+            }
+        }
+
+        reservasParkingAnonimo.forEach { reservaAnonima ->
+            val fechaHoraEntrada = reservaAnonima.fecha_hora_entrada
+            Log.d("Vakero", fechaHoraEntrada)
+            val fechaEntrada = fechaHoraEntrada.split(" ").first()
+            Log.d("Vakero", fechaEntrada)
+            val reservaCheckIn = LocalDate.parse(fechaEntrada, dateFormatter)
+            if (newCheckOut.isAfter(reservaCheckIn)) {
+                parkingIdsUsados.add(reservaAnonima.parking_id)
+            }
+        }
+
+        val todosLosParkingIds = (1..50).toSet()
+        val parkingIdsDisponibles = todosLosParkingIds - parkingIdsUsados
+
+        return parkingIdsDisponibles.firstOrNull()
+            ?: throw Exception("No hay parking disponible para las fechas seleccionadas")
+    }
+
 
     fun openDatePickerDialog(
         context: android.content.Context,
@@ -354,6 +447,32 @@ fun ReservationFormScreen(
                         }
                     }
 
+                    OutlinedTextField(
+                        value = matricula,
+                        onValueChange = {
+                            matricula = it
+                            errorMessage.value = ""
+                            successMessage.value = ""
+                        },
+                        label = { Text("Matrícula del vehículo") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp)
+                    )
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp)
+                    ) {
+                        Checkbox(
+                            checked = reservarParking,
+                            onCheckedChange = { reservarParking = it }
+                        )
+                        Text("¿Reservar parking?")
+                    }
+
                     Button(
                         onClick = {
                             if (!isValidDate(checkInDate) || !isValidDate(checkOutDate)) {
@@ -415,6 +534,28 @@ fun ReservationFormScreen(
                                                     reservaServicioViewModel.crearReserva(reservaServicio)
                                                 }
 
+
+                                                if (reservarParking && matricula.isNotBlank()) {
+                                                    val reservaParking = ReservaParking(
+                                                        id = calcularNuevoId(),
+                                                        reserva_habitacion_id = reservaId,
+                                                        parking_id = calcularParkingId(
+                                                            checkIn,
+                                                            checkOut
+                                                        ),
+                                                        matricula = matricula,
+                                                        fecha_inicio = checkIn,
+                                                        fecha_fin = checkOut,
+                                                        salida_registrada = 1,
+                                                        created_at = now,
+                                                        updated_at = now
+
+                                                    )
+                                                    Log.d("Vakero", reservaParking.toString())
+                                                    parkingViewModel.crearReservaParking(
+                                                        reservaParking
+                                                    )
+                                                }
                                                 successMessage.value = "¡Reserva creada con éxito!"
                                             }
                                         }
@@ -470,3 +611,5 @@ fun ReservationFormScreen(
         }
     }
 }
+
+
