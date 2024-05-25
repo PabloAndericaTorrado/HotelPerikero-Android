@@ -13,6 +13,9 @@ interface LocalReseniaDao {
     fun getAll(): Flow<List<Resenia>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertSingle(resenias: Resenia)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(resenias: List<Resenia>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

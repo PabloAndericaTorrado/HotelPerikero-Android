@@ -29,6 +29,8 @@ import com.pabloat.hotelperikero.navigation.MainTopBar
 import com.pabloat.hotelperikero.ui.util.NavigationBottomBar
 import com.pabloat.hotelperikero.viewmodel.HotelViewModel
 import com.pabloat.hotelperikero.viewmodel.HotelViewModelFactory
+import com.pabloat.hotelperikero.viewmodel.ReseniaViewModel
+import com.pabloat.hotelperikero.viewmodel.ReseniaViewModelFactory
 import com.pabloat.hotelperikero.viewmodel.ReservaEventosViewModelFactory
 import com.pabloat.hotelperikero.viewmodel.ReservaServiciosViewModelFactory
 import com.pabloat.hotelperikero.viewmodel.ReservaViewModelFactory
@@ -57,6 +59,7 @@ fun MainApp() {
     val remoteDataSource = remember { RemoteHotelDataSource(RetrofitBuilder.apiService) }
     val localDataSource = remember { HotelDatasource(context) }
     val reservaDao = remember { appDatabase.reservaDao() }
+    val reseniaDao = remember { appDatabase.reseniaDao() }
     val reservaEventosDao = remember { appDatabase.reservaEventosDao() }
     val reservaServicioDao = remember { appDatabase.reservaServicioDao() }
     val repository = remember { HotelRepository(localDataSource, remoteDataSource) }
@@ -64,6 +67,7 @@ fun MainApp() {
     val mainViewModel: HotelViewModel = viewModel(factory = viewModelFactory)
     val reservaViewModelFactory = remember { ReservaViewModelFactory(reservaDao) }
     val reservaEventosViewModelFactory = remember { ReservaEventosViewModelFactory(reservaEventosDao) }
+    val reseniaViewModel = remember { ReseniaViewModelFactory(reseniaDao) }
     val reservaServiciosViewModelFactory =
         remember { ReservaServiciosViewModelFactory(reservaServicioDao) }
     val navHostController = rememberNavController()
@@ -82,6 +86,7 @@ fun MainApp() {
                     context = context,
                     reservaViewModelFactory = reservaViewModelFactory,
                     reservaEventosViewModelFactory = reservaEventosViewModelFactory,
+                    //reseniaViewModel = reseniaViewModel
                     reservaServiciosViewModelFactory = reservaServiciosViewModelFactory
                 )
             }

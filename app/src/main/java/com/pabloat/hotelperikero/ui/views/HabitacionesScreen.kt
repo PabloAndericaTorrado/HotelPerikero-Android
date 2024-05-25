@@ -102,8 +102,6 @@ fun HabitacionesScreen(
 
                 ) {
                 SearchFilterSection(
-                    searchText = searchText,
-                    onSearchTextChanged = { searchText = it },
                     precioFiltro = precioFiltro,
                     onPrecioFiltroChanged = { precioFiltro = it },
                     capacidadFiltro = capacidadFiltro,
@@ -131,8 +129,6 @@ fun HabitacionesScreen(
 
 @Composable
 fun SearchFilterSection(
-    searchText: String,
-    onSearchTextChanged: (String) -> Unit,
     precioFiltro: Int,
     onPrecioFiltroChanged: (Int) -> Unit,
     capacidadFiltro: Int?,
