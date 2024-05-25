@@ -261,9 +261,3 @@ fun DetailRow(label: String, value: String) {
         HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
     }
 }
-
-@Composable
-fun getEspacioImageUrl(id: Int): String {
-    // Lógica para obtener la URL de la imagen según el ID de reserva de evento
-    return "https://example.com/event_image_$id.jpg"
-}
