@@ -15,10 +15,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.pabloat.hotelperikero.data.local.entities.Espacio
@@ -30,12 +33,11 @@ import com.pabloat.hotelperikero.viewmodel.HotelViewModel
 @Composable
 fun EspaciosScreen(navHostController: NavHostController, mainViewModel: HotelViewModel) {
     val espacios = mainViewModel.espacios.collectAsState().value
-    androidx.compose.material.Scaffold(
+    Scaffold(
         topBar = {
-            androidx.compose.material.TopAppBar(
-                backgroundColor = Color.Gray,
+            TopAppBar(
                 title = {
-                    androidx.compose.material.Text(
+                    Text(
                         "¡Nuestros Espacios!",
                         color = Color.White,
                         style = MaterialTheme.typography.titleLarge
@@ -49,17 +51,20 @@ fun EspaciosScreen(navHostController: NavHostController, mainViewModel: HotelVie
                             tint = Color.White
                         )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
             )
         },
         content = { padding ->
             Column(
                 modifier = Modifier
                     .padding(padding)
-                    .fillMaxWidth()
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.Top
             ) {
                 EspacioList(
                     espacios = espacios,
@@ -77,7 +82,11 @@ fun EspacioList(
     navHostController: NavHostController,
     mainViewModel: HotelViewModel
 ) {
-    LazyColumn(modifier = Modifier.padding(16.dp)) {
+    LazyColumn(
+        modifier = Modifier
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .fillMaxSize()
+    ) {
         items(espacios) { espacio ->
             EspacioCard(
                 espacio = espacio,
@@ -94,7 +103,7 @@ fun EspacioCard(
     navHostController: NavHostController,
     mainViewModel: HotelViewModel
 ) {
-    ElevatedCard(
+    Card(
         shape = MaterialTheme.shapes.medium,
         modifier = Modifier
             .padding(vertical = 8.dp)
@@ -102,11 +111,25 @@ fun EspacioCard(
             .clickable {
                 mainViewModel.selectEspacioId(espacio.id)
                 navHostController.navigate(Destinations.EspacioDetalleScreen.route)
-            }
-            .background(MaterialTheme.colorScheme.surface)
+            },
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        ),
+        elevation = CardDefaults.cardElevation(8.dp)
     ) {
         Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            MaterialTheme.colorScheme.surface,
+                            MaterialTheme.colorScheme.background
+                        )
+                    )
+                ),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
                 painter = rememberAsyncImagePainter(model = getEspacioImageUrl(espacio.id)),
@@ -115,31 +138,36 @@ fun EspacioCard(
                 modifier = Modifier
                     .height(180.dp)
                     .fillMaxWidth()
-                    .clip(MaterialTheme.shapes.medium)
+                    .clip(RectangleShape)
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                espacio.nombre,
-                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                text = espacio.nombre,
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground
+                ),
+                modifier = Modifier.padding(horizontal = 16.dp)
             )
             Spacer(modifier = Modifier.height(4.dp))
-            Text(espacio.descripcion, style = MaterialTheme.typography.bodySmall)
+            Text(
+                text = espacio.descripcion,
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
+                ),
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
             Spacer(modifier = Modifier.height(4.dp))
-            Text("${espacio.precio}€ por hora", style = MaterialTheme.typography.bodySmall)
+            Text(
+                text = "${espacio.precio}€ por hora",
+                style = MaterialTheme.typography.bodySmall.copy(
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold
+                ),
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
             Spacer(modifier = Modifier.height(8.dp))
-            if (espacio.disponible == 1) {
-                Button(
-                    onClick = {
-                        mainViewModel.selectEspacioId(espacio.id)
-                        navHostController.navigate(Destinations.EspacioDetalleScreen.route)
-                    },
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-                ) {
-                    Text("Reservar", color = Color.White)
-                }
-            } else {
-                Text("No disponible", color = Color.Red)
-            }
         }
     }
 }
+
