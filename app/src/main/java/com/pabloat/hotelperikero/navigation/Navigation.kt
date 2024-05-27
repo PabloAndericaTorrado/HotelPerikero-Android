@@ -1,6 +1,5 @@
 package com.pabloat.hotelperikero.navigation
 
-import android.content.Context
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -26,6 +25,7 @@ import com.pabloat.hotelperikero.ui.views.ServiciosScreen
 import com.pabloat.hotelperikero.ui.views.UserReservationsScreen
 import com.pabloat.hotelperikero.viewmodel.HotelViewModel
 import com.pabloat.hotelperikero.viewmodel.ParkingViewModelFactory
+import com.pabloat.hotelperikero.viewmodel.ReseniaViewModel
 import com.pabloat.hotelperikero.viewmodel.ReservaEventosViewModelFactory
 import com.pabloat.hotelperikero.viewmodel.ReservaServiciosViewModelFactory
 import com.pabloat.hotelperikero.viewmodel.ReservaViewModelFactory
@@ -36,9 +36,9 @@ import com.pabloat.hotelperikero.viewmodel.ReservaViewModelFactory
 fun MainNavigation(
     onNavController: NavHostController,
     mainViewmodel: HotelViewModel,
-    context: Context,
     reservaViewModelFactory: ReservaViewModelFactory,
     reservaEventosViewModelFactory: ReservaEventosViewModelFactory,
+    reseniaViewModel: ReseniaViewModel,
     reservaServiciosViewModelFactory: ReservaServiciosViewModelFactory,
     parkingViewModelFactory: ParkingViewModelFactory
 ) {
@@ -82,7 +82,7 @@ fun MainNavigation(
         }
 
         composable(Destinations.ProfileScreen.route) {
-            ProfileScreen(navHostController = onNavController, mainViewmodel)
+            ProfileScreen(navHostController = onNavController, viewModel = mainViewmodel, reseniaViewModel = reseniaViewModel)
         }
 
         composable("reservation_form/{habitacionId}/{userId}") { backStackEntry ->

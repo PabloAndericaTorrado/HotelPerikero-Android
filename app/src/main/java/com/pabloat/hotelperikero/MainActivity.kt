@@ -30,6 +30,7 @@ import com.pabloat.hotelperikero.ui.util.NavigationBottomBar
 import com.pabloat.hotelperikero.viewmodel.HotelViewModel
 import com.pabloat.hotelperikero.viewmodel.HotelViewModelFactory
 import com.pabloat.hotelperikero.viewmodel.ParkingViewModelFactory
+import com.pabloat.hotelperikero.viewmodel.ReseniaViewModel
 import com.pabloat.hotelperikero.viewmodel.ReseniaViewModelFactory
 import com.pabloat.hotelperikero.viewmodel.ReservaEventosViewModelFactory
 import com.pabloat.hotelperikero.viewmodel.ReservaServiciosViewModelFactory
@@ -68,7 +69,8 @@ fun MainApp() {
     val mainViewModel: HotelViewModel = viewModel(factory = viewModelFactory)
     val reservaViewModelFactory = remember { ReservaViewModelFactory(reservaDao) }
     val reservaEventosViewModelFactory = remember { ReservaEventosViewModelFactory(reservaEventosDao) }
-    val reseniaViewModel = remember { ReseniaViewModelFactory(reseniaDao) }
+    val reseniaViewModelFactory = remember { ReseniaViewModelFactory(reseniaDao) }
+    val reseniaViewModel: ReseniaViewModel = viewModel(factory = reseniaViewModelFactory)
     val reservaServiciosViewModelFactory =
         remember { ReservaServiciosViewModelFactory(reservaServicioDao) }
     val parkingViewModelFactory = remember {
@@ -87,10 +89,9 @@ fun MainApp() {
                 MainNavigation(
                     onNavController = navHostController,
                     mainViewmodel = mainViewModel,
-                    context = context,
                     reservaViewModelFactory = reservaViewModelFactory,
                     reservaEventosViewModelFactory = reservaEventosViewModelFactory,
-                    //reseniaViewModel = reseniaViewModel
+                    reseniaViewModel = reseniaViewModel,
                     reservaServiciosViewModelFactory = reservaServiciosViewModelFactory,
                     parkingViewModelFactory = parkingViewModelFactory
                 )

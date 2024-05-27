@@ -1,17 +1,11 @@
 package com.pabloat.hotelperikero.ui.views
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -20,24 +14,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,17 +29,25 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.pabloat.hotelperikero.R
 import com.pabloat.hotelperikero.data.local.entities.Reserva
+import com.pabloat.hotelperikero.data.local.entities.Resenia
 import com.pabloat.hotelperikero.navigation.Destinations
 import com.pabloat.hotelperikero.viewmodel.HotelViewModel
+import com.pabloat.hotelperikero.viewmodel.ReseniaViewModel
 import org.json.JSONObject
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen(navHostController: NavHostController, viewModel: HotelViewModel) {
+fun ProfileScreen(navHostController: NavHostController, viewModel: HotelViewModel, reseniaViewModel: ReseniaViewModel) {
     val user by viewModel.userData.collectAsState()
     val pastReservas by viewModel.pastReservas.collectAsState(emptyList())
     val showDialog = remember { mutableStateOf(false) }
     val selectedReserva = remember { mutableStateOf<Reserva?>(null) }
+    val showSuccessDialog = remember { mutableStateOf(false) }
+
+    val reseniaCreada by reseniaViewModel.reseniaCreada.collectAsState()
 
     LaunchedEffect(user) {
         user?.let {
@@ -69,6 +55,14 @@ fun ProfileScreen(navHostController: NavHostController, viewModel: HotelViewMode
             if (userId != 0) {
                 viewModel.loadPastReservasByUserId(userId)
             }
+        }
+    }
+
+    LaunchedEffect(reseniaCreada) {
+        reseniaCreada?.let {
+            showSuccessDialog.value = true
+            selectedReserva.value = null
+            reseniaViewModel.resetReseniaCreada()
         }
     }
 
@@ -142,11 +136,29 @@ fun ProfileScreen(navHostController: NavHostController, viewModel: HotelViewMode
                     Text("Log out", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 }
                 selectedReserva.value?.let { reserva ->
-                    AddReviewDialog(reserva = reserva, onDismiss = { selectedReserva.value = null })
+                    AddReviewDialog(
+                        reserva = reserva,
+                        onDismiss = { selectedReserva.value = null },
+                        onSaveReview = { comentario, rating ->
+                            val now = LocalDateTime.now()
+                                .format(DateTimeFormatter.ISO_DATE_TIME)
+                            val nuevaResenia = Resenia(
+                                id = null,
+                                reserva_id = reserva.habitacion_id,
+                                usuario_id = user!!.optInt("id"),
+                                calificacion = rating,
+                                comentario = comentario,
+                                created_at = now,
+                                updated_at = now
+                            )
+                            reseniaViewModel.crearResenia(nuevaResenia)
+                        }
+                    )
+                }
+                if (showSuccessDialog.value) {
+                    SuccessDialog(onDismiss = { showSuccessDialog.value = false })
                 }
             } ?: run {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-                Spacer(modifier = Modifier.height(16.dp))
                 Button(
                     onClick = {
                         navHostController.navigate(Destinations.LoginScreen.route)
@@ -171,7 +183,6 @@ fun UserProfile(user: JSONObject) {
     val phone = user.optString("telefono", "Teléfono no disponible")
     val city = user.optString("ciudad", "Ciudad no disponible")
     val direccion = user.optString("direccion", "Dirección no disponible")
-
     Card(
         modifier = Modifier
             .padding(16.dp)
@@ -195,18 +206,14 @@ fun UserProfile(user: JSONObject) {
                     .clip(CircleShape),
                 contentScale = ContentScale.Crop
             )
-
             Spacer(modifier = Modifier.height(16.dp))
-
             Text(
                 text = name,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
             )
-
             Spacer(modifier = Modifier.height(8.dp))
-
             ProfileDetailItem(label = "Correo electrónico", value = email)
             ProfileDetailItem(label = "Teléfono", value = phone)
             ProfileDetailItem(label = "Ciudad", value = city)
@@ -298,7 +305,7 @@ fun PastReservaCard(reserva: Reserva, onAddReviewClick: (Reserva) -> Unit) {
             Spacer(modifier = Modifier.height(8.dp))
             Button(
                 onClick = { onAddReviewClick(reserva) },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 Text("Añadir Reseña")
             }
@@ -307,8 +314,9 @@ fun PastReservaCard(reserva: Reserva, onAddReviewClick: (Reserva) -> Unit) {
 }
 
 @Composable
-fun AddReviewDialog(reserva: Reserva, onDismiss: () -> Unit) {
+fun AddReviewDialog(reserva: Reserva, onDismiss: () -> Unit, onSaveReview: (String, Int) -> Unit) {
     val rating = remember { mutableStateOf(0) }
+    val comentario = remember { mutableStateOf("") }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -330,11 +338,18 @@ fun AddReviewDialog(reserva: Reserva, onDismiss: () -> Unit) {
                         )
                     }
                 }
+                Spacer(modifier = Modifier.height(8.dp))
+                TextField(
+                    value = comentario.value,
+                    onValueChange = { comentario.value = it },
+                    label = { Text("Comentario") },
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
         },
         confirmButton = {
             Button(onClick = {
-                // Save the review logic here, using the rating.value
+                onSaveReview(comentario.value, rating.value)
                 onDismiss()
             }) {
                 Text("Guardar")
@@ -343,6 +358,20 @@ fun AddReviewDialog(reserva: Reserva, onDismiss: () -> Unit) {
         dismissButton = {
             Button(onClick = onDismiss) {
                 Text("Cancelar")
+            }
+        }
+    )
+}
+
+@Composable
+fun SuccessDialog(onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Éxito") },
+        text = { Text("La reseña se ha insertado correctamente.") },
+        confirmButton = {
+            Button(onClick = onDismiss) {
+                Text("Aceptar")
             }
         }
     )

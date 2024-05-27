@@ -7,15 +7,18 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.pabloat.hotelperikero.data.local.entities.Reserva
@@ -120,30 +123,49 @@ fun UserReservationCard(
 ) {
     var showDialog by remember { mutableStateOf(false) }
 
-    ElevatedCard(
-        shape = MaterialTheme.shapes.medium,
+    Card(
+        shape = RoundedCornerShape(16.dp),
         modifier = Modifier
             .padding(vertical = 8.dp)
             .fillMaxWidth()
-            .clickable { showDialog = true }
-            .background(MaterialTheme.colorScheme.surface)
+            .clickable { showDialog = true },
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
-        Column(
+        Row(
             modifier = Modifier.padding(16.dp)
         ) {
-            Text(
-                "Habitación ID: ${reserva.habitacion_id}",
-                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+            Image(
+                painter = rememberAsyncImagePainter(model = getHabitacionImageUrl(reserva.habitacion_id)),
+                contentDescription = "Imagen de la habitación ${reserva.habitacion_id}",
+                modifier = Modifier
+                    .size(120.dp)
+                    .clip(RoundedCornerShape(16.dp)),
+                contentScale = ContentScale.Crop
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text("Check-In: ${reserva.check_in}", style = MaterialTheme.typography.bodyMedium)
-            Text("Check-Out: ${reserva.check_out}", style = MaterialTheme.typography.bodyMedium)
+            Spacer(modifier = Modifier.width(16.dp))
+            Column(
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "Habitación ${reserva.habitacion_id}",
+                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                )
+                Text("Check-In: ${reserva.check_in}", style = MaterialTheme.typography.bodyLarge)
+                Text("Check-Out: ${reserva.check_out}", style = MaterialTheme.typography.bodyLarge)
+                Text("Precio Total: ${reserva.precio_total}€", style = MaterialTheme.typography.bodyLarge)
+                Text("Huéspedes: ${reserva.numero_personas}", style = MaterialTheme.typography.bodyLarge)
+            }
         }
     }
 
     if (showDialog) {
         ReservationDetailDialog(
             title = "Detalles de la reserva",
+            imageUrl = getHabitacionImageUrl(reserva.habitacion_id),
             details = listOf(
                 "Habitación ID" to reserva.habitacion_id.toString(),
                 "Check-In" to reserva.check_in,
@@ -162,24 +184,42 @@ fun UserEventReservationCard(
 ) {
     var showDialog by remember { mutableStateOf(false) }
 
-    ElevatedCard(
-        shape = MaterialTheme.shapes.medium,
+    Card(
+        shape = RoundedCornerShape(16.dp),
         modifier = Modifier
             .padding(vertical = 8.dp)
             .fillMaxWidth()
-            .clickable { showDialog = true }
-            .background(MaterialTheme.colorScheme.surface)
+            .clickable { showDialog = true },
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
-        Column(
+        Row(
             modifier = Modifier.padding(16.dp)
         ) {
-            Text(
-                "Reserva de Evento ID: ${reserva.id}",
-                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+            Image(
+                painter = rememberAsyncImagePainter(model = getEspacioImageUrl(reserva.id)),
+                contentDescription = "Imagen del evento ${reserva.id}",
+                modifier = Modifier
+                    .size(120.dp)
+                    .clip(RoundedCornerShape(16.dp)),
+                contentScale = ContentScale.Crop
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text("Check-In: ${reserva.check_in}", style = MaterialTheme.typography.bodyMedium)
-            Text("Check-Out: ${reserva.check_out}", style = MaterialTheme.typography.bodyMedium)
+            Spacer(modifier = Modifier.width(16.dp))
+            Column(
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "Evento ${reserva.id}",
+                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                )
+                Text("Check-In: ${reserva.check_in}", style = MaterialTheme.typography.bodyLarge)
+                Text("Check-Out: ${reserva.check_out}", style = MaterialTheme.typography.bodyLarge)
+                Text("Precio Total: ${reserva.precio_total}€", style = MaterialTheme.typography.bodyLarge)
+                Text("Personas: ${reserva.cantidad_personas}", style = MaterialTheme.typography.bodyLarge)
+            }
         }
     }
 
@@ -258,6 +298,6 @@ fun DetailRow(label: String, value: String) {
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.padding(bottom = 4.dp)
         )
-        HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
+        Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
     }
 }
