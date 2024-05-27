@@ -6,28 +6,15 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -35,14 +22,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
+import com.pabloat.hotelperikero.R
 import com.pabloat.hotelperikero.data.local.entities.Espacio
 import com.pabloat.hotelperikero.data.local.entities.Habitacion
 import com.pabloat.hotelperikero.data.local.entities.Servicio
@@ -62,7 +52,7 @@ fun MainScreen(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        containerColor = MaterialTheme.colorScheme.background
+        containerColor = Color.White
     ) { padding ->
         Column(
             modifier = Modifier
@@ -89,27 +79,44 @@ fun WelcomeSection(navHostController: NavHostController) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp),
-        contentAlignment = Alignment.Center
+            .height(200.dp)
     ) {
+        Image(
+            painter = painterResource(id = R.drawable.fondo1),
+            contentDescription = "background",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(200.dp)
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Black.copy(alpha = 0.5f),
+                            Color.Transparent
+                        )
+                    )
+                )
         ) {
             Text(
-                "Bienvenidos al Perikero Hotel",
+                "Bienvenidos a Hotel Perikero",
                 style = MaterialTheme.typography.headlineMedium.copy(
                     fontWeight = FontWeight.Bold,
-                    fontSize = 28.sp
+                    fontSize = 28.sp,
+                    color = Color.White
                 ),
-                color = MaterialTheme.colorScheme.primary,
                 textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(8.dp))
             Button(
                 onClick = { navHostController.navigate(Destinations.HabitacionesScreen.route) },
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4A90E2))
             ) {
-                Text(text = "Reserva Aquí!", style = MaterialTheme.typography.titleLarge)
+                Text(text = "¡Reserva aquí!", style = MaterialTheme.typography.titleLarge.copy(color = Color.White))
             }
         }
     }
@@ -129,21 +136,22 @@ fun RoomSectionMain(
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            "¡Nuestras Mejores Habitaciones!",
+            "¡Nuestras mejores habitaciones!",
             style = MaterialTheme.typography.headlineSmall.copy(
-                fontSize = 24.sp
+                fontSize = 24.sp,
+                color = Color(0xFF2A4B8D),
+                fontWeight = FontWeight.Bold
             ),
-            color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            "¡Toca Aquí Para Ver Reseñas!",
+            "¡Toca aquí para ver reseñas!",
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier
                 .clickable { navHostController.navigate(Destinations.ReseniasScreen.route) }
                 .padding(horizontal = 16.dp),
-            color = MaterialTheme.colorScheme.primary,
+            color = Color(0xFF4A90E2),
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -166,9 +174,9 @@ fun RoomCardMain(room: Habitacion, nav: NavHostController, mainViewModel: HotelV
     Card(
         modifier = Modifier
             .padding(10.dp)
-            .width(250.dp)
+            .width(300.dp)
             .shadow(8.dp, shape = RoundedCornerShape(16.dp)),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5))
     ) {
         Column(
             modifier = Modifier
@@ -189,23 +197,20 @@ fun RoomCardMain(room: Habitacion, nav: NavHostController, mainViewModel: HotelV
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 room.tipo,
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold, color = Color(0xFF2A4B8D)),
                 textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 room.descripcion,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-                textAlign = TextAlign.Justify,
+                style = MaterialTheme.typography.bodyMedium.copy(color = Color(0xFF333333)),
+                textAlign = TextAlign.Center,
                 modifier = Modifier.padding(horizontal = 8.dp)
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 "Precio: ${room.precio}€/Noche",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold, color = Color(0xFF4A90E2)),
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(horizontal = 8.dp)
             )
@@ -216,9 +221,10 @@ fun RoomCardMain(room: Habitacion, nav: NavHostController, mainViewModel: HotelV
                         nav.navigate(Destinations.HabitacionDetalleScreen.route)
                         mainViewModel.selectHabitacionId(room.id)
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2A4B8D))
                 ) {
-                    Text("Ir a la Habitación", style = MaterialTheme.typography.bodyMedium)
+                    Text("Ir a la habitación", style = MaterialTheme.typography.bodyMedium.copy(color = Color.White))
                 }
             } else {
                 Text("No disponible", color = Color.Red, modifier = Modifier.padding(4.dp))
@@ -237,20 +243,21 @@ fun ServiceSectionMain(servicios: List<Servicio>, navHostController: NavHostCont
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            "¡Todos Nuestros Servicios!",
+            "¡Todos nuestros servicios!",
             style = MaterialTheme.typography.headlineSmall.copy(
-                fontSize = 24.sp
+                fontSize = 24.sp,
+                color = Color(0xFF2A4B8D),
+                fontWeight = FontWeight.Bold
             ),
-            color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            "¡Toca Aquí Para Ver Más!",
+            "¡Toca aquí para ver más!",
             modifier = Modifier
                 .clickable { navHostController.navigate(Destinations.ServiciosScreen.route) }
                 .padding(horizontal = 16.dp),
-            color = MaterialTheme.colorScheme.primary,
+            color = Color(0xFF4A90E2),
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -268,9 +275,9 @@ fun ServiceCardMain(servicio: Servicio) {
     Card(
         modifier = Modifier
             .padding(10.dp)
-            .width(250.dp)
+            .width(300.dp)
             .shadow(8.dp, shape = RoundedCornerShape(16.dp)),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5))
     ) {
         Column(
             modifier = Modifier
@@ -291,10 +298,9 @@ fun ServiceCardMain(servicio: Servicio) {
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 servicio.nombre,
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold, color = Color(0xFF2A4B8D)),
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 4.dp),
-                color = MaterialTheme.colorScheme.onSurface
+                modifier = Modifier.padding(top = 4.dp)
             )
         }
     }
@@ -310,21 +316,22 @@ fun EspacioSectionMain(espacios: List<Espacio>, navHostController: NavHostContro
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            "¡Celebra Con Nosotros!",
+            "¡Celebra con nosotros!",
             style = MaterialTheme.typography.headlineSmall.copy(
-                fontSize = 24.sp
+                fontSize = 24.sp,
+                color = Color(0xFF2A4B8D),
+                fontWeight = FontWeight.Bold
             ),
-            color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            "¡Toca Aquí Para Reservar!",
+            "¡Toca aquí para reservar!",
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier
                 .clickable { navHostController.navigate(Destinations.EspaciosScreen.route) }
                 .padding(horizontal = 16.dp),
-            color = MaterialTheme.colorScheme.primary,
+            color = Color(0xFF4A90E2),
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -341,9 +348,9 @@ fun EspacioCardMain(espacio: Espacio) {
     Card(
         modifier = Modifier
             .padding(10.dp)
-            .width(250.dp)
+            .width(300.dp)
             .shadow(8.dp, shape = RoundedCornerShape(16.dp)),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5))
     ) {
         Column(
             modifier = Modifier
@@ -364,18 +371,16 @@ fun EspacioCardMain(espacio: Espacio) {
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 espacio.nombre,
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold, color = Color(0xFF2A4B8D)),
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 4.dp),
-                color = MaterialTheme.colorScheme.onSurface
+                modifier = Modifier.padding(top = 4.dp)
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 "Precio: ${espacio.precio}€/Hora",
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold, color = Color(0xFF4A90E2)),
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = 8.dp),
-                color = MaterialTheme.colorScheme.onSurface
+                modifier = Modifier.padding(horizontal = 8.dp)
             )
         }
     }
@@ -391,37 +396,33 @@ fun FooterSection(navHostController: NavHostController) {
     ) {
         Text(
             "Contacto",
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onBackground,
+            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold, color = Color(0xFF2A4B8D)),
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             "Teléfono: +123 456 7890",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onBackground,
+            style = MaterialTheme.typography.bodyMedium.copy(color = Color(0xFF333333)),
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             "Email: info@perikerohotel.com",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onBackground,
+            style = MaterialTheme.typography.bodyMedium.copy(color = Color(0xFF333333)),
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             "Dirección: C. Estébanez Calderón, 10, Marbella",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onBackground,
+            style = MaterialTheme.typography.bodyMedium.copy(color = Color(0xFF333333)),
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = { navHostController.navigate(Destinations.Contacto.route) },
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4A90E2))
         ) {
-            Text("Más Información", color = MaterialTheme.colorScheme.onPrimary)
+            Text("Más Información", color = Color.White)
         }
     }
 }
@@ -430,7 +431,7 @@ fun getServiceImageUrl(servicioId: Int?): String {
     val imageUrls = mapOf(
         1 to "https://estaticosgn-cdn.deia.eus/clip/3c84d28d-e825-4262-81cd-ae0dfe0af667_16-9-aspect-ratio_default_0.jpg",
         2 to "https://theobjective.com/wp-content/uploads/2023/07/Surtido-de-panes-en-el-desayuno-de-hotel-1024x576.webp",
-        3 to "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQyyZWVev_nRM_o5PIpT5cB3lO95NIQZMSnzmfe_75Lr95nu609",
+        3 to "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQyyZWVev_nRM_o5PIpT5cB3fzmIoyvzQNxj2dtIBTnJd3wtTG",
         4 to "https://www.macrun.es/wp-content/uploads/2021/02/macrun-turismo1-480x480.jpg",
         5 to "https://img.freepik.com/foto-gratis/piscina-cubierta-grandes-ventanales-que-permiten-que-luz-natural-ilumine-agua-azul-clara_1268-31068.jpg?t=st=1715725869~exp=1715729469~hmac=e317a4d4ac422c8226564322712ae8f09f721c9ee31700e2903b7ad255f7995b&w=1480",
         6 to "https://demo.phlox.pro/gym/wp-content/uploads/sites/83/2018/12/image-from-rawpixel-id-378161-jpeg@2x-1-1000x1000.jpg",
@@ -502,9 +503,10 @@ fun ServiceEspacioSectionMain(
         Text(
             "¡Todos Nuestros Servicios!",
             style = MaterialTheme.typography.headlineSmall.copy(
-                fontSize = 24.sp
+                fontSize = 24.sp,
+                color = Color(0xFF2A4B8D),
+                fontWeight = FontWeight.Bold
             ),
-            color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center
         )
         Text(
@@ -512,7 +514,7 @@ fun ServiceEspacioSectionMain(
             modifier = Modifier
                 .clickable { navHostController.navigate(Destinations.ServiciosEventosScreen.route) }
                 .padding(horizontal = 16.dp),
-            color = MaterialTheme.colorScheme.primary,
+            color = Color(0xFFD70000),
             textAlign = TextAlign.Center
         )
         LazyRow {
@@ -529,9 +531,9 @@ fun ServiceEspacioCardMain(servicio: ServicioEvento) {
     Card(
         modifier = Modifier
             .padding(10.dp)
-            .width(250.dp)
+            .width(300.dp)
             .shadow(8.dp, shape = RoundedCornerShape(16.dp)),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5))
     ) {
         Column(
             modifier = Modifier
@@ -552,10 +554,9 @@ fun ServiceEspacioCardMain(servicio: ServicioEvento) {
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 servicio.nombre,
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold, color = Color(0xFF2A4B8D)),
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 4.dp),
-                color = MaterialTheme.colorScheme.onSurface
+                modifier = Modifier.padding(top = 4.dp)
             )
         }
     }
