@@ -5,21 +5,46 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -28,8 +53,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.pabloat.hotelperikero.R
-import com.pabloat.hotelperikero.data.local.entities.Reserva
 import com.pabloat.hotelperikero.data.local.entities.Resenia
+import com.pabloat.hotelperikero.data.local.entities.Reserva
 import com.pabloat.hotelperikero.navigation.Destinations
 import com.pabloat.hotelperikero.viewmodel.HotelViewModel
 import com.pabloat.hotelperikero.viewmodel.ReseniaViewModel
@@ -69,29 +94,25 @@ fun ProfileScreen(navHostController: NavHostController, viewModel: HotelViewMode
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Perfil de Usuario") },
+                title = { Text("Perfil de Usuario", color = Color.White) },
                 navigationIcon = {
                     IconButton(onClick = { navHostController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Atrás")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Atrás", tint = Color.White)
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFF2A4B8D))
             )
         }
-    ) {
+    ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
+                .padding(padding)
                 .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
-                            Color.White
-                        )
-                    )
+                    color = Color.White
                 ),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.Top
         ) {
             user?.let {
                 UserProfile(user = it)
@@ -99,10 +120,11 @@ fun ProfileScreen(navHostController: NavHostController, viewModel: HotelViewMode
                 Button(
                     onClick = { showDialog.value = true },
                     modifier = Modifier
-                        .padding(16.dp)
+                        .padding(horizontal = 16.dp)
                         .fillMaxWidth()
                         .height(50.dp),
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2A4B8D), contentColor = Color.White)
                 ) {
                     Text("Ver Reservas Pasadas", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 }
@@ -119,7 +141,6 @@ fun ProfileScreen(navHostController: NavHostController, viewModel: HotelViewMode
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
                     onClick = {
-                        // Logout logic here
                         viewModel.logOut()
                         navHostController.navigate(Destinations.LoginScreen.route) {
                             popUpTo(navHostController.graph.startDestinationId) {
@@ -128,16 +149,16 @@ fun ProfileScreen(navHostController: NavHostController, viewModel: HotelViewMode
                         }
                     },
                     modifier = Modifier
-                        .padding(16.dp)
+                        .padding(horizontal = 16.dp)
                         .fillMaxWidth()
                         .height(50.dp),
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red, contentColor = Color.White)
                 ) {
                     Text("Log out", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 }
                 selectedReserva.value?.let { reserva ->
                     AddReviewDialog(
-                        reserva = reserva,
                         onDismiss = { selectedReserva.value = null },
                         onSaveReview = { comentario, rating ->
                             val now = LocalDateTime.now()
@@ -159,17 +180,26 @@ fun ProfileScreen(navHostController: NavHostController, viewModel: HotelViewMode
                     SuccessDialog(onDismiss = { showSuccessDialog.value = false })
                 }
             } ?: run {
-                Button(
-                    onClick = {
-                        navHostController.navigate(Destinations.LoginScreen.route)
-                    },
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth()
-                        .height(50.dp),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Text("Iniciar sesión", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Column (
+                    modifier = Modifier.fillMaxSize().align(Alignment.CenterHorizontally),
+                    Arrangement.Center
+                ){
+                    Button(
+                        onClick = {
+                            navHostController.navigate(Destinations.LoginScreen.route)
+                        },
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .fillMaxWidth()
+                            .height(50.dp),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF2A4B8D),
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text("Iniciar sesión", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                    }
                 }
             }
         }
@@ -190,7 +220,7 @@ fun UserProfile(user: JSONObject) {
             .clip(RoundedCornerShape(16.dp)),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f)
+            containerColor = Color(0xFFF5F5F5)
         )
     ) {
         Column(
@@ -211,7 +241,7 @@ fun UserProfile(user: JSONObject) {
                 text = name,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
+                color = Color(0xFF2A4B8D)
             )
             Spacer(modifier = Modifier.height(8.dp))
             ProfileDetailItem(label = "Correo electrónico", value = email)
@@ -234,13 +264,13 @@ fun ProfileDetailItem(label: String, value: String) {
             text = label,
             fontSize = 14.sp,
             fontWeight = FontWeight.Medium,
-            color = MaterialTheme.colorScheme.primary
+            color = Color(0xFF2A4B8D)
         )
         Text(
             text = value,
             fontSize = 16.sp,
             fontWeight = FontWeight.Normal,
-            color = MaterialTheme.colorScheme.onSurface
+            color = Color(0xFF333333)
         )
     }
 }
@@ -249,6 +279,7 @@ fun ProfileDetailItem(label: String, value: String) {
 fun PastReservasDialog(pastReservas: List<Reserva>, onDismiss: () -> Unit, onAddReviewClick: (Reserva) -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
+        containerColor = Color.White,
         title = { Text("Reservas Pasadas") },
         text = {
             LazyColumn(modifier = Modifier.height(400.dp)) {
@@ -258,7 +289,7 @@ fun PastReservasDialog(pastReservas: List<Reserva>, onDismiss: () -> Unit, onAdd
             }
         },
         confirmButton = {
-            Button(onClick = onDismiss) {
+            Button(onClick = onDismiss, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2A4B8D), contentColor = Color.White)) {
                 Text("Cerrar")
             }
         }
@@ -271,7 +302,8 @@ fun PastReservaCard(reserva: Reserva, onAddReviewClick: (Reserva) -> Unit) {
         modifier = Modifier
             .padding(8.dp)
             .fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5))
     ) {
         Column(
             modifier = Modifier
@@ -290,22 +322,24 @@ fun PastReservaCard(reserva: Reserva, onAddReviewClick: (Reserva) -> Unit) {
             Text(
                 text = "Habitación: ${reserva.habitacion_id}",
                 fontSize = 16.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF2A4B8D)
             )
             Text(
                 text = "Fecha de estancia: ${reserva.check_in} - ${reserva.check_out}",
                 fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.onSurface
+                color = Color(0xFF333333)
             )
             Text(
                 text = "Precio total: ${reserva.precio_total}€",
                 fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.onSurface
+                color = Color(0xFF333333)
             )
             Spacer(modifier = Modifier.height(8.dp))
             Button(
                 onClick = { onAddReviewClick(reserva) },
                 modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2A4B8D), contentColor = Color.White)
             ) {
                 Text("Añadir Reseña")
             }
@@ -314,12 +348,13 @@ fun PastReservaCard(reserva: Reserva, onAddReviewClick: (Reserva) -> Unit) {
 }
 
 @Composable
-fun AddReviewDialog(reserva: Reserva, onDismiss: () -> Unit, onSaveReview: (String, Int) -> Unit) {
-    val rating = remember { mutableStateOf(0) }
+fun AddReviewDialog(onDismiss: () -> Unit, onSaveReview: (String, Int) -> Unit) {
+    val rating = remember { mutableIntStateOf(0) }
     val comentario = remember { mutableStateOf("") }
 
     AlertDialog(
         onDismissRequest = onDismiss,
+        containerColor = Color.White,
         title = { Text("Añadir Reseña") },
         text = {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -328,13 +363,13 @@ fun AddReviewDialog(reserva: Reserva, onDismiss: () -> Unit, onSaveReview: (Stri
                 Row {
                     for (i in 1..5) {
                         Icon(
-                            imageVector = if (i <= rating.value) Icons.Filled.Star else Icons.Filled.StarBorder,
+                            imageVector = if (i <= rating.intValue) Icons.Filled.Star else Icons.Filled.StarBorder,
                             contentDescription = null,
-                            tint = if (i <= rating.value) Color.Yellow else Color.Gray,
+                            tint = if (i <= rating.intValue) Color.Yellow else Color.Gray,
                             modifier = Modifier
                                 .size(32.dp)
                                 .padding(4.dp)
-                                .clickable { rating.value = i }
+                                .clickable { rating.intValue = i }
                         )
                     }
                 }
@@ -349,14 +384,14 @@ fun AddReviewDialog(reserva: Reserva, onDismiss: () -> Unit, onSaveReview: (Stri
         },
         confirmButton = {
             Button(onClick = {
-                onSaveReview(comentario.value, rating.value)
+                onSaveReview(comentario.value, rating.intValue)
                 onDismiss()
-            }) {
+            }, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2A4B8D), contentColor = Color.White)) {
                 Text("Guardar")
             }
         },
         dismissButton = {
-            Button(onClick = onDismiss) {
+            Button(onClick = onDismiss, colors = ButtonDefaults.buttonColors(containerColor = Color.Red, contentColor = Color.White)) {
                 Text("Cancelar")
             }
         }
@@ -370,7 +405,7 @@ fun SuccessDialog(onDismiss: () -> Unit) {
         title = { Text("Éxito") },
         text = { Text("La reseña se ha insertado correctamente.") },
         confirmButton = {
-            Button(onClick = onDismiss) {
+            Button(onClick = onDismiss, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2A4B8D), contentColor = Color.White)) {
                 Text("Aceptar")
             }
         }

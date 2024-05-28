@@ -114,9 +114,9 @@ fun WelcomeSection(navHostController: NavHostController) {
             Spacer(modifier = Modifier.height(8.dp))
             Button(
                 onClick = { navHostController.navigate(Destinations.HabitacionesScreen.route) },
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4A90E2))
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2A4B8D))
             ) {
-                Text(text = "¡Reserva aquí!", style = MaterialTheme.typography.titleLarge.copy(color = Color.White))
+                Text(text = "¡Reserva aquí!", style = MaterialTheme.typography.titleMedium.copy(color = Color.White))
             }
         }
     }
@@ -514,7 +514,7 @@ fun ServiceEspacioSectionMain(
             modifier = Modifier
                 .clickable { navHostController.navigate(Destinations.ServiciosEventosScreen.route) }
                 .padding(horizontal = 16.dp),
-            color = Color(0xFFD70000),
+            color = Color(0xFF4A90E2),
             textAlign = TextAlign.Center
         )
         LazyRow {

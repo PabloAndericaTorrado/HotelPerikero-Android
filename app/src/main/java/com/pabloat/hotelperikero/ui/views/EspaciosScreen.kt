@@ -3,13 +3,30 @@ package com.pabloat.hotelperikero.ui.views
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.*
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -21,7 +38,6 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.pabloat.hotelperikero.data.local.entities.Espacio
@@ -46,14 +62,14 @@ fun EspaciosScreen(navHostController: NavHostController, mainViewModel: HotelVie
                 navigationIcon = {
                     IconButton(onClick = { navHostController.popBackStack() }) {
                         Icon(
-                            Icons.Filled.ArrowBack,
+                            Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Regresar",
                             tint = Color.White
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary
+                    containerColor = Color(0xFF2A4B8D)
                 )
             )
         },
@@ -104,17 +120,12 @@ fun EspacioCard(
     mainViewModel: HotelViewModel
 ) {
     Card(
-        shape = MaterialTheme.shapes.medium,
+        shape = RoundedCornerShape(16.dp),
         modifier = Modifier
             .padding(vertical = 8.dp)
-            .fillMaxWidth()
-            .clickable {
-                mainViewModel.selectEspacioId(espacio.id)
-                navHostController.navigate(Destinations.EspacioDetalleScreen.route)
-            },
+            .fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            contentColor = MaterialTheme.colorScheme.onSurface
+            containerColor = Color(0xFFF5F5F5)
         ),
         elevation = CardDefaults.cardElevation(8.dp)
     ) {
@@ -145,7 +156,7 @@ fun EspacioCard(
                 text = espacio.nombre,
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = Color(0xFF2A4B8D)
                 ),
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
@@ -153,7 +164,7 @@ fun EspacioCard(
             Text(
                 text = espacio.descripcion,
                 style = MaterialTheme.typography.bodyMedium.copy(
-                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
+                    color = Color(0xFF333333)
                 ),
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
@@ -161,13 +172,25 @@ fun EspacioCard(
             Text(
                 text = "${espacio.precio}€ por hora",
                 style = MaterialTheme.typography.bodySmall.copy(
-                    color = MaterialTheme.colorScheme.primary,
+                    color = Color(0xFF4A90E2),
                     fontWeight = FontWeight.Bold
                 ),
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
             Spacer(modifier = Modifier.height(8.dp))
+            Button(
+                onClick = {
+                    navHostController.navigate(Destinations.EspacioDetalleScreen.route)
+                    mainViewModel.selectEspacioId(espacio.id)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2A4B8D))
+            ) {
+                Text("Ir al Evento", style = MaterialTheme.typography.bodyMedium.copy(color = Color.White))
+            }
+            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }
-

@@ -1,32 +1,66 @@
 package com.pabloat.hotelperikero.ui.views
 
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.pabloat.hotelperikero.navigation.Destinations
 import com.pabloat.hotelperikero.viewmodel.HotelViewModel
-import kotlinx.coroutines.*
-import okhttp3.*
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import okhttp3.Call
+import okhttp3.Callback
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
 import org.json.JSONObject
 import java.io.IOException
 
@@ -101,11 +135,14 @@ fun UserForm(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(16.dp)
     ) {
         EmailInput(emailState = email)
+        Spacer(modifier = Modifier.height(8.dp))
         PasswordInput(passwordState = password, labelId = "Password", passwordVisible = passwordVisible)
-        SubmitButton(textId = if (isCreatedAccount) "Crear cuenta " else "Login", inputValido = valido) {
+        Spacer(modifier = Modifier.height(16.dp))
+        SubmitButton(textId = if (isCreatedAccount) "Crear cuenta" else "Login", inputValido = valido) {
             onDone(email.value.trim(), password.value.trim())
             keyboardController?.hide()
         }
@@ -124,15 +161,18 @@ fun SubmitButton(
             .padding(3.dp)
             .fillMaxWidth(),
         shape = CircleShape,
-        enabled = inputValido
+        enabled = inputValido,
+        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2A4B8D))
     ) {
         Text(
             text = textId,
-            modifier = Modifier.padding(5.dp)
+            modifier = Modifier.padding(5.dp),
+            color = Color.White
         )
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PasswordInput(
     passwordState: MutableState<String>,
@@ -149,15 +189,21 @@ fun PasswordInput(
         label = { Text(text = labelId) },
         singleLine = true,
         modifier = Modifier
-            .padding(bottom = 10.dp, start = 10.dp, end = 10.dp)
+            .padding(bottom = 10.dp)
             .fillMaxWidth(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         visualTransformation = visualTransformation,
         trailingIcon = {
-            if (passwordState.value.isNotBlank()) {
-                PasswordVisibleIcon(passwordVisible)
-            }
-        }
+            PasswordVisibleIcon(passwordVisible)
+        },
+        leadingIcon = {
+            Icon(imageVector = Icons.Default.Lock, contentDescription = "Lock Icon")
+        },
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedBorderColor = Color(0xFF2A4B8D),
+            unfocusedBorderColor = Color.Gray,
+            cursorColor = Color(0xFF2A4B8D)
+        )
     )
 }
 
@@ -171,17 +217,19 @@ fun PasswordVisibleIcon(passwordVisible: MutableState<Boolean>) {
     IconButton(onClick = { passwordVisible.value = !passwordVisible.value }) {
         Icon(
             imageVector = image,
-            contentDescription = ""
+            contentDescription = null
         )
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InputField(
     valueState: MutableState<String>,
     labelId: String,
     isSingleLine: Boolean = true,
-    keyboardType: KeyboardType
+    keyboardType: KeyboardType,
+    leadingIcon: @Composable (() -> Unit)? = null
 ) {
     OutlinedTextField(
         value = valueState.value,
@@ -189,9 +237,15 @@ fun InputField(
         label = { Text(text = labelId) },
         singleLine = isSingleLine,
         modifier = Modifier
-            .padding(bottom = 10.dp, start = 10.dp, end = 10.dp)
+            .padding(bottom = 10.dp)
             .fillMaxWidth(),
-        keyboardOptions = KeyboardOptions(keyboardType = keyboardType)
+        keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+        leadingIcon = leadingIcon,
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedBorderColor = Color(0xFF2A4B8D),
+            unfocusedBorderColor = Color.Gray,
+            cursorColor = Color(0xFF2A4B8D)
+        )
     )
 }
 
@@ -203,7 +257,10 @@ fun EmailInput(
     InputField(
         valueState = emailState,
         labelId = labelId,
-        keyboardType = KeyboardType.Email
+        keyboardType = KeyboardType.Email,
+        leadingIcon = {
+            Icon(imageVector = Icons.Default.Email, contentDescription = "Email Icon")
+        }
     )
 }
 
@@ -217,9 +274,17 @@ fun LoginScreen(navController: NavController, viewModel: HotelViewModel) {
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.padding(16.dp)
         ) {
-            Text(text = "Inicia sesión")
+            Text(
+                text = "Inicia sesión",
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF2A4B8D)
+                )
+            )
+            Spacer(modifier = Modifier.height(16.dp))
             UserForm(isCreatedAccount = false) { email, password ->
                 loginUser(email, password) { response ->
                     when (response.responseCode) {
@@ -243,11 +308,17 @@ fun LoginScreen(navController: NavController, viewModel: HotelViewModel) {
                     }
                 }
             }
-            if (showDialog.value) {
+            AnimatedVisibility(
+                visible = showDialog.value,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
                 ShowDialog(showDialog, dialogTitle, dialogMessage)
             }
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
             ) {
@@ -255,7 +326,7 @@ fun LoginScreen(navController: NavController, viewModel: HotelViewModel) {
                     checked = rememberMeState.value,
                     onCheckedChange = { isChecked ->
                         rememberMeState.value = isChecked
-                        //TODO: GUARDAR EL LOGIN EN PREFERENCIAS
+                        // TODO: GUARDAR EL LOGIN EN PREFERENCIAS
                     },
                 )
                 Text(text = "Recuérdame")
@@ -273,7 +344,7 @@ fun LoginScreen(navController: NavController, viewModel: HotelViewModel) {
                     modifier = Modifier
                         .clickable { /* TODO: TE MANDA A LA REGISTER SCREEN */ }
                         .padding(start = 5.dp),
-                    color = Color.Cyan
+                    color = Color(0xFF2A4B8D)
                 )
             }
         }

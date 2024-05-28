@@ -4,17 +4,50 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.filled.People
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -23,9 +56,10 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.pabloat.hotelperikero.data.local.entities.Reserva
 import com.pabloat.hotelperikero.data.local.entities.ReservaEventos
-import com.pabloat.hotelperikero.navigation.Destinations
+import com.pabloat.hotelperikero.navigation.Destinations.LoginScreen
 import com.pabloat.hotelperikero.viewmodel.HotelViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun UserReservationsScreen(
@@ -42,56 +76,85 @@ fun UserReservationsScreen(
         viewModel.loadUserReservations(userId)
         viewModel.loadUserEventReservations(userId)
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .padding(16.dp)
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                Button(
-                    onClick = { selectedTab = ReservationTab.Rooms },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if (selectedTab == ReservationTab.Rooms) MaterialTheme.colorScheme.primary else Color.Gray
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(
+                            "Mis Reservas",
+                            color = Color.White,
+                            style = MaterialTheme.typography.titleLarge
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = { navHostController.popBackStack() }) {
+                            Icon(
+                                Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Regresar",
+                                tint = Color.White
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color(0xFF2A4B8D)
                     )
-                ) {
-                    Text("Habitaciones", color = Color.White)
-                }
-                Button(
-                    onClick = { selectedTab = ReservationTab.Events },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if (selectedTab == ReservationTab.Events) MaterialTheme.colorScheme.primary else Color.Gray
-                    )
-                ) {
-                    Text("Eventos", color = Color.White)
-                }
-            }
-
-            if (selectedTab == ReservationTab.Rooms) {
-                Text(
-                    "Reservas de Habitaciones",
-                    style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-                    modifier = Modifier.padding(bottom = 8.dp)
                 )
-                LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    items(userReservations) { reserva ->
-                        UserReservationCard(reserva = reserva)
+            }
+        ) { padding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(padding)
+                    .padding(16.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Button(
+                        onClick = { selectedTab = ReservationTab.Rooms },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = if (selectedTab == ReservationTab.Rooms) Color(0xFF2A4B8D) else Color.Gray
+                        )
+                    ) {
+                        Text("Habitaciones", color = Color.White)
+                    }
+                    Button(
+                        onClick = { selectedTab = ReservationTab.Events },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = if (selectedTab == ReservationTab.Events) Color(0xFF2A4B8D) else Color.Gray
+                        )
+                    ) {
+                        Text("Eventos", color = Color.White)
                     }
                 }
-            } else {
-                Text(
-                    "Reservas de Eventos",
-                    style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
+
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    items(userEventReservations) { reservaEvento ->
-                        UserEventReservationCard(reserva = reservaEvento)
+                    if (selectedTab == ReservationTab.Rooms) {
+                        item {
+                            Text(
+                                "Reservas de Habitaciones",
+                                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                                modifier = Modifier.padding(bottom = 8.dp)
+                            )
+                        }
+                        items(userReservations) { reserva ->
+                            UserReservationCard(reserva = reserva)
+                        }
+                    } else {
+                        item {
+                            Text(
+                                "Reservas de Eventos",
+                                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                                modifier = Modifier.padding(bottom = 8.dp)
+                            )
+                        }
+                        items(userEventReservations) { reservaEvento ->
+                            UserEventReservationCard(reserva = reservaEvento)
+                        }
                     }
                 }
             }
@@ -105,7 +168,7 @@ fun UserReservationsScreen(
                 "Necesitas Iniciar Sesión",
                 color = MaterialTheme.colorScheme.error,
                 modifier = Modifier
-                    .clickable { navHostController.navigate(Destinations.LoginScreen.route) }
+                    .clickable { navHostController.navigate(LoginScreen.route) }
                     .padding(16.dp),
                 style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
             )
@@ -121,60 +184,74 @@ enum class ReservationTab {
 fun UserReservationCard(
     reserva: Reserva
 ) {
-    var showDialog by remember { mutableStateOf(false) }
 
     Card(
         shape = RoundedCornerShape(16.dp),
         modifier = Modifier
             .padding(vertical = 8.dp)
-            .fillMaxWidth()
-            .clickable { showDialog = true },
+            .fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
-            contentColor = MaterialTheme.colorScheme.onSurface
+            containerColor = Color(0xFFF5F5F5)
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
         Row(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier
+                .height(IntrinsicSize.Min)
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            MaterialTheme.colorScheme.surface,
+                            MaterialTheme.colorScheme.background
+                        )
+                    )
+                )
         ) {
             Image(
                 painter = rememberAsyncImagePainter(model = getHabitacionImageUrl(reserva.habitacion_id)),
                 contentDescription = "Imagen de la habitación ${reserva.habitacion_id}",
                 modifier = Modifier
-                    .size(120.dp)
-                    .clip(RoundedCornerShape(16.dp)),
+                    .fillMaxHeight()
+                    .width(150.dp)
+                    .clip(RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp)),
                 contentScale = ContentScale.Crop
             )
             Spacer(modifier = Modifier.width(16.dp))
             Column(
-                verticalArrangement = Arrangement.SpaceBetween
+                verticalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(16.dp)
             ) {
                 Text(
                     text = "Habitación ${reserva.habitacion_id}",
-                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF2A4B8D),
+                        fontSize = 20.sp
+                    ),
+                    modifier = Modifier.padding(bottom = 8.dp)
                 )
-                Text("Check-In: ${reserva.check_in}", style = MaterialTheme.typography.bodyLarge)
-                Text("Check-Out: ${reserva.check_out}", style = MaterialTheme.typography.bodyLarge)
-                Text("Precio Total: ${reserva.precio_total}€", style = MaterialTheme.typography.bodyLarge)
-                Text("Huéspedes: ${reserva.numero_personas}", style = MaterialTheme.typography.bodyLarge)
+                DetailRow(Icons.Default.CalendarToday, "Check-In", reserva.check_in, Color(0xFF2A4B8D))
+                DetailRow(Icons.Default.CalendarToday, "Check-Out", reserva.check_out, Color(0xFF2A4B8D))
+                DetailRow(Icons.Default.People, "Huéspedes",
+                    reserva.numero_personas.toString(), Color(0xFF2A4B8D))
+                Spacer(modifier = Modifier.height(8.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color(0xFF2A4B8D))
+                        .padding(8.dp)
+                        .align(Alignment.CenterHorizontally)
+                ) {
+                    Text(
+                        text = "Precio Total: ${reserva.precio_total}€",
+                        style = MaterialTheme.typography.bodyLarge.copy(color = Color.White),
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
             }
         }
-    }
-
-    if (showDialog) {
-        ReservationDetailDialog(
-            title = "Detalles de la reserva",
-            imageUrl = getHabitacionImageUrl(reserva.habitacion_id),
-            details = listOf(
-                "Habitación ID" to reserva.habitacion_id.toString(),
-                "Check-In" to reserva.check_in,
-                "Check-Out" to reserva.check_out,
-                "Precio Total" to "${reserva.precio_total} €",
-                "Número de huéspedes" to reserva.numero_personas.toString()
-            ),
-            onDismiss = { showDialog = false }
-        )
     }
 }
 
@@ -182,122 +259,91 @@ fun UserReservationCard(
 fun UserEventReservationCard(
     reserva: ReservaEventos
 ) {
-    var showDialog by remember { mutableStateOf(false) }
 
     Card(
         shape = RoundedCornerShape(16.dp),
         modifier = Modifier
             .padding(vertical = 8.dp)
-            .fillMaxWidth()
-            .clickable { showDialog = true },
+            .fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
-            contentColor = MaterialTheme.colorScheme.onSurface
+            containerColor = Color(0xFFF5F5F5)
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
         Row(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier
+                .height(IntrinsicSize.Min)
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            MaterialTheme.colorScheme.surface,
+                            MaterialTheme.colorScheme.background
+                        )
+                    )
+                )
         ) {
             Image(
                 painter = rememberAsyncImagePainter(model = getEspacioImageUrl(reserva.id)),
                 contentDescription = "Imagen del evento ${reserva.id}",
                 modifier = Modifier
-                    .size(120.dp)
-                    .clip(RoundedCornerShape(16.dp)),
+                    .fillMaxHeight()
+                    .width(150.dp)
+                    .clip(RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp)),
                 contentScale = ContentScale.Crop
             )
             Spacer(modifier = Modifier.width(16.dp))
             Column(
-                verticalArrangement = Arrangement.SpaceBetween
+                verticalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(16.dp)
             ) {
                 Text(
                     text = "Evento ${reserva.id}",
-                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF2A4B8D),
+                        fontSize = 20.sp
+                    ),
+                    modifier = Modifier.padding(bottom = 8.dp)
                 )
-                Text("Check-In: ${reserva.check_in}", style = MaterialTheme.typography.bodyLarge)
-                Text("Check-Out: ${reserva.check_out}", style = MaterialTheme.typography.bodyLarge)
-                Text("Precio Total: ${reserva.precio_total}€", style = MaterialTheme.typography.bodyLarge)
-                Text("Personas: ${reserva.cantidad_personas}", style = MaterialTheme.typography.bodyLarge)
-            }
-        }
-    }
-
-    if (showDialog) {
-        ReservationDetailDialog(
-            title = "Detalles de la reserva de evento",
-            imageUrl = getEspacioImageUrl(reserva.id),
-            details = listOf(
-                "Reserva de Evento ID" to reserva.id.toString(),
-                "Check-In" to reserva.check_in,
-                "Check-Out" to reserva.check_out,
-                "Precio Total" to "${reserva.precio_total} €",
-                "Cantidad de Personas" to reserva.cantidad_personas.toString()
-            ),
-            onDismiss = { showDialog = false }
-        )
-    }
-}
-
-@Composable
-fun ReservationDetailDialog(
-    title: String,
-    details: List<Pair<String, String>>,
-    imageUrl: String? = null,
-    onDismiss: () -> Unit
-) {
-    AlertDialog(
-        onDismissRequest = { onDismiss() },
-        title = { Text(title, style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)) },
-        text = {
-            Column(
-                modifier = Modifier.padding(8.dp)
-            ) {
-                imageUrl?.let {
-                    Image(
-                        painter = rememberAsyncImagePainter(model = it),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .height(180.dp)
-                            .fillMaxWidth()
-                            .padding(bottom = 8.dp)
-                            .clip(MaterialTheme.shapes.medium)
+                DetailRow(Icons.Default.CalendarToday, "Check-In", reserva.check_in, Color(0xFF2A4B8D))
+                DetailRow(Icons.Default.CalendarToday, "Check-Out", reserva.check_out, Color(0xFF2A4B8D))
+                DetailRow(Icons.Default.People, "Personas",
+                    reserva.cantidad_personas.toString(), Color(0xFF2A4B8D))
+                Spacer(modifier = Modifier.height(8.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color(0xFF2A4B8D))
+                        .padding(8.dp)
+                        .align(Alignment.CenterHorizontally)
+                ) {
+                    Text(
+                        text = "Precio Total: ${reserva.precio_total}€",
+                        style = MaterialTheme.typography.bodyLarge.copy(color = Color.White),
+                        modifier = Modifier.align(Alignment.Center)
                     )
                 }
-                details.forEach { detail ->
-                    DetailRow(label = detail.first, value = detail.second)
-                }
-            }
-        },
-        confirmButton = {
-            Button(
-                onClick = { onDismiss() },
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-            ) {
-                Text("Cerrar")
             }
         }
-    )
+    }
 }
 
 @Composable
-fun DetailRow(label: String, value: String) {
-    Column(
+fun DetailRow(icon: ImageVector, label: String, value: String, color: Color) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
     ) {
+        Icon(icon, contentDescription = label, tint = color, modifier = Modifier.size(24.dp))
+        Spacer(modifier = Modifier.width(16.dp))
         Text(
-            text = label,
-            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-            modifier = Modifier.padding(bottom = 2.dp)
-        )
-        Text(
-            text = value,
+            text = "$label: $value",
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.padding(bottom = 4.dp)
         )
-        Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f))
     }
 }

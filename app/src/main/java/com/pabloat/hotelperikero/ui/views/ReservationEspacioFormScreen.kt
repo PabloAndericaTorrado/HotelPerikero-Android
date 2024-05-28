@@ -17,16 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.People
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -138,10 +129,13 @@ fun ReservationEspaciosFormScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Formulario de Reserva") },
+                title = { Text("Formulario de Reserva", color = Color.White) },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color(0xFF2A4B8D)
+                ),
                 navigationIcon = {
                     IconButton(onClick = { navHostController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Atrás")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Atrás", tint = Color.White)
                     }
                 }
             )
@@ -170,7 +164,8 @@ fun ReservationEspaciosFormScreen(
             Text(
                 text = "Espacio ${espacio.nombre}",
                 fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF2A4B8D)
             )
 
             Text(
@@ -184,7 +179,7 @@ fun ReservationEspaciosFormScreen(
                 text = "Precio por hora: ${espacio.precio}€",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
+                color = Color(0xFF4A90E2)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -205,14 +200,14 @@ fun ReservationEspaciosFormScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 8.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2A4B8D))
                 ) {
                     Icon(
                         Icons.Default.CalendarToday,
                         contentDescription = "Select Check-In Date",
                         modifier = Modifier.padding(end = 8.dp)
                     )
-                    Text(text = if (checkInDate.isEmpty()) "Seleccionar fecha de inicio" else "Inicio: $checkInDate")
+                    Text(text = if (checkInDate.isEmpty()) "Seleccionar fecha de inicio" else "Inicio: $checkInDate", color = Color.White)
                 }
 
                 Button(
@@ -225,14 +220,14 @@ fun ReservationEspaciosFormScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 8.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2A4B8D))
                 ) {
                     Icon(
                         Icons.Default.CalendarToday,
                         contentDescription = "Select Check-Out Date",
                         modifier = Modifier.padding(end = 8.dp)
                     )
-                    Text(text = if (checkOutDate.isEmpty()) "Seleccionar fecha de fin" else "Fin: $checkOutDate")
+                    Text(text = if (checkOutDate.isEmpty()) "Seleccionar fecha de fin" else "Fin: $checkOutDate", color = Color.White)
                 }
 
                 OutlinedTextField(
@@ -250,7 +245,12 @@ fun ReservationEspaciosFormScreen(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 8.dp)
+                        .padding(vertical = 8.dp),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Color(0xFF2A4B8D),
+                        unfocusedBorderColor = Color.Gray,
+                        cursorColor = Color(0xFF2A4B8D)
+                    )
                 )
 
                 if (errorMessage.value.isNotEmpty()) {
@@ -310,7 +310,6 @@ fun ReservationEspaciosFormScreen(
                                                 created_at = now,
                                                 updated_at = now
                                             )
-                                            //viewModel.addReservaEvento(reserva)
                                             reservaEventosViewModel.crearReservaEventos(reserva)
                                             showDialog.value = true
                                         }
@@ -325,7 +324,7 @@ fun ReservationEspaciosFormScreen(
                         .height(50.dp),
                     enabled = checkInDate.isNotEmpty() && checkOutDate.isNotEmpty() && numeroPersonas.value.isNotEmpty(),
                     shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2A4B8D))
                 ) {
                     Text(
                         "Realizar reserva",
@@ -334,6 +333,7 @@ fun ReservationEspaciosFormScreen(
                         color = Color.White
                     )
                 }
+
                 LaunchedEffect(key1 = reservaEventosViewModel.reservaEventosCreada.collectAsState().value) {
                     reservaEventosViewModel.reservaEventosCreada.value?.let {
                         showDialog.value = true
@@ -342,7 +342,7 @@ fun ReservationEspaciosFormScreen(
                 }
 
                 if (showDialog.value) {
-                    androidx.compose.material3.AlertDialog(
+                    AlertDialog(
                         onDismissRequest = { showDialog.value = false },
                         title = { Text("Reserva efectuada con éxito") },
                         text = {

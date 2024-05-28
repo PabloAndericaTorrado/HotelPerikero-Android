@@ -6,14 +6,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -23,26 +16,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.People
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -64,13 +39,7 @@ import com.pabloat.hotelperikero.data.local.entities.Reserva
 import com.pabloat.hotelperikero.data.local.entities.ReservaParking
 import com.pabloat.hotelperikero.data.local.entities.ReservaServicio
 import com.pabloat.hotelperikero.data.local.entities.Servicio
-import com.pabloat.hotelperikero.viewmodel.HotelViewModel
-import com.pabloat.hotelperikero.viewmodel.ParkingViewModel
-import com.pabloat.hotelperikero.viewmodel.ParkingViewModelFactory
-import com.pabloat.hotelperikero.viewmodel.ReservaServicioViewModel
-import com.pabloat.hotelperikero.viewmodel.ReservaServiciosViewModelFactory
-import com.pabloat.hotelperikero.viewmodel.ReservaViewModel
-import com.pabloat.hotelperikero.viewmodel.ReservaViewModelFactory
+import com.pabloat.hotelperikero.viewmodel.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -241,10 +210,17 @@ fun ReservationFormScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Formulario de Reserva") },
+                title = { Text("Formulario de Reserva", color = Color.White) },
+                colors = TopAppBarColors(
+                    scrolledContainerColor = Color(0xFF2A4B8D),
+                    navigationIconContentColor = Color(0xFF2A4B8D),
+                    containerColor = Color(0xFF2A4B8D),
+                    titleContentColor = Color(0xFF2A4B8D),
+                    actionIconContentColor = Color(0xFF2A4B8D)
+                ),
                 navigationIcon = {
                     IconButton(onClick = { navHostController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Atrás")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Atrás", tint = Color.White)
                     }
                 }
             )
@@ -274,7 +250,8 @@ fun ReservationFormScreen(
                 Text(
                     text = "Habitación ${habitacion.numero_habitacion}",
                     fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF2A4B8D)
                 )
 
                 Text(
@@ -288,7 +265,7 @@ fun ReservationFormScreen(
                     text = "Precio por noche: ${habitacion.precio}€",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
+                    color = Color(0xFF4A90E2)
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -312,14 +289,14 @@ fun ReservationFormScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 8.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2A4B8D))
                     ) {
                         Icon(
                             Icons.Default.CalendarToday,
                             contentDescription = "Select Check-In Date",
                             modifier = Modifier.padding(end = 8.dp)
                         )
-                        Text(text = if (checkInDate.isEmpty()) "Seleccionar fecha de Check-In" else "Check-In: $checkInDate")
+                        Text(text = if (checkInDate.isEmpty()) "Seleccionar fecha de Check-In" else "Check-In: $checkInDate", color = Color.White)
                     }
 
                     Button(
@@ -344,14 +321,14 @@ fun ReservationFormScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 8.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2A4B8D))
                     ) {
                         Icon(
                             Icons.Default.CalendarToday,
                             contentDescription = "Select Check-Out Date",
                             modifier = Modifier.padding(end = 8.dp)
                         )
-                        Text(text = if (checkOutDate.isEmpty()) "Seleccionar fecha de Check-Out" else "Check-Out: $checkOutDate")
+                        Text(text = if (checkOutDate.isEmpty()) "Seleccionar fecha de Check-Out" else "Check-Out: $checkOutDate", color = Color.White)
                     }
 
                     OutlinedTextField(
@@ -370,7 +347,12 @@ fun ReservationFormScreen(
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 8.dp)
+                            .padding(vertical = 8.dp),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedBorderColor = Color(0xFF2A4B8D),
+                            unfocusedBorderColor = Color.Gray,
+                            cursorColor = Color(0xFF2A4B8D)
+                        )
                     )
 
                     if (errorMessage.value.isNotEmpty()) {
@@ -439,7 +421,12 @@ fun ReservationFormScreen(
                                             },
                                             label = { Text("Cantidad") },
                                             modifier = Modifier.width(80.dp),
-                                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                                focusedBorderColor = Color(0xFF2A4B8D),
+                                                unfocusedBorderColor = Color.Gray,
+                                                cursorColor = Color(0xFF2A4B8D)
+                                            )
                                         )
                                     }
                                 }
@@ -457,7 +444,12 @@ fun ReservationFormScreen(
                         label = { Text("Matrícula del vehículo") },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 8.dp)
+                            .padding(vertical = 8.dp),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedBorderColor = Color(0xFF2A4B8D),
+                            unfocusedBorderColor = Color.Gray,
+                            cursorColor = Color(0xFF2A4B8D)
+                        )
                     )
 
                     Row(
@@ -569,7 +561,7 @@ fun ReservationFormScreen(
                             .height(50.dp),
                         enabled = checkInDate.isNotEmpty() && checkOutDate.isNotEmpty() && numeroPersonas.value.isNotEmpty(),
                         shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2A4B8D))
                     ) {
                         Text(
                             "Realizar reserva",
@@ -611,5 +603,3 @@ fun ReservationFormScreen(
         }
     }
 }
-
-

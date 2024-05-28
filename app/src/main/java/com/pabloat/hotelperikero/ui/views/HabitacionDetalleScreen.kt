@@ -10,12 +10,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Scaffold
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Text
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -27,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
@@ -46,7 +51,7 @@ fun HabitacionDetalleScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                backgroundColor = Color.Gray,
+                backgroundColor = Color(0xFF2A4B8D),
                 title = {
                     if (habitacion != null) {
                         Text(
@@ -58,7 +63,7 @@ fun HabitacionDetalleScreen(
                 navigationIcon = {
                     IconButton(onClick = { navHostController.popBackStack() }) {
                         Icon(
-                            Icons.Filled.ArrowBack,
+                            Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Regresar",
                             tint = Color.White
                         )
@@ -78,14 +83,15 @@ fun HabitacionDetalleScreen(
                 Spacer(modifier = Modifier.height(20.dp))
                 Text(
                     text = room.tipo,
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.align(Alignment.CenterHorizontally), color = Color.Black
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF2A4B8D)
+                    ),
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
                 Image(
                     painter = rememberAsyncImagePainter(
-                        model = getHabitacionImageUrl(
-                            room.id ?: -1
-                        )
+                        model = getHabitacionImageUrl(room.id ?: -1)
                     ),
                     contentDescription = "Imagen detallada de la habitación",
                     modifier = Modifier
@@ -97,7 +103,7 @@ fun HabitacionDetalleScreen(
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     "Precio: ${room.precio}€/Noche",
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodyMedium.copy(color = Color(0xFF4A90E2)),
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -109,12 +115,16 @@ fun HabitacionDetalleScreen(
                                 navHostController.navigate("reservation_form/${room.id}/$userId")
                             },
                             modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(20.dp)
+                            shape = RoundedCornerShape(20.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF2A4B8D),
+                                contentColor = Color.White
+                            )
                         ) {
                             Text(
                                 "Reservar Ahora",
                                 modifier = Modifier.padding(vertical = 8.dp),
-                                color = Color.White
+                                style = MaterialTheme.typography.bodyMedium.copy(color = Color.White)
                             )
                         }
                     } else {
