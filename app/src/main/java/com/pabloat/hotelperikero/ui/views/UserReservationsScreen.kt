@@ -1,6 +1,8 @@
 package com.pabloat.hotelperikero.ui.views
 
 import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -58,7 +60,10 @@ import com.pabloat.hotelperikero.data.local.entities.Reserva
 import com.pabloat.hotelperikero.data.local.entities.ReservaEventos
 import com.pabloat.hotelperikero.navigation.Destinations.LoginScreen
 import com.pabloat.hotelperikero.viewmodel.HotelViewModel
+import java.time.LocalDate
+import java.time.LocalDateTime
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -70,6 +75,8 @@ fun UserReservationsScreen(
     val userReservations by viewModel.userReservations.collectAsState()
     val userEventReservations by viewModel.userEventReservations.collectAsState()
     var selectedTab by remember { mutableStateOf(ReservationTab.Rooms) }
+    val today = LocalDate.now()
+    val now = LocalDateTime.now()
 
     if (userLoggedIn != null) {
         val userId = userLoggedIn!!.getInt("id")
@@ -142,7 +149,9 @@ fun UserReservationsScreen(
                             )
                         }
                         items(userReservations) { reserva ->
-                            UserReservationCard(reserva = reserva)
+                            if (reserva.check_out > today.toString()) {
+                                UserReservationCard(reserva = reserva)
+                            }
                         }
                     } else {
                         item {
@@ -153,7 +162,9 @@ fun UserReservationsScreen(
                             )
                         }
                         items(userEventReservations) { reservaEvento ->
-                            UserEventReservationCard(reserva = reservaEvento)
+                            if (reservaEvento.check_out > now.toString()) {
+                                UserEventReservationCard(reserva = reservaEvento)
+                            }
                         }
                     }
                 }
