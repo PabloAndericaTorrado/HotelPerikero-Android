@@ -162,7 +162,7 @@ fun EspacioCard(
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = espacio.descripcion,
+                text = espacio.descripcion.replace("_", " de "),
                 style = MaterialTheme.typography.bodyMedium.copy(
                     color = Color(0xFF333333)
                 ),

@@ -2,26 +2,17 @@ package com.pabloat.hotelperikero.ui.views
 
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material.icons.filled.AttachMoney
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.People
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -29,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -52,13 +44,6 @@ fun EspacioDetalleScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                colors = TopAppBarColors(
-                    containerColor = Color(0xFF2A4B8D),
-                    titleContentColor = Color(0xFF2A4B8D),
-                    scrolledContainerColor = Color(0xFF2A4B8D),
-                    actionIconContentColor = Color(0xFF2A4B8D),
-                    navigationIconContentColor = Color(0xFF2A4B8D)
-                ),
                 title = {
                     Text(
                         text = espacio?.nombre ?: "Espacio no disponible",
@@ -73,97 +58,161 @@ fun EspacioDetalleScreen(
                             tint = Color.White
                         )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color(0xFF2A4B8D)
+                )
             )
         }
     ) { padding ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .padding(padding)
                 .padding(horizontal = 16.dp)
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            espacio?.let { space ->
-                Spacer(modifier = Modifier.height(20.dp))
-                Text(
-                    text = space.nombre,
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF2A4B8D)
-                    ),
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
-                Image(
-                    painter = rememberAsyncImagePainter(
-                        model = getEspacioImageUrl(space.id ?: -1)
-                    ),
-                    contentDescription = "Imagen detallada del espacio",
-                    modifier = Modifier
-                        .height(240.dp)
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(12.dp)),
-                    contentScale = ContentScale.Crop
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    "Capacidad máxima: ${space.capacidad_maxima} personas",
-                    style = MaterialTheme.typography.bodyMedium.copy(color = Color(0xFF333333)),
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    "Precio: ${space.precio}€/Hora",
-                    style = MaterialTheme.typography.bodyMedium.copy(color = Color(0xFF4A90E2)),
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                if (space.disponible == 1) {
-                    if (userLoggedIn != null) {
-                        val userId = userLoggedIn!!.getInt("id")
-                        Button(
-                            onClick = {
-                                navHostController.navigate("reservationEspacio_form/${space.id}/$userId")
-                            },
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(20.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFF2A4B8D),
-                                contentColor = Color.White
-                            )
+            item {
+                espacio?.let { space ->
+                    Card(
+                        shape = RoundedCornerShape(16.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color.White,
+                            contentColor = Color.Black
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .fillMaxWidth()
                         ) {
                             Text(
-                                "Reservar Ahora",
-                                modifier = Modifier.padding(vertical = 8.dp),
-                                style = MaterialTheme.typography.bodyMedium.copy(color = Color.White)
+                                text = space.nombre,
+                                style = MaterialTheme.typography.titleLarge.copy(
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF2A4B8D)
+                                ),
+                                modifier = Modifier.align(Alignment.CenterHorizontally)
                             )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Image(
+                                painter = rememberAsyncImagePainter(
+                                    model = getEspacioImageUrl(space.id ?: -1)
+                                ),
+                                contentDescription = "Imagen detallada del espacio",
+                                modifier = Modifier
+                                    .height(240.dp)
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(12.dp)),
+                                contentScale = ContentScale.Crop
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Box(
+                                modifier = Modifier
+                                    .align(Alignment.CenterHorizontally)
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(Color(0xFF2A4B8D))
+                                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        Icons.Default.AttachMoney,
+                                        contentDescription = "Precio",
+                                        tint = Color.White,
+                                        modifier = Modifier.size(24.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text(
+                                        "Precio: ${space.precio}€/Hora",
+                                        style = MaterialTheme.typography.titleMedium.copy(color = Color.White)
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(16.dp))
+                            InfoEspacioRow(icon = Icons.Default.Info, label = "Características", value = space.descripcion.replace("_", " de "))
+                            Spacer(modifier = Modifier.height(8.dp))
+                            InfoEspacioRow(icon = Icons.Default.People, label = "Capacidad", value = "${space.capacidad_maxima} personas")
+                            Spacer(modifier = Modifier.height(16.dp))
+                            if (space.disponible == 1) {
+                                if (userLoggedIn != null) {
+                                    val userId = userLoggedIn!!.getInt("id")
+                                    Button(
+                                        onClick = {
+                                            navHostController.navigate("reservationEspacio_form/${space.id}/$userId")
+                                        },
+                                        modifier = Modifier.fillMaxWidth(),
+                                        shape = RoundedCornerShape(20.dp),
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = Color(0xFF2A4B8D),
+                                            contentColor = Color.White
+                                        )
+                                    ) {
+                                        Text(
+                                            "Reservar Ahora",
+                                            modifier = Modifier.padding(vertical = 8.dp),
+                                            style = MaterialTheme.typography.bodyLarge.copy(color = Color.White)
+                                        )
+                                    }
+                                } else {
+                                    Text(
+                                        "Necesitas Iniciar Sesión",
+                                        color = Color.Red,
+                                        modifier = Modifier
+                                            .align(Alignment.CenterHorizontally)
+                                            .clickable { navHostController.navigate(Destinations.LoginScreen.route) }
+                                            .padding(vertical = 8.dp)
+                                    )
+                                }
+                            } else {
+                                Text(
+                                    "No disponible",
+                                    color = Color.Red,
+                                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                                )
+                            }
                         }
-                    } else {
-                        Text(
-                            "Necesitas Iniciar Sesión",
-                            color = Color.Red,
-                            modifier = Modifier
-                                .align(Alignment.CenterHorizontally)
-                                .clickable { navHostController.navigate(Destinations.LoginScreen.route) }
-                        )
                     }
-                } else {
+                } ?: run {
                     Text(
-                        "No disponible",
-                        color = Color.Red,
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                        "Espacio no disponible",
                     )
                 }
-            } ?: run {
-                Text(
-                    "Espacio no disponible",
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
+                Spacer(modifier = Modifier.height(4.dp))
             }
 
-            ServiceEspacioSectionMain(
-                servicios = serviciosEventos,
-                navHostController = navHostController
+            item {
+                ServiceEspacioSectionMain(
+                    servicios = serviciosEventos,
+                    navHostController = navHostController
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun InfoEspacioRow(icon: ImageVector, label: String, value: String) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp)
+    ) {
+        Icon(icon, contentDescription = label, tint = Color(0xFF2A4B8D), modifier = Modifier.size(24.dp))
+        Spacer(modifier = Modifier.width(16.dp))
+        Column {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+            )
+            Text(
+                text = value,
+                style = MaterialTheme.typography.bodyLarge
             )
         }
     }
