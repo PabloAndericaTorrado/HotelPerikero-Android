@@ -1,10 +1,6 @@
 package com.pabloat.hotelperikero.ui.views
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,9 +11,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,6 +33,7 @@ import com.pabloat.hotelperikero.data.local.entities.Servicio
 import com.pabloat.hotelperikero.data.local.entities.ServicioEvento
 import com.pabloat.hotelperikero.navigation.Destinations
 import com.pabloat.hotelperikero.viewmodel.HotelViewModel
+import kotlinx.coroutines.delay
 
 @Composable
 fun MainScreen(
@@ -112,13 +107,56 @@ fun WelcomeSection(navHostController: NavHostController) {
                 textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(8.dp))
+            AnimatedText()
+            Spacer(modifier = Modifier.height(8.dp))
             Button(
                 onClick = { navHostController.navigate(Destinations.HabitacionesScreen.route) },
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2A4B8D))
             ) {
-                Text(text = "¡Reserva aquí!", style = MaterialTheme.typography.titleMedium.copy(color = Color.White))
+                Text(text = "Reserva ahora", style = MaterialTheme.typography.titleMedium.copy(color = Color.White))
             }
         }
+    }
+}
+
+@Composable
+fun AnimatedText() {
+    var text by remember { mutableStateOf("") }
+    var cursorVisible by remember { mutableStateOf(true) }
+    var isWritingFinished by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        val fullText = "Una experiencia única te espera en nuestro hotel de lujo en Marbella"
+        for (char in fullText) {
+            text += char
+            delay(50)
+        }
+        isWritingFinished = true
+    }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(400)
+            cursorVisible = !cursorVisible
+        }
+    }
+
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+    ) {
+        Text(
+            text = if (cursorVisible) "$text|" else "$text ",
+            style = MaterialTheme.typography.bodyLarge.copy(
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color.White
+            ),
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }
 
