@@ -270,7 +270,6 @@ fun UserReservationCard(
 fun UserEventReservationCard(
     reserva: ReservaEventos
 ) {
-
     Card(
         shape = RoundedCornerShape(16.dp),
         modifier = Modifier
@@ -294,7 +293,7 @@ fun UserEventReservationCard(
                 )
         ) {
             Image(
-                painter = rememberAsyncImagePainter(model = getEspacioImageUrl(reserva.id)),
+                painter = rememberAsyncImagePainter(model = getEspacioImageUrl(reserva.espacio_id)),
                 contentDescription = "Imagen del evento ${reserva.id}",
                 modifier = Modifier
                     .fillMaxHeight()
@@ -318,7 +317,13 @@ fun UserEventReservationCard(
                     ),
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
-                DetailRow(Icons.Default.CalendarToday, "Check-In", reserva.check_in, Color(0xFF2A4B8D))
+
+                DetailRow(
+                    Icons.Default.CalendarToday,
+                    "Check-In",
+                    reserva.check_in,
+                    Color(0xFF2A4B8D)
+                )
                 DetailRow(Icons.Default.CalendarToday, "Check-Out", reserva.check_out, Color(0xFF2A4B8D))
                 DetailRow(Icons.Default.People, "Personas",
                     reserva.cantidad_personas.toString(), Color(0xFF2A4B8D))
