@@ -99,7 +99,7 @@ fun MainNavigation(
                     reservaParkingEDao = parkingViewModelFactory.parkingDao
                 )
             } else {
-                // Manejar el caso de error aquí
+
             }
         }
 
@@ -115,7 +115,7 @@ fun MainNavigation(
                     reservaEventosDao = reservaEventosViewModelFactory.reservaEventosDao
                 )
             } else {
-                // Manejar el caso de error aquí
+
             }
         }
 
@@ -129,7 +129,7 @@ fun MainNavigation(
         composable(Destinations.EspacioDetalleScreen.route) {
             EspacioDetalleScreen(
                 navHostController = onNavController, viewModel = mainViewmodel,
-                espacioId = 1
+                espacioId = idEspacio
             )
         }
 
