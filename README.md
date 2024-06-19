@@ -73,5 +73,5 @@ El proyecto sigue las convenciones de código de Kotlin y Android Jetpack Compos
 
 ## Video de demostración
 
-[![Demostración](https://img.youtube.com/vi/VIDEO_ID/maxresdefault.jpg)](https://drive.google.com/file/d/1WKIFt7YklbNfwyxvufaveVwgMuRL6nBh/view?usp=sharing)
+[![Demostración]](https://drive.google.com/file/d/1WKIFt7YklbNfwyxvufaveVwgMuRL6nBh/view?usp=sharing)
 
